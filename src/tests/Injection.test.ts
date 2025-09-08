@@ -6,6 +6,7 @@ import { getOutputFilePath } from "./helpers/getOutputFilePath.js";
 
 describe("Injection", () => {
     let injection!: Injection;
+    const outDir = process.cwd() + '/src/tests/output';
 
     beforeEach(() => {
         // Create a mock template file
@@ -24,7 +25,7 @@ describe("Injection", () => {
         test("should be able to configure the docs injection", () => {
             expect(() => new Injection({
                 template: getOutputFilePath('test.template.txt'),
-                outFile: 'test.txt',
+                outDir,
                 injectInto: '%content%',
             }))
         })
@@ -39,7 +40,7 @@ describe("Injection", () => {
 
             injection = new Injection({
                 template: getOutputFilePath('test.template.txt'),
-                outFile: 'test.txt',
+                outDir,
                 injectInto: '%content%',
             });
 
@@ -56,10 +57,10 @@ describe("Injection", () => {
             injection = new Injection({
                 template: getOutputFilePath('test.template.txt'),
                 injectInto: '%content%',
-                outFile: getOutputFilePath('test.txt'),
+                outDir,
             });
             
-            injection.injectIntoFile('This is a test string.');
+            injection.injectIntoFile('This is a test string.', 'test.txt');
 
             // Make folder recursively if it doesn't exist
             if (!fs.existsSync(process.cwd() + '/src/tests/output')) {
@@ -83,11 +84,11 @@ describe("Injection", () => {
         test("should throw an error if the template file does not exist", () => {
             injection = new Injection({
                 template: 'nonexistent.txt',
-                outFile: 'test.txt',
+                outDir,
                 injectInto: '%content%',
             });
 
-            expect(() => injection.injectIntoFile('This is a test string.')).toThrow('Template file not found');
+            expect(() => injection.injectIntoFile('This is a test string.', 'test.txt')).toThrow('Template file not found');
         })
     })
 });

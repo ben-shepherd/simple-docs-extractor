@@ -1,14 +1,16 @@
 import { beforeEach, describe, expect, test } from "@jest/globals";
-import { SimpleDocsScraper } from "../simple-docs-scraper/services/SimpleDocsScraper.js";
+import { SimpleDocsScraper, SimpleDocsScraperConfig } from "../simple-docs-scraper/services/SimpleDocsScraper.js";
 
-const defaultConfig = {
+const defaultConfig: SimpleDocsScraperConfig = {
     extraction: {
-        method: 'tags',
+        extractMethod: 'tags',
         startTag: '<docs>',
         endTag: '</docs>',
     },
     injection: {
-        content: '%content%',
+        injectInto: '%content%',
+        outDir: './docs/js-files',
+        template: './templates/index.template.md',
     },
     templates: {
         index: './templates/index.template.md',
@@ -35,7 +37,7 @@ const defaultConfig = {
 }
 
 describe("Example Test Suite", () => {
-    const scraper!: SimpleDocsScraper;
+    let scraper!: SimpleDocsScraper;
 
     beforeEach(() => {
         scraper = new SimpleDocsScraper(defaultConfig);

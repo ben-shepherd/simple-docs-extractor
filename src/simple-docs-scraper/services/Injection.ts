@@ -1,8 +1,9 @@
 import fs from 'fs';
+import path from 'path';
 
 export type InjectionConfig = {
     template: string;
-    outFile: string;
+    outDir: string;
     injectInto: string;
 }
 
@@ -19,7 +20,7 @@ export class Injection {
         return content.replace(this.config.injectInto, replaceWith);
     }
     
-    injectIntoFile(replaceWith: string): void {
+    injectIntoFile(replaceWith: string, outFile: string): void {
 
         // Check if the template file exists
         if (!fs.existsSync(this.config.template)) {
@@ -28,9 +29,10 @@ export class Injection {
 
         const fileContent = fs.readFileSync(this.config.template, 'utf8');
         const injectedContent = fileContent.replace(this.config.injectInto, replaceWith);
-
+        const outFilePath = path.join(this.config.outDir, outFile);
+        
         // Add the injected content to the file
-        fs.writeFileSync(this.config.outFile, injectedContent);
+        fs.writeFileSync(outFilePath, injectedContent);
     }
     
 }

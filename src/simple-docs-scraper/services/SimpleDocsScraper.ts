@@ -1,10 +1,10 @@
 import { GlobOptions } from "glob";
 import { DocsExtractorConfig } from "./Extractor.js";
-import { FileScanner } from "./FileScanner.js";
+import { FileScannerConfig } from "./FileScanner.js";
 import { InjectionConfig } from "./Injection.js";
 
 export type Target = {
-    globOptions: GlobOptions;
+    globOptions: GlobOptions & FileScannerConfig;
     outDir: string;
     createIndexFile: boolean;
 }
@@ -32,17 +32,18 @@ export class SimpleDocsScraper {
     }
 
     start(): void {
-        this.config.targets.forEach((target) => {
-            const fileCollector = new FileScanner(target);
-            const results = fileCollector.collect();
+        // this.config.targets.forEach((target) => {
+        //     const fileCollector = new FileScanner(target);
+        //     const results = fileCollector.collect();
 
-            results.forEach((result) => {
-                console.log(result);
-            });
-        });
+        //     results.forEach((result) => {
+        //         console.log(result);
+        //     });
+        // });
     }
 
     collectFiles(): string[] {
-        return this.config.targets.map((target) => target.path);
+        // return this.config.targets.map((target) => target.path);
+        return [];
     }
 }
