@@ -1,14 +1,14 @@
-import { beforeEach, describe, expect, test } from "@jest/globals";
-import { FileCollector } from "../simple-docs-scraper/services/FileCollector.js";
+import { describe, expect, test } from "@jest/globals";
+import { FileScanner } from "../simple-docs-scraper/services/FileScanner.js";
 
 describe("File Collector", () => {
-    let fileCollector!: FileCollector;
+    let fileCollector!: FileScanner;
 
     describe("collect", () => {
         test("should collect the files", async () => {
-            fileCollector = new FileCollector({
-                path: 'src/tests/js-files',
-                extensionsPattern: '**/*.js'
+            fileCollector = new FileScanner({
+                cwd: 'src/tests/js-files',
+                extensions: '**/*.js'
             });
 
             const files = await fileCollector.collect();
@@ -17,9 +17,9 @@ describe("File Collector", () => {
         })
 
         test("should collect the files with the correct extensions", async () => {
-            fileCollector = new FileCollector({
-                path: 'src/tests/js-files',
-                extensionsPattern: '**/*.{js,ts}',
+            fileCollector = new FileScanner({
+                cwd: 'src/tests/js-files',
+                extensions: '**/*.{js,ts}',
             });
 
             const files = await fileCollector.collect();
@@ -31,9 +31,9 @@ describe("File Collector", () => {
         })
 
         test("should collect the files from a nested directory", async () => {
-            fileCollector = new FileCollector({
-                path: 'src/tests/js-files',
-                extensionsPattern: '**/*.js',
+            fileCollector = new FileScanner({
+                cwd: 'src/tests/js-files',
+                extensions: '**/*.js',
             });
 
             const files = await fileCollector.collect();

@@ -19,16 +19,16 @@ const defaultConfig: SimpleDocsScraperConfig = {
     targets: [
         {
             globOptions: {
-                path: './js-files',
-                extensionsPattern: '^.+\\.(js|ts)$',
+                cwd: './js-files',
+                extensions: '^.+\\.(js|ts)$',
             },
             outDir: './docs/js-files',
             createIndexFile: true,
         },
         {
             globOptions: {
-                path: './twig-files',
-                extensionsPattern: '^.+\\.(twig)$',
+                cwd: './twig-files',
+                extensions: '^.+\\.(twig)$',
             },
             outDir: './docs/twig-files',
             createIndexFile: true,

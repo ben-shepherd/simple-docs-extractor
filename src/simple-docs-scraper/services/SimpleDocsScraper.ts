@@ -1,10 +1,9 @@
 import { GlobOptions } from "glob";
 import { DocsExtractorConfig } from "./Extractor.js";
-import { FileScannerConfig } from "./FileScanner.js";
 import { InjectionConfig } from "./Injection.js";
 
 export type Target = {
-    globOptions: GlobOptions & FileScannerConfig;
+    globOptions: GlobOptions & { cwd: string; extensions: string | string[] };
     outDir: string;
     createIndexFile: boolean;
 }
@@ -13,8 +12,8 @@ export interface SimpleDocsScraperConfig {
     extraction: DocsExtractorConfig;
     injection: InjectionConfig;
     templates: {
-        index: string;
-        documentation: string;
+        index?: string;
+        documentation?: string;
     };
     targets: Target[];
 }

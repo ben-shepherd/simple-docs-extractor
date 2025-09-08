@@ -2,8 +2,8 @@ import { glob, GlobOptions } from "glob";
 import path from "path";
 
 export type FileScannerConfig = {
-    path: string;
-    extensionsPattern: string | string[];
+    cwd: string;
+    extensions: string | string[];
 }
 
 export class FileScanner {
@@ -12,9 +12,9 @@ export class FileScanner {
 
     async collect(globOptions: GlobOptions = {}): Promise<string[]> {
 
-        const targetPath = path.join(process.cwd(), this.target.path);
+        const targetPath = path.join(process.cwd(), this.target.cwd);
 
-        const files = await glob(this.target.extensionsPattern, {
+        const files = await glob(this.target.extensions, {
             absolute: true,
             cwd: targetPath,
             nodir: true,
