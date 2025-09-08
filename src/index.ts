@@ -1,1 +1,1 @@
-// export * from "./example";
+export * from './simple-docs-scraper/index.js';
