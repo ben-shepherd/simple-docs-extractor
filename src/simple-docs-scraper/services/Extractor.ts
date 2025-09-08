@@ -16,6 +16,7 @@ export type MethodCallback = {
     callback: (fileContent: string) => Promise<string | undefined> | (string | undefined);
 }
 
+export type DocsExtractorConfig = MethodTags | MethodRegex | MethodCallback;
 
 export type DocsExtractorResult = {
     docs: string;
@@ -29,7 +30,7 @@ export class DocsExtractor {
 
     constructor(
         private file: string,
-        private config: MethodTags | MethodRegex | MethodCallback
+        private config: DocsExtractorConfig
     ) {
     }
 

@@ -2,11 +2,12 @@ import { beforeEach, describe, expect, test } from "@jest/globals";
 import { SimpleDocsScraper } from "../simple-docs-scraper/services/SimpleDocsScraper.js";
 
 const defaultConfig = {
-    tags: {
-        startDocs: '<docs>',
-        endDocs: '</docs>',
+    extraction: {
+        method: 'tags',
+        startTag: '<docs>',
+        endTag: '</docs>',
     },
-    replacers: {
+    injection: {
         content: '%content%',
     },
     templates: {

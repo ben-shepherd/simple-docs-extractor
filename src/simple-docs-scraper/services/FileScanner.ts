@@ -1,14 +1,13 @@
-import { Target } from "../types/SimpleDocsScraper.t.js";
-import { glob, GlobOptions, Path } from "glob";
+import { glob, GlobOptions } from "glob";
 import path from "path";
 
-export type FileCollectorConfig = {
+export type FileScannerConfig = {
     path: string;
     extensionsPattern: string | string[];
 }
 
-export class FileCollector {
-    constructor(private target: FileCollectorConfig) {
+export class FileScanner {
+    constructor(private target: FileScannerConfig) {
     }
 
     async collect(globOptions: GlobOptions = {}): Promise<string[]> {
