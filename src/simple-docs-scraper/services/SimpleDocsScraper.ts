@@ -144,7 +144,7 @@ export class SimpleDocsScraper {
             extensions: target.globOptions.extensions,
         });
 
-        const files = await fileScanner.collect();
+        const files = await fileScanner.collect(target.globOptions);
         let preProcessedFiles: PreProcessFileResult[] = [];
 
         for(const file of files) {

@@ -1,4 +1,4 @@
-import { afterAll, afterEach, beforeEach, describe, expect, test } from "@jest/globals";
+import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from 'fs';
 import path from "path";
 import { SimpleDocsScraper, SimpleDocsScraperConfig } from "../simple-docs-scraper/services/SimpleDocsScraper.js";
@@ -65,13 +65,13 @@ End.`
         ));
     });
 
-    afterEach(() => {
-        deleteOutputFiles();
-    })
+    // afterEach(() => {
+    //     deleteOutputFiles();
+    // })
 
-    afterAll(() => {
-        deleteOutputFiles();
-    })
+    // afterAll(() => {
+    //     deleteOutputFiles();
+    // })
 
     describe("config", () => {
         test("should be able to configure the scraper", () => {
@@ -219,5 +219,29 @@ End.`
 
         expect(result.successCount >= 1).toBe(true);
         expect(result.logs.length >= 1).toBe(true);
+    })
+
+    test("should ignore files", async () => {
+        scraper = new SimpleDocsScraper({
+            ...defaultConfig,
+            targets: [
+                {
+                    globOptions: {
+                        ...jsFilesTarget.globOptions,
+                        cwd: path.join(process.cwd(), 'src/tests/files'),
+                        ignore: ['ignored-files/**'],
+                    },
+                    outDir: getOutputFilePath('output-files'),
+                    createIndexFile: true,
+                }
+            ],
+        });
+        
+        const result = await scraper.start();
+        const jsFiles = fs.readdirSync(getOutputFilePath('output-files'));
+    
+        expect(result.successCount).toBeGreaterThan(1);
+        expect(jsFiles.some(file => file === 'exampleFunc.md')).toBe(true);
+        expect(jsFiles.some(file => file === 'ignoreFunc.md')).toBe(false);
     })
 });
