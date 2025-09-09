@@ -19,5 +19,5 @@
     "lib": ["es2022"],
     "isolatedModules": true
   },
-  "exclude": ["node_modules", "dist", "src/**/*.test.ts"]
+  "exclude": ["node_modules", "dist", "src/**/*.test.ts", "src/scripts"]
 }

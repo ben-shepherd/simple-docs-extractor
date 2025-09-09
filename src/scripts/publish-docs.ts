@@ -1,5 +1,5 @@
 import path from 'path';
-import { SimpleDocsScraper } from '../dist/simple-docs-scraper/index.js';
+import { SimpleDocsScraper, SimpleDocsScraperConfig } from '../simple-docs-scraper/services/SimpleDocsScraper.js';
 
 const config = {
     baseDir: process.cwd(),
@@ -13,21 +13,22 @@ const config = {
     },
     generators: {
         index: {
-            template: path.join(process.cwd(), 'scripts/templates/index.template.md'),
+            template: path.join(process.cwd(), 'templates/index.template.md'),
+            fileNameAsLink: true,
         },
         documentation: {
-            template: path.join(process.cwd(), 'scripts/templates/documentation.template.md'),
+            template: path.join(process.cwd(), 'templates/documentation.template.md'),
         },
     },
     targets: [{
         globOptions: {
             cwd: path.join(process.cwd(), 'src/simple-docs-scraper'),
-            extensions: '*.{js,ts}',
+            extensions: '**/*.{js,ts}',
         },
         outDir: path.join(process.cwd(), 'docs'),
         createIndexFile: true,
     }],
-}
+} satisfies SimpleDocsScraperConfig;
 
 console.log('Starting documentation generation...');
 console.log('Cwd: ', process.cwd());

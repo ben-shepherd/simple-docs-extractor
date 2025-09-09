@@ -189,7 +189,7 @@ export class SimpleDocsScraper {
         })
         .generateContent(injectedContent, outFile);
 
-        this.logs.push(`targets[${targetIndex}]: Generated documentation file ${outFile}`);
+        this.logs.push(`targets[${targetIndex}]: Generated documentation file for ${file.replace(this.config.baseDir, '')}`);
         
         this.success++;
     }
