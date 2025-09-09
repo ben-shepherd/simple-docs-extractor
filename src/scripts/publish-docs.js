@@ -1,5 +1,5 @@
 import path from 'path';
-import { SimpleDocsScraper, MultiLineCommentClear } from '../../dist/index.js';
+import { MultiLineCommentClear, SimpleDocsScraper } from '../../dist/index.js';
 
 const config = {
     baseDir: process.cwd(),
@@ -14,7 +14,7 @@ const config = {
     generators: {
         index: {
             template: path.join(process.cwd(), 'templates/index.template.md'),
-            fileNameAsLink: true,
+            markdownLink: true,
         },
         documentation: {
             template: path.join(process.cwd(), 'templates/documentation.template.md'),

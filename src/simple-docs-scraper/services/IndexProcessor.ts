@@ -47,11 +47,9 @@ export class IndexProcessor {
         const entries = fs.readdirSync(directory);
         const absoluteEntries = entries.map(entry => path.join(directory, entry));
         
-        const files = absoluteEntries.filter(file => file.endsWith('.md'));
+        await this.handleSaveIndexFile(directory, absoluteEntries);
+        
         const directories = absoluteEntries.filter(file => fs.statSync(file).isDirectory());
-
-        await this.handleSaveIndexFile(directory, files);
-
         for(const directory of directories) {
             await this.handleDirectoryRecusrively(directory);
         }

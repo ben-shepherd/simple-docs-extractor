@@ -1,5 +1,6 @@
 import { afterAll, afterEach, beforeEach, describe, expect, test } from "@jest/globals";
 import fs from 'fs';
+import path from "path";
 import { IndexFileGenerator, IndexFileGeneratorConfig } from "../simple-docs-scraper/generators/IndexFileGenerator.js";
 import { ExtensionReplacer } from "../simple-docs-scraper/transformers/ExtensionReplacer.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
@@ -36,8 +37,9 @@ describe("Index Generator", () => {
 
     describe("generateContent", () => {
         test("should generate the content", () => {
-            const pathToTestFile = getOutputPath('test.md');
-            indexGenerator.generateContent([pathToTestFile]);
+            
+            fs.writeFileSync(getOutputPath('test.md'), 'File 1');
+            indexGenerator.generateContent([getOutputPath('test.md')]);
 
             const fileContent = fs.readFileSync(generatedFilePath, 'utf8');
 
@@ -47,14 +49,18 @@ describe("Index Generator", () => {
         })
 
         test("should generate the content with the line callback", () => {
-            const pathToTestFile = getOutputPath('test.md');
+
             indexGenerator = new IndexFileGenerator({
                 template: getOutputPath('test.template.md'),
                 outDir: process.cwd() + '/src/tests/output',
                 lineCallback: (fileNameEntry, lineNumber) => `${lineNumber}. ${ExtensionReplacer.replaceAllExtensions(fileNameEntry, 'md')}`,
             });
 
-            indexGenerator.generateContent([pathToTestFile]);
+            fs.writeFileSync(getOutputPath('test.md'), 'File 1');
+
+            indexGenerator.generateContent([
+                getOutputPath('test.md')
+            ]);
 
             const fileContent = fs.readFileSync(generatedFilePath, 'utf8');
 
@@ -107,6 +113,10 @@ describe("Index Generator", () => {
                 ...baseConfig,
                 markdownLink: true,
             });
+            
+            fs.mkdirSync('path/to', { recursive: true });
+            fs.writeFileSync('path/to/test.md', 'File 1');
+            fs.writeFileSync('path/to/test2.md', 'File 1');
 
             indexGenerator.generateContent([
                 'path/to/test.md',
@@ -127,6 +137,10 @@ describe("Index Generator", () => {
                 baseDir: 'path/to',
                 markdownLink: true,
             });
+            
+            fs.mkdirSync('path/to', { recursive: true });
+            fs.writeFileSync('path/to/test.md', 'File 1');
+            fs.writeFileSync('path/to/test2.md', 'File 1');
 
             indexGenerator.generateContent([
                 'path/to/test.md',
@@ -149,7 +163,7 @@ describe("Index Generator", () => {
                 fileNameCallback: (filePath) => filePath.replace('path/to/', ''),
             });
 
-            const fileName = indexGenerator.getFileName('path/to/file1.md');
+            const fileName = indexGenerator.getRenderedEntryString('path/to/file1.md');
 
             expect(fileName).toBe('file1.md');
         })
@@ -161,9 +175,37 @@ describe("Index Generator", () => {
                 fileNameCallback: (filePath) => filePath.replace('path/to/', ''),
             });
 
-            const fileName = indexGenerator.getFileName('path/to/file1.md');
+            const fileName = indexGenerator.getRenderedEntryString('path/to/file1.md');
 
             expect(fileName).toBe('file1.md');
         })
     })
+    
+    describe("sorting", () => {
+        
+        test("should alphabetically sort the files", async () => {
+            const docsPathAlpha = getOutputPath('docs-alpha');
+            const outDir = getOutputPath('out-alpha');
+
+            fs.mkdirSync(outDir, { recursive: true });
+            fs.mkdirSync(docsPathAlpha, { recursive: true });
+            fs.writeFileSync(getOutputPath('docs-alpha/a.md'), 'File 1');
+            fs.writeFileSync(getOutputPath('docs-alpha/b.md'), 'File 1');
+
+            const generator = new IndexFileGenerator({
+                baseDir: docsPathAlpha,
+                outDir: outDir,
+            });
+            
+            generator.generateContent([
+                getOutputPath('docs-alpha/a.md'),
+                getOutputPath('docs-alpha/b.md'),
+            ]);
+
+            const indexFileContent = fs.readFileSync(path.join(outDir, 'index.md'), 'utf8');
+
+            expect(indexFileContent).toBe('- a.md\n- b.md\n');
+        })
+    })
+
 });

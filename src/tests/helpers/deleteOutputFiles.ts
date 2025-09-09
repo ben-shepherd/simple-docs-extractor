@@ -1,14 +1,12 @@
 import fs from 'fs';
+import path from 'path';
 
 export const deleteOutputFiles = () => {
-    const outDir = process.cwd() + '/src/tests/output';
-
-    // Check if the output directory exists
-    if (!fs.existsSync(outDir)) {
-        fs.mkdirSync(outDir);
+    const outDir = path.join(process.cwd(), '/src/tests/output');
+    
+    if (fs.existsSync(outDir)) {
+        fs.rmSync(outDir, { recursive: true, force: true});
     }
 
-    fs.rmSync(outDir, { recursive: true, force: true});
     fs.mkdirSync(outDir);
-    fs.writeFileSync(outDir + '/.gitkeep', '');
 }

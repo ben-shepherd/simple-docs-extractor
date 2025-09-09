@@ -9,6 +9,8 @@ describe("Injection", () => {
     const outDir = process.cwd() + '/src/tests/output';
 
     beforeEach(() => {
+        deleteOutputFiles();
+        
         // Create a mock template file
         fs.writeFileSync(getOutputPath('test.template.txt'), 'Start. %content% End.');
     })

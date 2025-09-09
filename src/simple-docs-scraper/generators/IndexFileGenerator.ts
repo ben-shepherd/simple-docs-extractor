@@ -58,7 +58,11 @@ export class IndexFileGenerator {
         const outFilePath = path.join(this.config.outDir, 'index.md');
 
         for(const filePath of filePaths) {
-            const fileName = this.getFileName(filePath);
+            const fileName = this.getRenderedEntryString(filePath);
+
+            if(!fileName) {
+                continue;
+            }
 
             if(this.config.lineCallback) {
                 content += this.config.lineCallback(fileName, lineNumber);
@@ -91,18 +95,23 @@ export class IndexFileGenerator {
     /**
      * Formats a file path for display in the index.
      * 
-     * @param filePath - The original file path to format
+     * @param entry - The original file path to format
      * @returns Formatted file name, optionally as a markdown link
      */
-    getFileName(filePath: string): string {
+    getRenderedEntryString(entry: string): string | null {
         if(this.config.fileNameCallback) {
-            return this.config.fileNameCallback(filePath);
+            return this.config.fileNameCallback(entry);
         }
 
-        const parentDirectory = path.dirname(filePath);
+        // Ignore invalid entries
+        if(['.', '..'].includes(entry)) {
+            return null;
+        }
+
+        const parentDirectory = path.dirname(entry);
 
         // remove parent directory
-        let formattedFilePath = filePath.replace(parentDirectory, '');
+        let formattedFilePath = entry.replace(parentDirectory, '');
 
         // remove leading slash
         while(formattedFilePath.startsWith('/') || formattedFilePath.startsWith('\\')) {
@@ -114,14 +123,35 @@ export class IndexFileGenerator {
             }
         }
 
+        // Check if it's a directory
+        if(fs.statSync(path.join(parentDirectory, formattedFilePath)).isDirectory()) {
+
+            // Check if the directory has an index.md file
+            if(fs.existsSync(path.join(parentDirectory, formattedFilePath, 'index.md'))) {
+                return this.toMarkdownLink(formattedFilePath + '/index.md');
+            }
+
+            // No index.md file found, return the directory name
+            return formattedFilePath;
+        }
+
         // replace all extensions with .md
         formattedFilePath = ExtensionReplacer.replaceAllExtensions(formattedFilePath, 'md');
 
+        // Ignore empty file names
+        if(formattedFilePath === '.md') {
+            return null;
+        }
+
         if(this.config.markdownLink) {
-            return `[${formattedFilePath}](${formattedFilePath})`;
+            return this.toMarkdownLink(formattedFilePath);
         }
 
         return formattedFilePath;
+    }
+
+    private toMarkdownLink(entry: string): string {
+        return `[${entry}](${entry})`;
     }
 
     /**
