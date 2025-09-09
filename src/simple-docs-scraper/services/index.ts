@@ -1,7 +1,8 @@
-export * from './DocGenerator.js';
-export * from './Extractor.js';
-export * from './FileScanner.js';
-export * from './IndexGenerator.js';
-export * from './Injection.js';
+export * from '../files/Extractor.js';
+export * from '../files/FileScanner.js';
+export * from '../generators/DocGenerator.js';
+export * from '../generators/IndexGenerator.js';
+export * from '../transformers/ExtensionReplacer.js';
+export * from '../transformers/Injection.js';
 export * from './SimpleDocsScraper.js';
-export * from './ExtensionReplacer.js';
+

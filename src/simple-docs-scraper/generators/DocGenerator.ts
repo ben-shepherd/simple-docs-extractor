@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { ExtensionReplacer } from './ExtensionReplacer.js';
+import { ExtensionReplacer } from '../transformers/ExtensionReplacer.js';
 
 
 export type DocGeneratorConfig = {

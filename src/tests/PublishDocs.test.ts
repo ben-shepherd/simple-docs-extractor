@@ -1,5 +1,5 @@
-import { afterAll, afterEach, beforeEach, describe, expect, test } from "@jest/globals";
-import fs from "fs";
+import { beforeEach, describe, expect, test } from "@jest/globals";
+import { glob } from 'glob';
 import path from "path";
 import { MultiLineCommentClear, SimpleDocsScraper, SimpleDocsScraperConfig } from "../simple-docs-scraper/index.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
@@ -10,13 +10,13 @@ describe("Publish Docs", () => {
         deleteOutputFiles();
     });
 
-    afterEach(() => {
-        deleteOutputFiles();
-    });
+    // afterEach(() => {
+    //     deleteOutputFiles();
+    // });
 
-    afterAll(() => {
-        deleteOutputFiles();
-    });
+    // afterAll(() => {
+    //     deleteOutputFiles();
+    // });
 
     describe("publishDocs", () => {
         test("should publish the docs", async () => {
@@ -51,13 +51,18 @@ describe("Publish Docs", () => {
             };
             
             const result = await new SimpleDocsScraper(config).start()
-            const docFiles = fs.readdirSync(path.join(process.cwd(), 'src/tests/output'));
+            const files = await glob('**/**.md', {
+                absolute: true,
+                cwd: path.join(process.cwd(), 'src/tests/output'),
+                nodir: true
+            });
 
             expect(result?.successCount).toBeGreaterThanOrEqual(1);
             expect(result?.totalCount).toBeGreaterThanOrEqual(1);
-            expect(docFiles.length).toBeGreaterThanOrEqual(1);
-            expect(docFiles.some(file => file === 'index.md')).toBe(true);
-            expect(docFiles.some(file => file === 'SimpleDocsScraper.md')).toBe(true);
+            expect(files.length).toBeGreaterThanOrEqual(1);
+            expect(files.some(file => file.includes('index.md'))).toBe(true);
+            expect(files.some(file => file.includes('services\\SimpleDocsScraper.md'))).toBe(true);
+            expect(files.some(file => file.includes('generators\\DocGenerator.md'))).toBe(true);
         })
     });
 });
