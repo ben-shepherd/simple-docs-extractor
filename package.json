@@ -32,7 +32,8 @@
     "version:minor": "npm version minor",
     "version:major": "npm version major",
     "depcheck": "depcheck",
-    "tslint": "tslint -p tsconfig.json"
+    "tslint": "tslint -p tsconfig.json",
+    "docs:publish": "node ./scripts/publish-docs.js"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.28.3",

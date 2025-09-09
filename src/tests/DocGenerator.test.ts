@@ -27,6 +27,13 @@ describe("Doc Generator", () => {
                 searchAndReplace: '%content%',
             })).not.toThrow();
         })
+
+        test("should accept no template file", () => {
+            expect(() => docGenerator = new DocGenerator({
+                outDir: process.cwd() + '/src/tests/output',
+                searchAndReplace: '%content%',
+            })).not.toThrow();
+        })
     });
 
     describe("generateContent", () => {

@@ -34,8 +34,8 @@ export interface SimpleDocsScraperConfig {
 
 // Result object returned after processing all targets
 export type SimpleDocsScraperResult = {
-    success: number;
-    total: number;
+    successCount: number;
+    totalCount: number;
     logs: string[];
 }
 
@@ -101,9 +101,11 @@ export class SimpleDocsScraper {
             await this.startTarget(target, this.config.targets.indexOf(target));
         }
 
+        this.logs.push(`Finished. Success: ${this.success} / Total: ${this.total}`);
+
         return {
-            success: this.success,
-            total: this.total,
+            successCount: this.success,
+            totalCount: this.total,
             logs: this.logs,
         }
     }
@@ -115,6 +117,8 @@ export class SimpleDocsScraper {
      * @param targetIndex - The index of the target in the targets array (for logging)
      */
     async startTarget(target: Target, targetIndex: number) {
+
+        this.logs.push(`targets[${targetIndex}]: Starting target`);
 
         // Check if cwd exists
         if (!fs.existsSync(target.globOptions.cwd)) {
@@ -130,6 +134,8 @@ export class SimpleDocsScraper {
         const files = await fileScanner.collect();
 
         if(target.createIndexFile && this.config.generators.index.template) {
+            this.logs.push(`targets[${targetIndex}]: Creating index file`);
+
             const indexGenerator = new IndexGenerator({
                 ...this.config.generators.index,
                 baseDir: this.config.baseDir,
@@ -141,7 +147,7 @@ export class SimpleDocsScraper {
         }
 
         for(const file of files) {
-            await this.processFile(file, target);
+            await this.processFile(file, target, targetIndex);
         }
     }
 
@@ -151,7 +157,7 @@ export class SimpleDocsScraper {
      * @param file - The file path to process
      * @param target - The target configuration containing output directory
      */
-    async processFile(file: string, target: Target) {
+    async processFile(file: string, target: Target, targetIndex: number) {
         this.total++;
 
         const extractionResult = await new DocsExtractor(file, this.config.extraction).extract();
@@ -182,6 +188,8 @@ export class SimpleDocsScraper {
             searchAndReplace: this.config.searchAndReplace.replace,
         })
         .generateContent(injectedContent, outFile);
+
+        this.logs.push(`targets[${targetIndex}]: Generated documentation file ${outFile}`);
         
         this.success++;
     }

@@ -4,7 +4,7 @@ import { ExtensionReplacer } from './ExtensionReplacer.js';
 
 
 export type DocGeneratorConfig = {
-    template: string;
+    template?: string;
     outDir: string;
     searchAndReplace: string;
 }
@@ -54,14 +54,22 @@ export class DocGenerator {
             fs.mkdirSync(this.config.outDir, { recursive: true });
         }
         
+        const fileContent = this.getTemplateContent();
+        const injectedContent = fileContent.replace(this.config.searchAndReplace, content);
+        
+        fs.writeFileSync(outFilePath, injectedContent);
+    }
+
+    protected getTemplateContent(): string {
+        if (!this.config.template) {
+            return '';
+        }
+
         // Check if the template file exists
         if (!fs.existsSync(this.config.template)) {
             throw new Error('Template file not found');
         }
 
-        const fileContent = fs.readFileSync(this.config.template, 'utf8');
-        const injectedContent = fileContent.replace(this.config.searchAndReplace, content);
-        
-        fs.writeFileSync(outFilePath, injectedContent);
+        return fs.readFileSync(this.config.template, 'utf8');
     }
 }

@@ -90,11 +90,10 @@ End.`
             const expectedJsFilesCount = 4; // 3 plus the index file
             const expectedTwigFilesCount = 2; // 1 plus the index file
 
-            expect(result.success).toBe(4);
-            expect(result.total).toBe(5);
-            expect(result.logs).toHaveLength(1);
-            expect(result.logs[0]).toContain('Error: noStartOrEndTags in file')
-            expect(result.logs[0]).toContain('exampleFuncNoDocs.js')
+            expect(result.successCount).toBe(4);
+            expect(result.totalCount).toBe(5);
+            expect(result.logs.some(log => log.includes('Error: noStartOrEndTags in file'))).toBe(true);
+            expect(result.logs.some(log => log.includes('exampleFuncNoDocs.js'))).toBe(true);
             expect(jsFiles).toHaveLength(expectedJsFilesCount);
             expect(twigFiles).toHaveLength(expectedTwigFilesCount);
         })
@@ -121,9 +120,8 @@ End.`
             const twigFiles = fs.readdirSync(getOutputFilePath('twig-files'));
             const indexFileContent = fs.readFileSync(getOutputFilePath('twig-files/index.md'), 'utf8');
 
-            expect(result.success).toBe(1);
-            expect(result.total).toBe(1);
-            expect(result.logs).toHaveLength(0);
+            expect(result.successCount).toBe(1);
+            expect(result.totalCount).toBe(1);
             expect(twigFiles).toHaveLength(2);
             expect(indexFileContent).toContain('example.md (1)');
         })
@@ -150,9 +148,8 @@ End.`
 
             const indexFileContent = fs.readFileSync(getOutputFilePath('twig-files/index.md'), 'utf8');
 
-            expect(result.success).toBe(1);
-            expect(result.total).toBe(1);
-            expect(result.logs).toHaveLength(0);
+            expect(result.successCount).toBe(1);
+            expect(result.totalCount).toBe(1);
             expect(indexFileContent).toContain('- example.twig');
         })
 
@@ -179,9 +176,8 @@ End.`
 
             const indexFileContent = fs.readFileSync(getOutputFilePath('twig-files/index.md'), 'utf8');
 
-            expect(result.success).toBe(1);
-            expect(result.total).toBe(1);
-            expect(result.logs).toHaveLength(0);
+            expect(result.successCount).toBe(1);
+            expect(result.totalCount).toBe(1);
             expect(indexFileContent).toContain('- example.twig (1)');
         })
 
@@ -202,10 +198,21 @@ End.`
 
             const indexFileContent = fs.readFileSync(getOutputFilePath('twig-files/index.md'), 'utf8');
 
-            expect(result.success).toBe(1);
-            expect(result.total).toBe(1);
-            expect(result.logs).toHaveLength(0);
+            expect(result.successCount).toBe(1);
+            expect(result.totalCount).toBe(1);
             expect(indexFileContent).toContain('- [example.md](example.md)');
         })
     });
+
+    test('should generate logs', async () => {
+        scraper = new SimpleDocsScraper({
+            ...defaultConfig,
+            targets: [jsFilesTarget],
+        });
+        
+        const result = await scraper.start();
+
+        expect(result.successCount >= 1).toBe(true);
+        expect(result.logs.length >= 1).toBe(true);
+    })
 });
