@@ -6,6 +6,7 @@ import { DocsExtractor, DocsExtractorConfig } from "./Extractor.js";
 import { FileScanner } from "./FileScanner.js";
 import { IndexGenerator, IndexGeneratorConfig } from "./IndexGenerator.js";
 import { Injection } from "./Injection.js";
+import { TFormatter } from '../types/formatter.t.js';
 
 // Configuration for a single target directory to process
 export type Target = {
@@ -21,15 +22,16 @@ export interface SimpleDocsScraperConfig {
     searchAndReplace: {
         replace: string;
     };
-    generators: {
-        index: {
+    generators?: {
+        index?: {
             template: string;
         } & Partial<IndexGeneratorConfig>;
-        documentation: {
+        documentation?: {
             template: string;
         } & Partial<DocGeneratorConfig>;
     };
     targets: Target[];
+    formatters?: TFormatter[];
 }
 
 // Result object returned after processing all targets
@@ -133,13 +135,13 @@ export class SimpleDocsScraper {
 
         const files = await fileScanner.collect();
 
-        if(target.createIndexFile && this.config.generators.index.template) {
+        if(target.createIndexFile && this.config.generators?.index?.template) {
             this.logs.push(`targets[${targetIndex}]: Creating index file`);
 
             const indexGenerator = new IndexGenerator({
-                ...this.config.generators.index,
+                ...(this.config.generators?.index ?? {}),
                 baseDir: this.config.baseDir,
-                template: this.config.generators.index.template,
+                template: this.config.generators?.index?.template,
                 outDir: target.outDir,
             });
 
@@ -167,12 +169,20 @@ export class SimpleDocsScraper {
             return;
         }
 
-        const injectedContent = new Injection({
-            template: this.config.generators.documentation.template,
+        // Inject the content into the template
+        let injectedContent = new Injection({
+            template: this.config.generators?.documentation?.template ?? '',
             outDir: target.outDir,
             searchAndReplace: this.config.searchAndReplace.replace,
         })
         .injectIntoString(extractionResult.docs, this.config.searchAndReplace.replace);
+
+        // Apply formatters
+        if(this.config.formatters) {
+            for(const formatter of this.config.formatters) {
+                injectedContent = formatter({ filePath: file, outFile: file, content: injectedContent });
+            }
+        }
 
         // Create the out directory if it doesn't exist
         if (!fs.existsSync(target.outDir)) {
@@ -183,7 +193,7 @@ export class SimpleDocsScraper {
 
         // Generate the documentation file
         new DocGenerator({
-            template: this.config.generators.documentation.template,
+            template: this.config.generators?.documentation?.template,
             outDir: target.outDir,
             searchAndReplace: this.config.searchAndReplace.replace,
         })

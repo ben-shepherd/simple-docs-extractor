@@ -1,9 +1,10 @@
-import { beforeEach, describe, expect, test } from "@jest/globals";
+import { afterAll, afterEach, beforeEach, describe, expect, test } from "@jest/globals";
 import fs from 'fs';
 import path from "path";
 import { SimpleDocsScraper, SimpleDocsScraperConfig } from "../simple-docs-scraper/services/SimpleDocsScraper.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputFilePath } from "./helpers/getOutputFilePath.js";
+
 
 const jsFilesTarget = {
     globOptions: {
@@ -64,13 +65,13 @@ End.`
         ));
     });
 
-    // afterEach(() => {
-    //     deleteOutputFiles();
-    // })
+    afterEach(() => {
+        deleteOutputFiles();
+    })
 
-    // afterAll(() => {
-    //     deleteOutputFiles();
-    // })
+    afterAll(() => {
+        deleteOutputFiles();
+    })
 
     describe("config", () => {
         test("should be able to configure the scraper", () => {
@@ -104,7 +105,8 @@ End.`
                 generators: {
                     ...defaultConfig.generators,
                     index: {
-                        ...defaultConfig.generators.index,
+                        ...(defaultConfig.generators?.index ?? {}),
+                        template: getOutputFilePath('index.template.md'),
                         lineCallback(fileNameEntry, lineNumber) {
                             return `- ${fileNameEntry} (${lineNumber})`;
                         },
@@ -130,9 +132,10 @@ End.`
             scraper = new SimpleDocsScraper({
                 ...defaultConfig,
                 generators: {
-                    ...defaultConfig.generators,
+                    ...(defaultConfig.generators ?? {}),
                     index: {
-                        ...defaultConfig.generators.index,
+                        ...(defaultConfig.generators?.index ?? {}),
+                        template: getOutputFilePath('index.template.md'),
                         fileNameCallback(filePath) {
                             filePath = path.basename(filePath);
                             return filePath.replace('example.html.twig', 'example.twig');
@@ -159,7 +162,8 @@ End.`
                 generators: {
                     ...defaultConfig.generators,
                     index: {
-                        ...defaultConfig.generators.index,
+                        ...(defaultConfig.generators?.index ?? {}),
+                        template: getOutputFilePath('index.template.md'),
                         lineCallback(fileNameEntry, lineNumber) {
                             return `- ${fileNameEntry} (${lineNumber})`;
                         },
@@ -187,7 +191,8 @@ End.`
                 generators: {
                     ...defaultConfig.generators,
                     index: {
-                        ...defaultConfig.generators.index,
+                        ...(defaultConfig.generators?.index ?? {}),
+                        template: getOutputFilePath('index.template.md'),
                         fileNameAsLink: true,
                     }
                 },

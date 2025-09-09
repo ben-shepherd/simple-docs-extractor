@@ -2,6 +2,8 @@
 
 - [index.md](index.md)
 - [index.md](index.md)
+- [formatter.md](formatter.md)
+- [index.md](index.md)
 - [SimpleDocsScraper.md](SimpleDocsScraper.md)
 - [Injection.md](Injection.md)
 - [IndexGenerator.md](IndexGenerator.md)
@@ -9,3 +11,5 @@
 - [Extractor.md](Extractor.md)
 - [ExtensionReplacer.md](ExtensionReplacer.md)
 - [DocGenerator.md](DocGenerator.md)
+- [index.md](index.md)
+- [MultiLineCommentClear.md](MultiLineCommentClear.md)

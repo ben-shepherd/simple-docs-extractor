@@ -3,7 +3,7 @@ import path from 'path';
 
 // Configuration for content injection operations
 export type InjectionConfig = {
-    template: string;
+    template?: string;
     outDir: string;
     searchAndReplace: string;
 }
@@ -63,17 +63,25 @@ export class Injection {
      */
     injectIntoFile(replaceWith: string, outFile: string): void {
 
-        // Check if the template file exists
-        if (!fs.existsSync(this.config.template)) {
-            throw new Error('Template file not found');
-        }
-
-        const fileContent = fs.readFileSync(this.config.template, 'utf8');
+        const fileContent = this.getTemplateContent();
         const injectedContent = fileContent.replace(this.config.searchAndReplace, replaceWith);
         const outFilePath = path.join(this.config.outDir, outFile);
         
         // Add the injected content to the file
         fs.writeFileSync(outFilePath, injectedContent);
+    }
+
+    protected getTemplateContent(): string {
+        if (!this.config.template) {
+            return this.config.searchAndReplace;
+        }
+
+        // Check if the template file exists
+        if (!fs.existsSync(this.config.template)) {
+            throw new Error('Template file not found');
+        }
+
+        return fs.readFileSync(this.config.template, 'utf8');
     }
     
 }

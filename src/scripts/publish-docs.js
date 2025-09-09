@@ -1,5 +1,5 @@
 import path from 'path';
-import { SimpleDocsScraper, SimpleDocsScraperConfig } from '../simple-docs-scraper/services/SimpleDocsScraper.js';
+import { SimpleDocsScraper, MultiLineCommentClear } from '../../dist/index.js';
 
 const config = {
     baseDir: process.cwd(),
@@ -28,13 +28,10 @@ const config = {
         outDir: path.join(process.cwd(), 'docs'),
         createIndexFile: true,
     }],
-} satisfies SimpleDocsScraperConfig;
+    formatters: [MultiLineCommentClear],
+};
 
-console.log('Starting documentation generation...');
-console.log('Cwd: ', process.cwd());
-
-const scraper = new SimpleDocsScraper(config);
-await scraper.start().then(result => {
+new SimpleDocsScraper(config).start().then(result => {
     console.log('Success count: ', result.successCount);
     console.log('Total count: ', result.totalCount);
     console.log('Logs:');

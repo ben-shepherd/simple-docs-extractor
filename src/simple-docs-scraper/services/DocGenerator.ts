@@ -62,7 +62,7 @@ export class DocGenerator {
 
     protected getTemplateContent(): string {
         if (!this.config.template) {
-            return '';
+            return this.config.searchAndReplace;
         }
 
         // Check if the template file exists
