@@ -97,7 +97,14 @@ export class IndexGenerator {
         let formattedFilePath = filePath.replace(parentDirectory, '');
 
         // remove leading slash
-        formattedFilePath = formattedFilePath.replace(/^\//, '');
+        while(formattedFilePath.startsWith('/') || formattedFilePath.startsWith('\\')) {
+            if(formattedFilePath.startsWith('/')) {
+                formattedFilePath = formattedFilePath.slice(1);
+            }
+            if(formattedFilePath.startsWith('\\')) {
+                formattedFilePath = formattedFilePath.slice(1);
+            }
+        }
 
         // replace all extensions with .md
         formattedFilePath = ExtensionReplacer.replaceAllExtensions(formattedFilePath, 'md');
