@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { ExtensionReplacer } from './ExtensionReplacer.js';
 
 
 export type DocGeneratorConfig = {
@@ -14,6 +15,12 @@ export class DocGenerator {
 
     generateContent(content: string, outFile: string): void {
 
+        const fileBaseName = path.basename(outFile);
+        let outFilePath = path.join(this.config.outDir, fileBaseName);
+
+        // Replace all extensions with .md
+        outFilePath = ExtensionReplacer.replaceAllExtensions(outFilePath, 'md');
+
         // Create the out directory if it doesn't exist
         if (!fs.existsSync(this.config.outDir)) {
             fs.mkdirSync(this.config.outDir, { recursive: true });
@@ -26,7 +33,6 @@ export class DocGenerator {
 
         const fileContent = fs.readFileSync(this.config.template, 'utf8');
         const injectedContent = fileContent.replace(this.config.injectInto, content);
-        const outFilePath = path.join(this.config.outDir, outFile);
         
         fs.writeFileSync(outFilePath, injectedContent);
     }

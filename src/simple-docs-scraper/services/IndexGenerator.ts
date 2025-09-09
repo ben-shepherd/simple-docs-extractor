@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { ExtensionReplacer } from './ExtensionReplacer.js';
 export type IndexGeneratorConfig = {
     template: string;
     outDir: string;
@@ -28,11 +29,11 @@ export class IndexGenerator {
         let templateContent = fs.readFileSync(this.config.template, 'utf8');
         let content = ''
         let lineNumber = 1;
+        const outFilePath = path.join(this.config.outDir, 'index.md');
 
         for(const filePath of filePaths) {
-            const fileName = this.getFileName(filePath);
+            const fileName = this.getFileName(filePath, outFilePath);
 
-        
             if(this.config.lineCallback) {
                 content += this.config.lineCallback(fileName, lineNumber);
             }
@@ -45,19 +46,29 @@ export class IndexGenerator {
 
         templateContent = templateContent.replace('%content%', content);
 
-        const outFilePath = path.join(this.config.outDir, 'index.md');
         fs.writeFileSync(outFilePath, templateContent);
     }
     
-    getFileName(filePath: string): string {
+    getFileName(filePath: string, outFilePath: string): string {
         if(this.config.fileNameCallback) {
             return this.config.fileNameCallback(filePath);
         }
 
-        if(this.config.baseDir) {
-            filePath = filePath.replace(this.config.baseDir, '');
+        const parentDirectory = path.dirname(filePath);
+
+        // remove parent directory
+        let formattedFilePath = filePath.replace(parentDirectory, '');
+
+        // remove leading slash
+        formattedFilePath = formattedFilePath.replace(/^\//, '');
+
+        // replace all extensions with .md
+        formattedFilePath = ExtensionReplacer.replaceAllExtensions(formattedFilePath, 'md');
+
+        if(this.config.fileNameAsLink) {
+            return `[${formattedFilePath}](${formattedFilePath})`;
         }
 
-        return this.config.fileNameAsLink ? `[${filePath}](${filePath})` : filePath;
+        return formattedFilePath;
     }
 }

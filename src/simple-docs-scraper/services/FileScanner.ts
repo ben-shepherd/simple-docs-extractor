@@ -12,7 +12,11 @@ export class FileScanner {
 
     async collect(globOptions: GlobOptions = {}): Promise<string[]> {
 
-        const targetPath = path.join(process.cwd(), this.target.cwd);
+        let targetPath = this.target.cwd;
+
+        if(!path.isAbsolute(targetPath)) {
+            targetPath = path.join(process.cwd(), this.target.cwd);
+        }
 
         const files = await glob(this.target.extensions, {
             absolute: true,
