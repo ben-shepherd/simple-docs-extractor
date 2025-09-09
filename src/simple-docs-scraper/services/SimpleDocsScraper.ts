@@ -1,12 +1,11 @@
-import { GlobOptions } from "glob";
-import { DocsExtractorConfig } from "./Extractor.js";
-import { FileScanner } from "./FileScanner.js";
-import { DocsExtractor } from "./Extractor.js";
-import { Injection } from "./Injection.js";
-import { DocGenerator, DocGeneratorConfig } from "./DocGenerator.js";
 import fs from 'fs';
+import { GlobOptions } from "glob";
 import path from 'path';
+import { DocGenerator, DocGeneratorConfig } from "./DocGenerator.js";
+import { DocsExtractor, DocsExtractorConfig } from "./Extractor.js";
+import { FileScanner } from "./FileScanner.js";
 import { IndexGenerator, IndexGeneratorConfig } from "./IndexGenerator.js";
+import { Injection } from "./Injection.js";
 
 // Configuration for a single target directory to process
 export type Target = {
@@ -180,7 +179,7 @@ export class SimpleDocsScraper {
         new DocGenerator({
             template: this.config.generators.documentation.template,
             outDir: target.outDir,
-            injectInto: this.config.searchAndReplace.replace,
+            searchAndReplace: this.config.searchAndReplace.replace,
         })
         .generateContent(injectedContent, outFile);
         
