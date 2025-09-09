@@ -1,11 +1,11 @@
 import fs from 'fs';
 import { GlobOptions } from "glob";
-import { DocsExtractorConfig } from "../files/Extractor.js";
+import { DocumentContentExtractorConfig } from "../files/DocumentContentExtractor.js";
 import { FileScanner } from "../files/FileScanner.js";
-import { DocGeneratorConfig } from "../generators/DocGenerator.js";
-import { IndexGenerator, IndexGeneratorConfig } from "../generators/IndexGenerator.js";
+import { DocGeneratorConfig } from "../generators/DocFileGenerator.js";
+import { IndexFileGenerator, IndexGeneratorConfig } from "../generators/IndexFileGenerator.js";
 import { TFormatter } from '../types/formatter.t.js';
-import { FileProcesser, PreProcessFileErrorResult, PreProcessFileResult } from './FileProcesser.js';
+import { FileProcessor, ProcessResult, ProcessResultError } from './FileProcessor.js';
 
 // Configuration for a single target directory to process
 export type Target = {
@@ -17,7 +17,7 @@ export type Target = {
 // Main configuration interface for the SimpleDocsScraper
 export interface SimpleDocsScraperConfig {
     baseDir: string;
-    extraction: DocsExtractorConfig;
+    extraction: DocumentContentExtractorConfig;
     searchAndReplace: {
         replace: string;
     };
@@ -86,6 +86,8 @@ export class SimpleDocsScraper {
 
     /**
      * Returns the current configuration.
+     * 
+     * @returns The current SimpleDocsScraper configuration
      */
     getConfig(): SimpleDocsScraperConfig {
         return this.config;
@@ -93,6 +95,8 @@ export class SimpleDocsScraper {
 
     /**
      * Starts the documentation generation process for all configured targets.
+     * 
+     * @returns Promise resolving to result object with success count, total count, and logs
      */
     async start(): Promise<SimpleDocsScraperResult> {
         for(const target of this.config.targets) {
@@ -110,10 +114,13 @@ export class SimpleDocsScraper {
 
     /**
      * Processes a single target directory by scanning files and generating documentation.
+     * 
+     * @param target - The target configuration to process
+     * @param targetIndex - The index of the target for logging purposes
      */
     async handleTarget(target: Target, targetIndex: number) {
 
-        const fileProcessor = new FileProcesser(this.config)
+        const fileProcessor = new FileProcessor(this.config)
 
         this.logs.push(`targets[${targetIndex}]: Starting target`);
 
@@ -124,7 +131,7 @@ export class SimpleDocsScraper {
         }
 
         const files = await this.getFiles(target);
-        let preProcessedFiles: PreProcessFileResult[] = [];
+        let preProcessedFiles: ProcessResult[] = [];
 
         for(const file of files) {
             await this.processSingleFile(file, target, targetIndex, preProcessedFiles, fileProcessor);
@@ -136,20 +143,26 @@ export class SimpleDocsScraper {
 
     /**
      * Processes a single file by extracting documentation and generating output.
+     * 
+     * @param file - The file path to process
+     * @param target - The target configuration
+     * @param targetIndex - The index of the target for logging
+     * @param preProcessedFiles - Array to collect processed file results
+     * @param fileProcessor - The file processor instance to use
      */
     private async processSingleFile(
         file: string,
         target: Target,
         targetIndex: number,
-        preProcessedFiles: PreProcessFileResult[],
-        fileProcessor: FileProcesser
+        preProcessedFiles: ProcessResult[],
+        fileProcessor: FileProcessor
     ) {
-        const processedResult = await new FileProcesser(this.config).preProcess(file, target)
+        const processedResult = await new FileProcessor(this.config).preProcess(file, target)
         this.total++;
 
         // If there is an error, log it and return
         if('error' in processedResult) {
-            this.logs.push(`Error: ${(processedResult as unknown as PreProcessFileErrorResult).error}`);
+            this.logs.push(`Error: ${(processedResult as unknown as ProcessResultError).error}`);
             return;
         }
         
@@ -163,11 +176,16 @@ export class SimpleDocsScraper {
     }
 
     /**
-     * Creates an index file for the target.
+     * Creates an index file for the target if configured to do so.
+     * 
+     * @param files - Array of file paths to include in the index
+     * @param preProcessedFiles - Array of successfully processed files
+     * @param target - The target configuration
+     * @param targetIndex - The index of the target for logging
      */
     private async createIndexFile(
         files: string[],
-        preProcessedFiles: PreProcessFileResult[],
+        preProcessedFiles: ProcessResult[],
         target: Target,
         targetIndex: number
     ) {
@@ -178,11 +196,12 @@ export class SimpleDocsScraper {
         if(shouldCreateIndexFile) {
             this.logs.push(`targets[${targetIndex}]: Creating index file`);
 
-            const indexGenerator = new IndexGenerator({
+            const indexGenerator = new IndexFileGenerator({
                 ...(this.config.generators?.index ?? {}),
                 baseDir: this.config.baseDir,
                 template: this.config.generators?.index?.template as string,
                 outDir: target.outDir,
+                searchAndReplace: this.config.searchAndReplace.replace,
             });
 
             indexGenerator.generateContent(files);
@@ -190,7 +209,10 @@ export class SimpleDocsScraper {
     }
 
     /**
-     * Gets the files for the target.
+     * Gets the files for the target using the configured file scanner.
+     * 
+     * @param target - The target configuration containing glob options
+     * @returns Promise resolving to array of matching file paths
      */
     private async getFiles(target: Target) {
         const fileScanner = new FileScanner({

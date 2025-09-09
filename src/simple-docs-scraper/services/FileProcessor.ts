@@ -1,29 +1,56 @@
 import fs from 'fs';
 import path from 'path';
-import { DocsExtractor } from "../files/Extractor.js";
-import { DocGenerator } from "../generators/DocGenerator.js";
-import { Injection } from "../transformers/Injection.js";
+import { DocumentContentExtractor } from "../files/DocumentContentExtractor.js";
+import { DocFileGenerator } from "../generators/DocFileGenerator.js";
+import { ContentInjection } from "../transformers/ContentInjection.js";
 import { SimpleDocsScraperConfig, Target } from "./SimpleDocsScraper.js";
 
-export type PreProcessFileSuccessResult = {
+export type ProcessResultSuccess = {
     content: string;
     outDir: string;
     fileName: string;
     loggableFileName: string;
 }
 
-export type PreProcessFileErrorResult = {
+export type ProcessResultError = {
     error: string;
 }
 
-export type PreProcessFileResult = PreProcessFileSuccessResult | PreProcessFileErrorResult;
+export type ProcessResult = ProcessResultSuccess | ProcessResultError;
 
-export class FileProcesser {
-    constructor(private config: SimpleDocsScraperConfig) { }
+/**
+ * <docs>
+ * Processes individual files to extract documentation and generate output files.
+ * 
+ * This class handles the complete file processing pipeline including documentation
+ * extraction, content injection into templates, formatter application, and output
+ * file generation. It coordinates between various components to transform source
+ * files into formatted documentation.
+ * 
+ * @example
+ * ```typescript
+ * const processor = new FileProcessor(config);
+ * 
+ * const result = await processor.preProcess('./src/example.js', target);
+ * if ('content' in result) {
+ *   await processor.processFile(result, target, 0);
+ * }
+ * ```
+ * </docs>
+ */
+export class FileProcessor {
+    constructor(private config: SimpleDocsScraperConfig) {}
 
-    async preProcess(file: string, target: Target): Promise<PreProcessFileResult> {
+    /**
+     * Pre-processes a file by extracting documentation and preparing it for output generation.
+     * 
+     * @param file - The source file path to process
+     * @param target - The target configuration containing output directory and options
+     * @returns Promise resolving to processing result with content or error details
+     */
+    async preProcess(file: string, target: Target): Promise<ProcessResult> {
 
-        const extractionResult = await new DocsExtractor(file, this.config.extraction).extract();
+        const extractionResult = await new DocumentContentExtractor(file, this.config.extraction).extract();
 
         if (!extractionResult.sucess) {
             return {
@@ -32,7 +59,7 @@ export class FileProcesser {
         }
 
         // Inject the content into the template
-        let injectedContent = new Injection({
+        let injectedContent = new ContentInjection({
             template: this.config.generators?.documentation?.template ?? '',
             outDir: target.outDir,
             searchAndReplace: this.config.searchAndReplace.replace,
@@ -47,7 +74,7 @@ export class FileProcesser {
         }
 
         // Generate the documentation file
-        const generatedContent = new DocGenerator({
+        const generatedContent = new DocFileGenerator({
             template: this.config.generators?.documentation?.template,
             outDir: target.outDir,
             searchAndReplace: this.config.searchAndReplace.replace,
@@ -89,7 +116,7 @@ export class FileProcesser {
      * @param processedResult - The file path to process
      * @param target - The target configuration containing output directory
      */
-    async processFile(processedResult: PreProcessFileSuccessResult, target: Target, targetIndex: number) {
+    async processFile(processedResult: ProcessResultSuccess, target: Target, targetIndex: number) {
 
         // Create the out directory if it doesn't exist
         if (!fs.existsSync(target.outDir)) {
@@ -99,7 +126,7 @@ export class FileProcesser {
         const outFile = path.join(target.outDir, processedResult.fileName);
 
         // Generate the documentation file
-        new DocGenerator({
+        new DocFileGenerator({
             template: this.config.generators?.documentation?.template,
             outDir: processedResult.outDir,
             searchAndReplace: this.config.searchAndReplace.replace,

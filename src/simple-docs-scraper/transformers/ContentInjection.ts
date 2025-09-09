@@ -24,7 +24,7 @@ export type InjectionResult = {
  * 
  * @example
  * ```typescript
- * const injection = new Injection({
+ * const injection = new ContentInjection({
  *   template: './templates/doc.md',
  *   outDir: './docs',
  *   injectInto: '{{CONTENT}}'
@@ -39,7 +39,7 @@ export type InjectionResult = {
  * ```
  * </docs>
  */
-export class Injection {
+export class ContentInjection {
     constructor(private config: InjectionConfig) {
     }
 
@@ -71,6 +71,12 @@ export class Injection {
         fs.writeFileSync(outFilePath, injectedContent);
     }
 
+    /**
+     * Retrieves the template content from the configured template file.
+     * 
+     * @returns The template content as a string
+     * @throws {Error} When the template file is not found
+     */
     protected getTemplateContent(): string {
         if (!this.config.template) {
             return this.config.searchAndReplace;

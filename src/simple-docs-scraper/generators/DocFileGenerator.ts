@@ -19,7 +19,7 @@ export type DocGeneratorConfig = {
  * 
  * @example
  * ```typescript
- * const generator = new DocGenerator({
+ * const generator = new DocFileGenerator({
  *   template: './templates/doc.template.md',
  *   outDir: './docs',
  *   searchAndReplace: '{{CONTENT}}'
@@ -30,7 +30,7 @@ export type DocGeneratorConfig = {
  * ```
  * </docs>
  */
-export class DocGenerator {
+export class DocFileGenerator {
     constructor(private config: DocGeneratorConfig) {
     }
 
@@ -57,6 +57,13 @@ export class DocGenerator {
         fs.writeFileSync(outFilePath, injectedContent);
     }
 
+    /**
+     * Generates a content string by injecting content into the template.
+     * 
+     * @param content - The content to inject into the template
+     * @returns The generated content string with injected content
+     * @throws {Error} When the template file is not found
+     */
     generateContentString(content: string): string {
         const fileContent = this.getTemplateContent();
         const injectedContent = fileContent.replace(this.config.searchAndReplace, content);
@@ -64,6 +71,12 @@ export class DocGenerator {
         return injectedContent;
     }
 
+    /**
+     * Retrieves the template content from the configured template file.
+     * 
+     * @returns The template content as a string
+     * @throws {Error} When the template file is not found
+     */
     protected getTemplateContent(): string {
         if (!this.config.template) {
             return this.config.searchAndReplace;

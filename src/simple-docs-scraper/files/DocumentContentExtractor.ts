@@ -20,10 +20,10 @@ export type MethodCallback = {
 }
 
 // Union type for all possible extraction methods
-export type DocsExtractorConfig = MethodTags | MethodRegex | MethodCallback;
+export type DocumentContentExtractorConfig = MethodTags | MethodRegex | MethodCallback;
 
 // Result object returned by the documentation extraction process
-export type DocsExtractorResult = {
+export type DocumentContentExtractorResult = {
     docs: string;
     file: string;
     sucess?: boolean;
@@ -43,14 +43,14 @@ export type DocsExtractorResult = {
  * @example
  * ```typescript
  * // Extract using tags
- * const extractor = new DocsExtractor('example.js', {
+ * const extractor = new DocumentContentExtractor('example.js', {
  *   extractMethod: 'tags',
  *   startTag: '<docs>',
  *   endTag: '</docs>'
  * });
  * 
  * // Extract using regex
- * const extractor = new DocsExtractor('example.js', {
+ * const extractor = new DocumentContentExtractor('example.js', {
  *   extractMethod: 'regex',
  *   pattern: /\/\*\*([\s\S]*?)\*\//g
  * });
@@ -59,11 +59,11 @@ export type DocsExtractorResult = {
  * ```
  * </docs>
  */
-export class DocsExtractor {
+export class DocumentContentExtractor {
 
     constructor(
         private file: string,
-        private config: DocsExtractorConfig
+        private config: DocumentContentExtractorConfig
     ) {
     }
 
@@ -73,7 +73,7 @@ export class DocsExtractor {
      * @returns Promise resolving to extraction result with documentation content or error details
      * @throws {Error} When an invalid extraction method is configured
      */
-    async extract(): Promise<DocsExtractorResult> {
+    async extract(): Promise<DocumentContentExtractorResult> {
 
         // Check if the file exists
         if (!fs.existsSync(this.file)) {
@@ -86,7 +86,7 @@ export class DocsExtractor {
         }
 
         const fileContent = fs.readFileSync(this.file, 'utf8');
-        let result: DocsExtractorResult;
+        let result: DocumentContentExtractorResult;
 
         if(this.config.extractMethod === 'tags' && this.config.startTag && this.config.endTag) {
             result = this.extractUsingTags(fileContent);
@@ -122,7 +122,7 @@ export class DocsExtractor {
      * @param fileContent - The content of the file to extract from
      * @returns Extraction result with matched documentation or error details
      */
-    protected extractUsingRegex(fileContent: string): DocsExtractorResult {
+    protected extractUsingRegex(fileContent: string): DocumentContentExtractorResult {
         const config = this.config as MethodRegex;
 
         const regex = new RegExp(config.pattern);
@@ -153,7 +153,7 @@ export class DocsExtractor {
      * @param fileContent - The content of the file to extract from
      * @returns Promise resolving to extraction result with callback-generated documentation or error details
      */
-    protected async extractUsingCallback(fileContent: string): Promise<DocsExtractorResult> {
+    protected async extractUsingCallback(fileContent: string): Promise<DocumentContentExtractorResult> {
         const config = this.config as MethodCallback;
 
         const docs = await config.callback(fileContent);
@@ -180,7 +180,7 @@ export class DocsExtractor {
      * @param fileContent - The content of the file to extract from
      * @returns Extraction result with content between tags or error details
      */
-    protected extractUsingTags(fileContent: string): DocsExtractorResult {
+    protected extractUsingTags(fileContent: string): DocumentContentExtractorResult {
         const config = this.config as MethodTags;
 
         // Check if the file contains the start and end tags

@@ -4,10 +4,11 @@ import { ExtensionReplacer } from '../transformers/ExtensionReplacer.js';
 
 // Configuration for generating index files from a list of file paths
 export type IndexGeneratorConfig = {
-    template: string;
+    template?: string;
     outDir: string;
     baseDir?: string;
     fileNameAsLink?: boolean;
+    searchAndReplace: string;
     lineCallback?: (fileNameEntry: string, lineNumber: number) => string;
     fileNameCallback?: (filePath: string) => string;
 }
@@ -22,7 +23,7 @@ export type IndexGeneratorConfig = {
  * 
  * @example
  * ```typescript
- * const generator = new IndexGenerator({
+ * const generator = new IndexFileGenerator({
  *   template: './templates/index.template.md',
  *   outDir: './docs',
  *   fileNameAsLink: true,
@@ -34,7 +35,7 @@ export type IndexGeneratorConfig = {
  * ```
  * </docs>
  */
-export class IndexGenerator {
+export class IndexFileGenerator {
     constructor(private config: IndexGeneratorConfig) {
     }
 
@@ -51,12 +52,7 @@ export class IndexGenerator {
             fs.mkdirSync(this.config.outDir, { recursive: true });
         }
 
-        // Check if the template file exists
-        if (!fs.existsSync(this.config.template)) {
-            throw new Error('Template file not found');
-        }
-
-        let templateContent = fs.readFileSync(this.config.template, 'utf8');
+        let templateContent = this.getTemplateContent();
         let content = ''
         let lineNumber = 1;
         const outFilePath = path.join(this.config.outDir, 'index.md');
@@ -74,9 +70,22 @@ export class IndexGenerator {
             lineNumber++;
         }
 
-        templateContent = templateContent.replace('%content%', content);
+        templateContent = templateContent.replace(this.config.searchAndReplace, content);
 
         fs.writeFileSync(outFilePath, templateContent);
+    }
+
+    private getTemplateContent(): string {
+        if(!this.config.template) {
+            return this.config.searchAndReplace;
+        }
+
+        // Check if the template file exists
+        if (!fs.existsSync(this.config.template)) {
+            throw new Error('Template file not found');
+        }
+
+        return fs.readFileSync(this.config.template, 'utf8');
     }
     
     /**

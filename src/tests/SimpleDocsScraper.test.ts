@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from "path";
 import { SimpleDocsScraper, SimpleDocsScraperConfig } from "../simple-docs-scraper/services/SimpleDocsScraper.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
-import { getOutputFilePath } from "./helpers/getOutputFilePath.js";
+import { getOutputPath } from "./helpers/getOutputPath.js";
 
 
 const jsFilesTarget = {
@@ -11,7 +11,7 @@ const jsFilesTarget = {
         cwd: path.join(process.cwd(), 'src/tests/files/js-files'),
         extensions: '**/*.{js,ts}',
     },
-    outDir: getOutputFilePath('js-files'),
+    outDir: getOutputPath('js-files'),
     createIndexFile: true,
 }
 
@@ -20,7 +20,7 @@ const twigFilesTarget = {
         cwd: path.join(process.cwd(), 'src/tests/files/twig-files'),
         extensions: '**/*.html.twig',
     },
-    outDir: getOutputFilePath('twig-files'),
+    outDir: getOutputPath('twig-files'),
     createIndexFile: true,
 }
 
@@ -36,10 +36,10 @@ const defaultConfig: SimpleDocsScraperConfig = {
     },
     generators: {
         index: {
-            template: getOutputFilePath('index.template.md'),
+            template: getOutputPath('index.template.md'),
         },
         documentation: {
-            template: getOutputFilePath('documentation.template.md'),
+            template: getOutputPath('documentation.template.md'),
         }
     },
     targets: [jsFilesTarget, twigFilesTarget]
@@ -53,12 +53,12 @@ describe("Example Test Suite", () => {
         scraper = new SimpleDocsScraper(defaultConfig);
 
         // Create a mock template file
-        fs.writeFileSync(getOutputFilePath('index.template.md'), (
+        fs.writeFileSync(getOutputPath('index.template.md'), (
 `Start.
 %content%
 End.    `
         ));
-        fs.writeFileSync(getOutputFilePath('documentation.template.md'), (
+        fs.writeFileSync(getOutputPath('documentation.template.md'), (
 `Start.
 %content%
 End.`
@@ -85,8 +85,8 @@ End.`
         test("should be able to start the scraper", async () => {
             const result = await scraper.start();
 
-            const jsFiles = fs.readdirSync(getOutputFilePath('js-files'));
-            const twigFiles = fs.readdirSync(getOutputFilePath('twig-files'));
+            const jsFiles = fs.readdirSync(getOutputPath('js-files'));
+            const twigFiles = fs.readdirSync(getOutputPath('twig-files'));
 
             const expectedJsFilesCount = 4; // 3 plus the index file
             const expectedTwigFilesCount = 2; // 1 plus the index file
@@ -106,7 +106,7 @@ End.`
                     ...defaultConfig.generators,
                     index: {
                         ...(defaultConfig.generators?.index ?? {}),
-                        template: getOutputFilePath('index.template.md'),
+                        template: getOutputPath('index.template.md'),
                         lineCallback(fileNameEntry, lineNumber) {
                             return `- ${fileNameEntry} (${lineNumber})`;
                         },
@@ -119,8 +119,8 @@ End.`
 
             const result = await scraper.start();
 
-            const twigFiles = fs.readdirSync(getOutputFilePath('twig-files'));
-            const indexFileContent = fs.readFileSync(getOutputFilePath('twig-files/index.md'), 'utf8');
+            const twigFiles = fs.readdirSync(getOutputPath('twig-files'));
+            const indexFileContent = fs.readFileSync(getOutputPath('twig-files/index.md'), 'utf8');
 
             expect(result.successCount).toBe(1);
             expect(result.totalCount).toBe(1);
@@ -135,7 +135,7 @@ End.`
                     ...(defaultConfig.generators ?? {}),
                     index: {
                         ...(defaultConfig.generators?.index ?? {}),
-                        template: getOutputFilePath('index.template.md'),
+                        template: getOutputPath('index.template.md'),
                         fileNameCallback(filePath) {
                             filePath = path.basename(filePath);
                             return filePath.replace('example.html.twig', 'example.twig');
@@ -149,7 +149,7 @@ End.`
 
             const result = await scraper.start();
 
-            const indexFileContent = fs.readFileSync(getOutputFilePath('twig-files/index.md'), 'utf8');
+            const indexFileContent = fs.readFileSync(getOutputPath('twig-files/index.md'), 'utf8');
 
             expect(result.successCount).toBe(1);
             expect(result.totalCount).toBe(1);
@@ -163,7 +163,7 @@ End.`
                     ...defaultConfig.generators,
                     index: {
                         ...(defaultConfig.generators?.index ?? {}),
-                        template: getOutputFilePath('index.template.md'),
+                        template: getOutputPath('index.template.md'),
                         lineCallback(fileNameEntry, lineNumber) {
                             return `- ${fileNameEntry} (${lineNumber})`;
                         },
@@ -178,7 +178,7 @@ End.`
 
             const result = await scraper.start();
 
-            const indexFileContent = fs.readFileSync(getOutputFilePath('twig-files/index.md'), 'utf8');
+            const indexFileContent = fs.readFileSync(getOutputPath('twig-files/index.md'), 'utf8');
 
             expect(result.successCount).toBe(1);
             expect(result.totalCount).toBe(1);
@@ -192,7 +192,7 @@ End.`
                     ...defaultConfig.generators,
                     index: {
                         ...(defaultConfig.generators?.index ?? {}),
-                        template: getOutputFilePath('index.template.md'),
+                        template: getOutputPath('index.template.md'),
                         fileNameAsLink: true,
                     }
                 },
@@ -201,7 +201,7 @@ End.`
 
             const result = await scraper.start();
 
-            const indexFileContent = fs.readFileSync(getOutputFilePath('twig-files/index.md'), 'utf8');
+            const indexFileContent = fs.readFileSync(getOutputPath('twig-files/index.md'), 'utf8');
 
             expect(result.successCount).toBe(1);
             expect(result.totalCount).toBe(1);
@@ -231,14 +231,14 @@ End.`
                         cwd: path.join(process.cwd(), 'src/tests/files'),
                         ignore: ['ignored-files/**'],
                     },
-                    outDir: getOutputFilePath('output-files'),
+                    outDir: getOutputPath('output-files'),
                     createIndexFile: true,
                 }
             ],
         });
         
         const result = await scraper.start();
-        const jsFiles = fs.readdirSync(getOutputFilePath('output-files'));
+        const jsFiles = fs.readdirSync(getOutputPath('output-files'));
     
         expect(result.successCount).toBeGreaterThan(1);
         expect(jsFiles.some(file => file === 'exampleFunc.md')).toBe(true);
