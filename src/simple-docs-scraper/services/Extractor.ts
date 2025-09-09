@@ -45,8 +45,8 @@ export type DocsExtractorResult = {
  * // Extract using tags
  * const extractor = new DocsExtractor('example.js', {
  *   extractMethod: 'tags',
- *   startTag: '&lt;docs&gt;',
- *   endTag: '&lt;/docs&gt;'
+ *   startTag: '<docs>',
+ *   endTag: '</docs>'
  * });
  * 
  * // Extract using regex

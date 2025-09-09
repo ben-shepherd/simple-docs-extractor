@@ -33,7 +33,7 @@
     "version:major": "npm version major",
     "depcheck": "depcheck",
     "tslint": "tslint -p tsconfig.json",
-    "docs:publish": "node ./src/scripts/publish-docs.js"
+    "docs:publish": "npm run build && node ./src/scripts/publish-docs.js"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.28.3",

@@ -54,10 +54,14 @@ export class DocGenerator {
             fs.mkdirSync(this.config.outDir, { recursive: true });
         }
         
+        fs.writeFileSync(outFilePath, this.generateContentString(content));
+    }
+
+    generateContentString(content: string): string {
         const fileContent = this.getTemplateContent();
         const injectedContent = fileContent.replace(this.config.searchAndReplace, content);
-        
-        fs.writeFileSync(outFilePath, injectedContent);
+    
+        return injectedContent;
     }
 
     protected getTemplateContent(): string {

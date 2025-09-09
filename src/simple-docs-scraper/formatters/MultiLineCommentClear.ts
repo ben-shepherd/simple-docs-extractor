@@ -10,10 +10,11 @@ import { TFormatter } from "../types/formatter.t.js";
  * formatting markers.
  * 
  * Example:
- * 
- * Input: " * This is a comment line"
- * 
- * Output: "This is a comment line"
+ * ```typescript
+ * const input = " * This is a comment line";
+ * const output = MultiLineCommentClear(input);
+ * console.log(output); // "This is a comment line"
+ * ```
  * 
  * @param {Object} config - Configuration object containing the content to format
  * @param {string} config.content - The text content to be formatted

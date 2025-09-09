@@ -1,12 +1,12 @@
 import fs from 'fs';
 import { GlobOptions } from "glob";
 import path from 'path';
+import { TFormatter } from '../types/formatter.t.js';
 import { DocGenerator, DocGeneratorConfig } from "./DocGenerator.js";
 import { DocsExtractor, DocsExtractorConfig } from "./Extractor.js";
 import { FileScanner } from "./FileScanner.js";
 import { IndexGenerator, IndexGeneratorConfig } from "./IndexGenerator.js";
 import { Injection } from "./Injection.js";
-import { TFormatter } from '../types/formatter.t.js';
 
 // Configuration for a single target directory to process
 export type Target = {
@@ -40,6 +40,17 @@ export type SimpleDocsScraperResult = {
     totalCount: number;
     logs: string[];
 }
+
+type PreProcessFileSuccessResult = {
+    content: string;
+    outDir: string;
+    outFile: string;
+    loggableFileName: string;
+}
+type PreProcessFileErrorResult = {
+    error: string;
+}
+type PreProcessFileResult = PreProcessFileSuccessResult | PreProcessFileErrorResult;
 
 /**
  * <docs>
@@ -134,39 +145,50 @@ export class SimpleDocsScraper {
         });
 
         const files = await fileScanner.collect();
+        let preProcessedFiles: PreProcessFileResult[] = [];
 
-        if(target.createIndexFile && this.config.generators?.index?.template) {
+        for(const file of files) {
+            const preProcessedFile = await this.preProcessFile(file, target);
+
+            if(!('error' in preProcessedFile)) {
+                preProcessedFiles.push(preProcessedFile);
+            }
+
+            await this.processFile(preProcessedFile as PreProcessFileSuccessResult, target, targetIndex);
+        }
+
+        const shouldCreateIndexFile = target.createIndexFile 
+            && typeof this.config.generators?.index?.template === 'string'
+            && preProcessedFiles.length > 0;
+
+        if(shouldCreateIndexFile) {
             this.logs.push(`targets[${targetIndex}]: Creating index file`);
 
             const indexGenerator = new IndexGenerator({
                 ...(this.config.generators?.index ?? {}),
                 baseDir: this.config.baseDir,
-                template: this.config.generators?.index?.template,
+                template: this.config.generators?.index?.template as string,
                 outDir: target.outDir,
             });
 
             indexGenerator.generateContent(files);
         }
-
-        for(const file of files) {
-            await this.processFile(file, target, targetIndex);
-        }
     }
 
-    /**
-     * Processes a single file by extracting documentation and generating output.
-     * 
-     * @param file - The file path to process
-     * @param target - The target configuration containing output directory
-     */
-    async processFile(file: string, target: Target, targetIndex: number) {
-        this.total++;
+    async preProcessFile(file: string, target: Target): Promise<PreProcessFileResult> {
 
+        this.total++;
+        
         const extractionResult = await new DocsExtractor(file, this.config.extraction).extract();
 
         if(!extractionResult.sucess) {
-            this.logs.push(`Error: ${extractionResult.errorType} in file ${file}`);
-            return;
+            return {
+                content: '',
+                outFile: file,
+                outDir: target.outDir,
+                loggableFileName: file.replace(this.config.baseDir, ''),
+                error: `Error: ${extractionResult.errorType} in file ${file}`,
+            };
         }
 
         // Inject the content into the template
@@ -184,12 +206,38 @@ export class SimpleDocsScraper {
             }
         }
 
+        const outFile = path.join(target.outDir, file);
+
+        // Generate the documentation file
+        const generatedContent = new DocGenerator({
+            template: this.config.generators?.documentation?.template,
+            outDir: target.outDir,
+            searchAndReplace: this.config.searchAndReplace.replace,
+        })
+        .generateContentString(injectedContent);
+
+        return {
+            content: generatedContent,
+            outFile: outFile,
+            outDir: target.outDir,
+            loggableFileName: file.replace(this.config.baseDir, ''),
+        };
+    }
+
+    /**
+     * Processes a single file by extracting documentation and generating output.
+     * 
+     * @param file - The file path to process
+     * @param target - The target configuration containing output directory
+     */
+    async processFile(preProcessedFile: PreProcessFileSuccessResult, target: Target, targetIndex: number) {
+
         // Create the out directory if it doesn't exist
         if (!fs.existsSync(target.outDir)) {
             fs.mkdirSync(target.outDir, { recursive: true });
         }
 
-        const outFile = path.join(target.outDir, file);
+        const outFile = path.join(target.outDir, preProcessedFile.outFile);
 
         // Generate the documentation file
         new DocGenerator({
@@ -197,9 +245,9 @@ export class SimpleDocsScraper {
             outDir: target.outDir,
             searchAndReplace: this.config.searchAndReplace.replace,
         })
-        .generateContent(injectedContent, outFile);
+        .generateContent(preProcessedFile.content, outFile);
 
-        this.logs.push(`targets[${targetIndex}]: Generated documentation file for ${file.replace(this.config.baseDir, '')}`);
+        this.logs.push(`targets[${targetIndex}]: Generated documentation file for ${preProcessedFile.loggableFileName}`);
         
         this.success++;
     }
