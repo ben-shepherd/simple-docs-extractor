@@ -8,12 +8,14 @@ import fs from 'fs';
 import path from 'path';
 import { IndexGenerator, IndexGeneratorConfig } from "./IndexGenerator.js";
 
+// Configuration for a single target directory to process
 export type Target = {
     globOptions: GlobOptions & { cwd: string; extensions: string | string[] };
     outDir: string;
     createIndexFile: boolean;
 }
 
+// Main configuration interface for the SimpleDocsScraper
 export interface SimpleDocsScraperConfig {
     baseDir: string;
     extraction: DocsExtractorConfig;
@@ -31,12 +33,46 @@ export interface SimpleDocsScraperConfig {
     targets: Target[];
 }
 
+// Result object returned after processing all targets
 export type SimpleDocsScraperResult = {
     success: number;
     total: number;
     logs: string[];
 }
 
+/**
+ * <docs>
+ * Main orchestrator class for extracting and generating documentation from source files.
+ * 
+ * This class coordinates the entire documentation generation process by scanning files,
+ * extracting documentation content, and generating both individual documentation files
+ * and index files. It supports multiple targets and provides comprehensive logging.
+ * 
+ * @example
+ * ```typescript
+ * const scraper = new SimpleDocsScraper({
+ *   baseDir: './src',
+ *   extraction: {
+ *     extractMethod: 'tags',
+ *     startTag: '<docs>',
+ *     endTag: '</docs>'
+ *   },
+ *   searchAndReplace: { replace: '{{CONTENT}}' },
+ *   generators: {
+ *     index: { template: './templates/index.md' },
+ *     documentation: { template: './templates/doc.md' }
+ *   },
+ *   targets: [{
+ *     globOptions: { cwd: './src', extensions: '*.js' },
+ *     outDir: './docs',
+ *     createIndexFile: true
+ *   }]
+ * });
+ * 
+ * const result = await scraper.start();
+ * ```
+ * </docs>
+ */
 export class SimpleDocsScraper {
 
     constructor(
@@ -47,10 +83,20 @@ export class SimpleDocsScraper {
     ) {
     }
 
+    /**
+     * Returns the current configuration.
+     * 
+     * @returns The scraper configuration object
+     */
     getConfig(): SimpleDocsScraperConfig {
         return this.config;
     }
 
+    /**
+     * Starts the documentation generation process for all configured targets.
+     * 
+     * @returns Promise resolving to processing results with success count and logs
+     */
     async start(): Promise<SimpleDocsScraperResult> {
         for(const target of this.config.targets) {
             await this.startTarget(target, this.config.targets.indexOf(target));
@@ -63,6 +109,12 @@ export class SimpleDocsScraper {
         }
     }
 
+    /**
+     * Processes a single target directory by scanning files and generating documentation.
+     * 
+     * @param target - The target configuration to process
+     * @param targetIndex - The index of the target in the targets array (for logging)
+     */
     async startTarget(target: Target, targetIndex: number) {
 
         // Check if cwd exists
@@ -94,6 +146,12 @@ export class SimpleDocsScraper {
         }
     }
 
+    /**
+     * Processes a single file by extracting documentation and generating output.
+     * 
+     * @param file - The file path to process
+     * @param target - The target configuration containing output directory
+     */
     async processFile(file: string, target: Target) {
         this.total++;
 

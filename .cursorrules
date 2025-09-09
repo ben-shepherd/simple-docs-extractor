@@ -24,3 +24,27 @@ Examples:
 - feat: add user authentication module
 - fix: resolve crash on startup
 - docs: update README with installation instructions
+
+---
+
+JSDoc Comments Rules
+Description:
+Ensure JSDoc comments follow standardized best practices.
+
+Rules:
+- Add JSDoc comments above classes only and not types or interfaces.
+- Surround documentation with <docs> and </docs> tags, each on their own line. Only applicable to the top of the class comment.
+- Only document complex methods that are not obvious. Do not include <docs></docs> tags.
+- If a complex type needs a comment, write a normal JavaScript comment without <docs></docs> tags.
+Examples:
+- /**
+  * <docs>
+  * Description here.
+  *
+  * Example or multiple examples here if applicable.
+  * 
+  * @param {string} name - The name of the example class
+  * @param {number} age - The age of the example class
+  * </docs>
+  */
+}

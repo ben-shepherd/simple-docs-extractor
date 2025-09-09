@@ -1,23 +1,28 @@
 import fs from 'fs';
 
+// Configuration for extracting documentation using start and end tags
 export type MethodTags = {
     extractMethod: 'tags';
     startTag: string;
     endTag: string;
 }
 
+// Configuration for extracting documentation using regular expressions
 export type MethodRegex = {
     extractMethod: 'regex';
     pattern: RegExp;
 }
 
+// Configuration for extracting documentation using a custom callback function
 export type MethodCallback = {
     extractMethod: 'callback';
     callback: (fileContent: string) => Promise<string | undefined> | (string | undefined);
 }
 
+// Union type for all possible extraction methods
 export type DocsExtractorConfig = MethodTags | MethodRegex | MethodCallback;
 
+// Result object returned by the documentation extraction process
 export type DocsExtractorResult = {
     docs: string;
     file: string;
@@ -26,6 +31,34 @@ export type DocsExtractorResult = {
     errorMessage?: string;
 }
 
+/**
+ * <docs>
+ * Extracts documentation from source files using various methods.
+ * 
+ * This class provides flexible documentation extraction capabilities supporting
+ * three different extraction methods: tag-based extraction, regex pattern matching,
+ * and custom callback functions. It handles file validation, error reporting,
+ * and content cleaning.
+ * 
+ * @example
+ * ```typescript
+ * // Extract using tags
+ * const extractor = new DocsExtractor('example.js', {
+ *   extractMethod: 'tags',
+ *   startTag: '&lt;docs&gt;',
+ *   endTag: '&lt;/docs&gt;'
+ * });
+ * 
+ * // Extract using regex
+ * const extractor = new DocsExtractor('example.js', {
+ *   extractMethod: 'regex',
+ *   pattern: /\/\*\*([\s\S]*?)\*\//g
+ * });
+ * 
+ * const result = await extractor.extract();
+ * ```
+ * </docs>
+ */
 export class DocsExtractor {
 
     constructor(
@@ -34,6 +67,12 @@ export class DocsExtractor {
     ) {
     }
 
+    /**
+     * Extracts documentation from the configured file using the specified method.
+     * 
+     * @returns Promise resolving to extraction result with documentation content or error details
+     * @throws {Error} When an invalid extraction method is configured
+     */
     async extract(): Promise<DocsExtractorResult> {
 
         // Check if the file exists
@@ -77,6 +116,12 @@ export class DocsExtractor {
     }
 
 
+    /**
+     * Extracts documentation using a regular expression pattern.
+     * 
+     * @param fileContent - The content of the file to extract from
+     * @returns Extraction result with matched documentation or error details
+     */
     protected extractUsingRegex(fileContent: string): DocsExtractorResult {
         const config = this.config as MethodRegex;
 
@@ -102,6 +147,12 @@ export class DocsExtractor {
         };
     }
 
+    /**
+     * Extracts documentation using a custom callback function.
+     * 
+     * @param fileContent - The content of the file to extract from
+     * @returns Promise resolving to extraction result with callback-generated documentation or error details
+     */
     protected async extractUsingCallback(fileContent: string): Promise<DocsExtractorResult> {
         const config = this.config as MethodCallback;
 
@@ -123,6 +174,12 @@ export class DocsExtractor {
         };
     }
 
+    /**
+     * Extracts documentation using start and end tags.
+     * 
+     * @param fileContent - The content of the file to extract from
+     * @returns Extraction result with content between tags or error details
+     */
     protected extractUsingTags(fileContent: string): DocsExtractorResult {
         const config = this.config as MethodTags;
 

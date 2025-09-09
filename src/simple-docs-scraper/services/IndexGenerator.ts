@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import { ExtensionReplacer } from './ExtensionReplacer.js';
+
+// Configuration for generating index files from a list of file paths
 export type IndexGeneratorConfig = {
     template: string;
     outDir: string;
@@ -10,10 +12,38 @@ export type IndexGeneratorConfig = {
     fileNameCallback?: (filePath: string) => string;
 }
 
+/**
+ * <docs>
+ * Generates index files from a list of file paths using templates.
+ * 
+ * This class creates index files (typically index.md) that list all the files
+ * in a directory structure. It supports custom formatting through callbacks,
+ * link generation, and template-based content generation.
+ * 
+ * @example
+ * ```typescript
+ * const generator = new IndexGenerator({
+ *   template: './templates/index.template.md',
+ *   outDir: './docs',
+ *   fileNameAsLink: true,
+ *   lineCallback: (fileName, lineNumber) => `${lineNumber}. ${fileName}\n`
+ * });
+ * 
+ * generator.generateContent(['file1.js', 'file2.ts']);
+ * // Creates ./docs/index.md with formatted file list
+ * ```
+ * </docs>
+ */
 export class IndexGenerator {
     constructor(private config: IndexGeneratorConfig) {
     }
 
+    /**
+     * Generates an index file from a list of file paths.
+     * 
+     * @param filePaths - Array of file paths to include in the index
+     * @throws {Error} When the template file is not found
+     */
     generateContent(filePaths: string[]): void {
         
         // Check if the out directory exists
@@ -49,6 +79,13 @@ export class IndexGenerator {
         fs.writeFileSync(outFilePath, templateContent);
     }
     
+    /**
+     * Formats a file path for display in the index.
+     * 
+     * @param filePath - The original file path to format
+     * @param outFilePath - The output file path (used for relative path calculations)
+     * @returns Formatted file name, optionally as a markdown link
+     */
     getFileName(filePath: string, outFilePath: string): string {
         if(this.config.fileNameCallback) {
             return this.config.fileNameCallback(filePath);
