@@ -1,23 +1,23 @@
 import { afterAll, afterEach, beforeEach, describe, expect, test } from "@jest/globals";
 import fs from 'fs';
-import { ExtensionReplacer } from "../simple-docs-scraper/services/ExtensionReplacer.js";
-import { IndexGenerator, IndexGeneratorConfig } from "../simple-docs-scraper/services/IndexGenerator.js";
+import { IndexFileGenerator, IndexFileGeneratorConfig } from "../simple-docs-scraper/generators/IndexFileGenerator.js";
+import { ExtensionReplacer } from "../simple-docs-scraper/transformers/ExtensionReplacer.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
-import { getOutputFilePath } from "./helpers/getOutputFilePath.js";
+import { getOutputPath } from "./helpers/getOutputPath.js";
 
 describe("Index Generator", () => {
-    let indexGenerator!: IndexGenerator;
-    let generatedFilePath: string = getOutputFilePath('index.md');
+    let indexGenerator!: IndexFileGenerator;
+    let generatedFilePath: string = getOutputPath('index.md');
 
-    const baseConfig: IndexGeneratorConfig = {
-        template: getOutputFilePath('test.template.md'),
+    const baseConfig: IndexFileGeneratorConfig = {
+        template: getOutputPath('test.template.md'),
         outDir: process.cwd() + '/src/tests/output'
     }
 
     beforeEach(() => {
-        indexGenerator = new IndexGenerator(baseConfig);
+        indexGenerator = new IndexFileGenerator(baseConfig);
         // Create a mock template file
-        fs.writeFileSync(getOutputFilePath('test.template.md'), 'Start. %content% End.');
+        fs.writeFileSync(getOutputPath('test.template.md'), 'Start. %content% End.');
     });
 
     afterEach(() => {
@@ -30,13 +30,13 @@ describe("Index Generator", () => {
 
     describe("config", () => {
         test("should accept config", () => {
-            expect(() => new IndexGenerator(baseConfig)).not.toThrow();
+            expect(() => new IndexFileGenerator(baseConfig)).not.toThrow();
         })
     });
 
     describe("generateContent", () => {
         test("should generate the content", () => {
-            const pathToTestFile = getOutputFilePath('test.md');
+            const pathToTestFile = getOutputPath('test.md');
             indexGenerator.generateContent([pathToTestFile]);
 
             const fileContent = fs.readFileSync(generatedFilePath, 'utf8');
@@ -47,9 +47,9 @@ describe("Index Generator", () => {
         })
 
         test("should generate the content with the line callback", () => {
-            const pathToTestFile = getOutputFilePath('test.md');
-            indexGenerator = new IndexGenerator({
-                template: getOutputFilePath('test.template.md'),
+            const pathToTestFile = getOutputPath('test.md');
+            indexGenerator = new IndexFileGenerator({
+                template: getOutputPath('test.template.md'),
                 outDir: process.cwd() + '/src/tests/output',
                 lineCallback: (fileNameEntry, lineNumber) => `${lineNumber}. ${ExtensionReplacer.replaceAllExtensions(fileNameEntry, 'md')}`,
             });
@@ -64,7 +64,7 @@ describe("Index Generator", () => {
         })
 
         test("should generate the content with the fileName callback", () => {
-            indexGenerator = new IndexGenerator({
+            indexGenerator = new IndexFileGenerator({
                 ...baseConfig,
                 fileNameCallback: (filePath) => filePath.replace('path/to/', ''),
             });
@@ -83,7 +83,7 @@ describe("Index Generator", () => {
         })
 
         test("should generate the content with the line callback and the fileName callback", () => {
-            indexGenerator = new IndexGenerator({
+            indexGenerator = new IndexFileGenerator({
                 ...baseConfig,
                 lineCallback: (fileNameEntry, lineNumber) => `${lineNumber}. ${fileNameEntry}`,
                 fileNameCallback: (filePath) => filePath.replace('path/to/', ''),
@@ -103,9 +103,9 @@ describe("Index Generator", () => {
         })
 
         test("should generate the content with the fileNameAsLink option", () => {
-            indexGenerator = new IndexGenerator({
+            indexGenerator = new IndexFileGenerator({
                 ...baseConfig,
-                fileNameAsLink: true,
+                markdownLink: true,
             });
 
             indexGenerator.generateContent([
@@ -122,10 +122,10 @@ describe("Index Generator", () => {
         })
 
         test("should generate the content with the baseDir option", () => {
-            indexGenerator = new IndexGenerator({
+            indexGenerator = new IndexFileGenerator({
                 ...baseConfig,
                 baseDir: 'path/to',
-                fileNameAsLink: true,
+                markdownLink: true,
             });
 
             indexGenerator.generateContent([
@@ -144,24 +144,24 @@ describe("Index Generator", () => {
 
     describe("getFileName", () => {
         test("should return the file name", () => {
-            indexGenerator = new IndexGenerator({
+            indexGenerator = new IndexFileGenerator({
                 ...baseConfig,
                 fileNameCallback: (filePath) => filePath.replace('path/to/', ''),
             });
 
-            const fileName = indexGenerator.getFileName('path/to/file1.md', 'path/to/file1.md');
+            const fileName = indexGenerator.getFileName('path/to/file1.md');
 
             expect(fileName).toBe('file1.md');
         })
 
         test("should return the file name with the callback", () => {
-            indexGenerator = new IndexGenerator({
-                template: getOutputFilePath('test.template.md'),
+            indexGenerator = new IndexFileGenerator({
+                template: getOutputPath('test.template.md'),
                 outDir: process.cwd() + '/src/tests/output',
                 fileNameCallback: (filePath) => filePath.replace('path/to/', ''),
             });
 
-            const fileName = indexGenerator.getFileName('path/to/file1.md', 'path/to/file1.md');
+            const fileName = indexGenerator.getFileName('path/to/file1.md');
 
             expect(fileName).toBe('file1.md');
         })

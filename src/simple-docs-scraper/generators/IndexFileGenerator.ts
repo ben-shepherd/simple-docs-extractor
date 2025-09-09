@@ -3,12 +3,12 @@ import path from 'path';
 import { ExtensionReplacer } from '../transformers/ExtensionReplacer.js';
 
 // Configuration for generating index files from a list of file paths
-export type IndexGeneratorConfig = {
-    template?: string;
+export type IndexFileGeneratorConfig = {
     outDir: string;
+    searchAndReplace?: string;
+    template?: string;
     baseDir?: string;
-    fileNameAsLink?: boolean;
-    searchAndReplace: string;
+    markdownLink?: boolean;
     lineCallback?: (fileNameEntry: string, lineNumber: number) => string;
     fileNameCallback?: (filePath: string) => string;
 }
@@ -36,7 +36,7 @@ export type IndexGeneratorConfig = {
  * </docs>
  */
 export class IndexFileGenerator {
-    constructor(private config: IndexGeneratorConfig) {
+    constructor(private config: IndexFileGeneratorConfig) {
     }
 
     /**
@@ -70,14 +70,14 @@ export class IndexFileGenerator {
             lineNumber++;
         }
 
-        templateContent = templateContent.replace(this.config.searchAndReplace, content);
+        templateContent = templateContent.replace(this.getSearchAndReplace(), content);
 
         fs.writeFileSync(outFilePath, templateContent);
     }
 
     private getTemplateContent(): string {
         if(!this.config.template) {
-            return this.config.searchAndReplace;
+            return this.getSearchAndReplace();
         }
 
         // Check if the template file exists
@@ -117,10 +117,23 @@ export class IndexFileGenerator {
         // replace all extensions with .md
         formattedFilePath = ExtensionReplacer.replaceAllExtensions(formattedFilePath, 'md');
 
-        if(this.config.fileNameAsLink) {
+        if(this.config.markdownLink) {
             return `[${formattedFilePath}](${formattedFilePath})`;
         }
 
         return formattedFilePath;
+    }
+
+    /**
+     * Gets the search and replace pattern for template injection.
+     * 
+     * @returns The search and replace pattern, defaults to '%content%' if not configured
+     */
+    private getSearchAndReplace() {
+        if(!this.config.searchAndReplace) {
+            return '%content%';
+        }
+
+        return this.config.searchAndReplace;
     }
 }

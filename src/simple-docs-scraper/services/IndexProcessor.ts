@@ -1,11 +1,10 @@
 import fs from 'fs';
 import path from 'path';
-import { IndexFileGenerator } from '../generators/IndexFileGenerator.js';
+import { IndexFileGenerator, IndexFileGeneratorConfig } from '../generators/IndexFileGenerator.js';
 
 export type IndexProcessorConfig = {
     baseDir: string;
-    template?: string;
-    searchAndReplace?: string;
+    indexFileGenerator?: Omit<IndexFileGeneratorConfig, 'outDir'>;
 }
 
 /**
@@ -66,23 +65,10 @@ export class IndexProcessor {
      */
     async handleSaveIndexFile(outDir: string, files: string[]) {
         const indexGenerator = new IndexFileGenerator({
-            template: this.config.template,
+            ...(this.config?.indexFileGenerator ?? {}),
             outDir: outDir,
-            searchAndReplace: this.getSearchAndReplace(),
         });
         indexGenerator.generateContent(files);
     }
 
-    /**
-     * Gets the search and replace pattern for template injection.
-     * 
-     * @returns The search and replace pattern, defaults to '%content%' if not configured
-     */
-    private getSearchAndReplace() {
-        if(!this.config.searchAndReplace) {
-            return '%content%';
-        }
-
-        return this.config.searchAndReplace;
-    }
 }

@@ -3,9 +3,10 @@ import { GlobOptions } from "glob";
 import { DocumentContentExtractorConfig } from "../files/DocumentContentExtractor.js";
 import { FileScanner } from "../files/FileScanner.js";
 import { DocGeneratorConfig } from "../generators/DocFileGenerator.js";
-import { IndexFileGenerator, IndexGeneratorConfig } from "../generators/IndexFileGenerator.js";
+import { IndexFileGeneratorConfig } from "../generators/IndexFileGenerator.js";
 import { TFormatter } from '../types/formatter.t.js';
 import { FileProcessor, ProcessResult, ProcessResultError } from './FileProcessor.js';
+import { IndexProcessor } from './IndexProcessor.js';
 
 // Configuration for a single target directory to process
 export type Target = {
@@ -24,7 +25,7 @@ export interface SimpleDocsScraperConfig {
     generators?: {
         index?: {
             template: string;
-        } & Partial<IndexGeneratorConfig>;
+        } & Partial<IndexFileGeneratorConfig>;
         documentation?: {
             template: string;
         } & Partial<DocGeneratorConfig>;
@@ -137,8 +138,8 @@ export class SimpleDocsScraper {
             await this.processSingleFile(file, target, targetIndex, preProcessedFiles, fileProcessor);
         }
 
-        // Create the index file
-        await this.createIndexFile(files, preProcessedFiles, target, targetIndex);
+        // Create the index files
+        await this.handleRecursivelyCreateIndexFiles(target);
     }
 
     /**
@@ -176,36 +177,21 @@ export class SimpleDocsScraper {
     }
 
     /**
-     * Creates an index file for the target if configured to do so.
+     * Creates an index file recursively for the target if configured to do so.
      * 
-     * @param files - Array of file paths to include in the index
-     * @param preProcessedFiles - Array of successfully processed files
      * @param target - The target configuration
-     * @param targetIndex - The index of the target for logging
      */
-    private async createIndexFile(
-        files: string[],
-        preProcessedFiles: ProcessResult[],
-        target: Target,
-        targetIndex: number
-    ) {
-        const shouldCreateIndexFile = target.createIndexFile 
-            && typeof this.config.generators?.index?.template === 'string'
-            && preProcessedFiles.length > 0;
-
-        if(shouldCreateIndexFile) {
-            this.logs.push(`targets[${targetIndex}]: Creating index file`);
-
-            const indexGenerator = new IndexFileGenerator({
-                ...(this.config.generators?.index ?? {}),
-                baseDir: this.config.baseDir,
-                template: this.config.generators?.index?.template as string,
-                outDir: target.outDir,
-                searchAndReplace: this.config.searchAndReplace.replace,
-            });
-
-            indexGenerator.generateContent(files);
+    private async handleRecursivelyCreateIndexFiles(target: Target) {
+        if(!target.createIndexFile) {
+            return;
         }
+
+        await new IndexProcessor({
+            baseDir: target.outDir,
+            indexFileGenerator: {
+                ...(this.config.generators?.index ?? {}),
+            },
+        }).handle();
     }
 
     /**

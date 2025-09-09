@@ -1,10 +1,10 @@
-import { afterAll, afterEach, beforeEach, describe, expect, test } from "@jest/globals";
+import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import path from "path";
 import { MultiLineCommentClear } from "../simple-docs-scraper/formatters/MultiLineCommentClear.js";
 import { SimpleDocsScraper, SimpleDocsScraperConfig } from "../simple-docs-scraper/services/SimpleDocsScraper.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
-import { getOutputFilePath } from "./helpers/getOutputFilePath.js";
+import { getOutputPath } from "./helpers/getOutputPath.js";
 
 const defaultConfig: SimpleDocsScraperConfig = {
     baseDir: process.cwd(),
@@ -22,7 +22,7 @@ const defaultConfig: SimpleDocsScraperConfig = {
                 cwd: path.join(process.cwd(), 'src/tests/output'),
                 extensions: '**/exampleFunc.js',
             },
-            outDir: getOutputFilePath('js-files'),
+            outDir: getOutputPath('js-files'),
             createIndexFile: false,
         },
     ],
@@ -34,7 +34,7 @@ describe("Formatter", () => {
     deleteOutputFiles();
 
     // Create a mock js file with a multi line comment
-    fs.writeFileSync(getOutputFilePath('exampleFunc.js'), (
+    fs.writeFileSync(getOutputPath('exampleFunc.js'), (
 `/**
  * <docs>
  * Some documentation here
@@ -76,7 +76,7 @@ const exampleFunc = () => {
 
         const result = await scraper.start();
 
-        const docsFileContent = fs.readFileSync(getOutputFilePath('js-files/exampleFunc.md'), 'utf8');
+        const docsFileContent = fs.readFileSync(getOutputPath('js-files/exampleFunc.md'), 'utf8');
 
         expect(result.successCount).toBe(1);
         expect(result.totalCount).toBe(1);

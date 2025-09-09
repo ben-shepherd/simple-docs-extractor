@@ -1,6 +1,6 @@
 import { describe, expect, test } from "@jest/globals";
 import path from "path";
-import { FileScanner } from "../simple-docs-scraper/services/FileScanner.js";
+import { FileScanner } from "../simple-docs-scraper/files/FileScanner.js";
 
 describe("File Collector", () => {
     let fileCollector!: FileScanner;

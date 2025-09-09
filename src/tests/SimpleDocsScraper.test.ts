@@ -50,6 +50,7 @@ describe("Example Test Suite", () => {
 
     beforeEach(() => {
         deleteOutputFiles();
+
         scraper = new SimpleDocsScraper(defaultConfig);
 
         // Create a mock template file
@@ -153,7 +154,7 @@ End.`
 
             expect(result.successCount).toBe(1);
             expect(result.totalCount).toBe(1);
-            expect(indexFileContent).toContain('- example.twig');
+            expect(indexFileContent).toContain('- example.md');
         })
 
         test('should be able to generate an index file with a fileName callback and a line callback', async () => {
@@ -182,7 +183,7 @@ End.`
 
             expect(result.successCount).toBe(1);
             expect(result.totalCount).toBe(1);
-            expect(indexFileContent).toContain('- example.twig (1)');
+            expect(indexFileContent).toContain('- example.md (1)');
         })
 
         test('should be able to generate an index file with the fileNameAsLink option', async () => {
@@ -193,7 +194,7 @@ End.`
                     index: {
                         ...(defaultConfig.generators?.index ?? {}),
                         template: getOutputPath('index.template.md'),
-                        fileNameAsLink: true,
+                        markdownLink: true,
                     }
                 },
                 targets: [twigFilesTarget]
@@ -238,7 +239,7 @@ End.`
         });
         
         const result = await scraper.start();
-        const jsFiles = fs.readdirSync(getOutputPath('output-files'));
+        const jsFiles = fs.readdirSync(getOutputPath('output-files/js-files'));
     
         expect(result.successCount).toBeGreaterThan(1);
         expect(jsFiles.some(file => file === 'exampleFunc.md')).toBe(true);

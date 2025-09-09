@@ -48,7 +48,9 @@ describe("Example Test Suite", () => {
         test("should generate the index files with a custom template", async () => {
             const indexProcessor = new IndexProcessor({
                 baseDir: docsPath,
-                template: getOutputPath('templates/index.template.md'),
+                indexFileGenerator: {
+                    template: getOutputPath('templates/index.template.md'),
+                },
             });
             
             await indexProcessor.handle();

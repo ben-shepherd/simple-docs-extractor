@@ -33,7 +33,7 @@ describe("Publish Docs", () => {
                 generators: {
                     index: {
                         template: path.join(process.cwd(), 'templates/index.template.md'),
-                        fileNameAsLink: true,
+                        markdownLink: true,
                     },
                     documentation: {
                         template: path.join(process.cwd(), 'templates/documentation.template.md'),
@@ -62,7 +62,7 @@ describe("Publish Docs", () => {
             expect(files.length).toBeGreaterThanOrEqual(1);
             expect(files.some(file => file.includes('index.md'))).toBe(true);
             expect(files.some(file => file.includes('services\\SimpleDocsScraper.md'))).toBe(true);
-            expect(files.some(file => file.includes('generators\\DocGenerator.md'))).toBe(true);
+            expect(files.some(file => file.includes('generators\\DocFileGenerator.md'))).toBe(true);
         })
     });
 });

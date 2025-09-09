@@ -1,14 +1,14 @@
 import { describe, expect, test } from "@jest/globals";
-import { DocsExtractor } from "../simple-docs-scraper/services/Extractor.js";
+import { DocumentContentExtractor } from "../simple-docs-scraper/files/DocumentContentExtractor.js";
 
 describe("Docs Extractor", () => {
-    let docsExtractor!: DocsExtractor;
+    let docsExtractor!: DocumentContentExtractor;
     const fileWithDocs = process.cwd() + '/src/tests/files/js-files/exampleFunc.js';
     const fileWithoutDocs = process.cwd() + '/src/tests/files/js-files/exampleFuncNoDocs.js';
 
     describe("config", () => {
         test("should throw an error if the extract method is not valid", async () => {
-            docsExtractor = new DocsExtractor(fileWithDocs, {
+            docsExtractor = new DocumentContentExtractor(fileWithDocs, {
                 extractMethod: 'invalid',
             } as any);
 
@@ -16,7 +16,7 @@ describe("Docs Extractor", () => {
         })
 
         test('should accept a valid extract tags method', async () => {
-            docsExtractor = new DocsExtractor(fileWithDocs, {
+            docsExtractor = new DocumentContentExtractor(fileWithDocs, {
                 extractMethod: 'tags',
                 startTag: '<docs>',
                 endTag: '</docs>',
@@ -26,7 +26,7 @@ describe("Docs Extractor", () => {
         })
 
         test('should accept regex extract method', async () => {
-            docsExtractor = new DocsExtractor(fileWithDocs, {
+            docsExtractor = new DocumentContentExtractor(fileWithDocs, {
                 extractMethod: 'regex',
                 pattern: new RegExp('/<docs>(.*?)<\/docs>/s'),
             });
@@ -35,7 +35,7 @@ describe("Docs Extractor", () => {
         })
 
         test('should accept callback extract method', async () => {
-            docsExtractor = new DocsExtractor(fileWithDocs, {
+            docsExtractor = new DocumentContentExtractor(fileWithDocs, {
                 extractMethod: 'callback',
                 callback: async (fileContent) => {
                     return fileContent.match('/<docs>(.*?)<\/docs>/s')?.[1];
@@ -48,7 +48,7 @@ describe("Docs Extractor", () => {
 
     describe("extract using tags", () => {
         test("should perform expected behavior", async () => {
-            docsExtractor = new DocsExtractor(fileWithDocs, {
+            docsExtractor = new DocumentContentExtractor(fileWithDocs, {
                 extractMethod: 'tags',
                 startTag: '<docs>',
                 endTag: '</docs>',
@@ -61,7 +61,7 @@ describe("Docs Extractor", () => {
         })
 
         test("should return an error if the file does not contain the start and end tags", async () => {
-            docsExtractor = new DocsExtractor(fileWithoutDocs, {
+            docsExtractor = new DocumentContentExtractor(fileWithoutDocs, {
                 extractMethod: 'tags',
                 startTag: '<docs>',
                 endTag: '</docs>',
@@ -75,7 +75,7 @@ describe("Docs Extractor", () => {
 
 
         test("should return an error if the file does not exist", async () => {
-            docsExtractor = new DocsExtractor('path-to-nonexistent-file.js', {
+            docsExtractor = new DocumentContentExtractor('path-to-nonexistent-file.js', {
                 extractMethod: 'tags',
                 startTag: '<docs>',
                 endTag: '</docs>',
@@ -90,7 +90,7 @@ describe("Docs Extractor", () => {
 
     describe("extract using regex", () => {
         test("should perform expected behavior", async () => {
-            docsExtractor = new DocsExtractor(fileWithDocs, {
+            docsExtractor = new DocumentContentExtractor(fileWithDocs, {
                 extractMethod: 'regex',
                 pattern: new RegExp(/<docs>(.*?)<\/docs>/s),
             });
@@ -102,7 +102,7 @@ describe("Docs Extractor", () => {
         });
 
         test("should return an error if the file does not contain the regex", async () => {
-            docsExtractor = new DocsExtractor(fileWithoutDocs, {
+            docsExtractor = new DocumentContentExtractor(fileWithoutDocs, {
                 extractMethod: 'regex',
                 pattern: new RegExp('/<docs>(.*?)<\/docs>/s'),
             });
@@ -116,7 +116,7 @@ describe("Docs Extractor", () => {
 
     describe("extract using callback", () => {
         test("should perform expected behavior", async () => {
-            docsExtractor = new DocsExtractor(fileWithDocs, {
+            docsExtractor = new DocumentContentExtractor(fileWithDocs, {
                 extractMethod: 'callback',
                 callback: async (fileContent) => {
                     return new RegExp(/<docs>(.*?)<\/docs>/s).exec(fileContent)?.[1];
@@ -130,7 +130,7 @@ describe("Docs Extractor", () => {
         });
 
         test("should return an error if the file does not contain the callback", async () => {
-            docsExtractor = new DocsExtractor(fileWithoutDocs, {
+            docsExtractor = new DocumentContentExtractor(fileWithoutDocs, {
                 extractMethod: 'callback',
                 callback: async (fileContent) => {
                     return undefined;
