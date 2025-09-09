@@ -170,7 +170,7 @@ export class SimpleDocsScraper {
         const injectedContent = new Injection({
             template: this.config.generators.documentation.template,
             outDir: target.outDir,
-            injectInto: this.config.searchAndReplace.replace,
+            searchAndReplace: this.config.searchAndReplace.replace,
         })
         .injectIntoString(extractionResult.docs, this.config.searchAndReplace.replace);
 

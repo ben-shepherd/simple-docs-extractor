@@ -26,7 +26,7 @@ describe("Injection", () => {
             expect(() => new Injection({
                 template: getOutputFilePath('test.template.txt'),
                 outDir,
-                injectInto: '%content%',
+                searchAndReplace: '%content%',
             }))
         })
     });
@@ -41,7 +41,7 @@ describe("Injection", () => {
             injection = new Injection({
                 template: getOutputFilePath('test.template.txt'),
                 outDir,
-                injectInto: '%content%',
+                searchAndReplace: '%content%',
             });
 
             const result = injection.injectIntoString(testString, 'This is a test string.');
@@ -56,7 +56,7 @@ describe("Injection", () => {
         test("should be able to inject the docs into the file", () => {
             injection = new Injection({
                 template: getOutputFilePath('test.template.txt'),
-                injectInto: '%content%',
+                searchAndReplace: '%content%',
                 outDir,
             });
             
@@ -85,7 +85,7 @@ describe("Injection", () => {
             injection = new Injection({
                 template: 'nonexistent.txt',
                 outDir,
-                injectInto: '%content%',
+                searchAndReplace: '%content%',
             });
 
             expect(() => injection.injectIntoFile('This is a test string.', 'test.txt')).toThrow('Template file not found');

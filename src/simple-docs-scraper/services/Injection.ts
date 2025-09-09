@@ -5,7 +5,7 @@ import path from 'path';
 export type InjectionConfig = {
     template: string;
     outDir: string;
-    injectInto: string;
+    searchAndReplace: string;
 }
 
 // Result object for injection operations
@@ -51,7 +51,7 @@ export class Injection {
      * @returns The string with injected content
      */
     injectIntoString(content: string, replaceWith: string): string {
-        return content.replace(this.config.injectInto, replaceWith);
+        return content.replace(this.config.searchAndReplace, replaceWith);
     }
     
     /**
@@ -69,7 +69,7 @@ export class Injection {
         }
 
         const fileContent = fs.readFileSync(this.config.template, 'utf8');
-        const injectedContent = fileContent.replace(this.config.injectInto, replaceWith);
+        const injectedContent = fileContent.replace(this.config.searchAndReplace, replaceWith);
         const outFilePath = path.join(this.config.outDir, outFile);
         
         // Add the injected content to the file
