@@ -62,7 +62,7 @@ export class IndexGenerator {
         const outFilePath = path.join(this.config.outDir, 'index.md');
 
         for(const filePath of filePaths) {
-            const fileName = this.getFileName(filePath, outFilePath);
+            const fileName = this.getFileName(filePath);
 
             if(this.config.lineCallback) {
                 content += this.config.lineCallback(fileName, lineNumber);
@@ -83,10 +83,9 @@ export class IndexGenerator {
      * Formats a file path for display in the index.
      * 
      * @param filePath - The original file path to format
-     * @param outFilePath - The output file path (used for relative path calculations)
      * @returns Formatted file name, optionally as a markdown link
      */
-    getFileName(filePath: string, outFilePath: string): string {
+    getFileName(filePath: string): string {
         if(this.config.fileNameCallback) {
             return this.config.fileNameCallback(filePath);
         }

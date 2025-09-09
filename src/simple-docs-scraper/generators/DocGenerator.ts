@@ -41,7 +41,7 @@ export class DocGenerator {
      * @param outFile - The original file path used to determine the output filename
      * @throws {Error} When the template file is not found
      */
-    generateContent(content: string, outFile: string): void {
+    saveToMarkdownFile(injectedContent: string, outFile: string): void {
 
         const fileBaseName = path.basename(outFile);
         let outFilePath = path.join(this.config.outDir, fileBaseName);
@@ -53,8 +53,8 @@ export class DocGenerator {
         if (!fs.existsSync(this.config.outDir)) {
             fs.mkdirSync(this.config.outDir, { recursive: true });
         }
-        
-        fs.writeFileSync(outFilePath, this.generateContentString(content));
+
+        fs.writeFileSync(outFilePath, injectedContent);
     }
 
     generateContentString(content: string): string {

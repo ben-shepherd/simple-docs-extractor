@@ -96,7 +96,7 @@ export class SimpleDocsScraper {
      */
     async start(): Promise<SimpleDocsScraperResult> {
         for(const target of this.config.targets) {
-            await this.startTarget(target, this.config.targets.indexOf(target));
+            await this.handleTarget(target, this.config.targets.indexOf(target));
         }
 
         this.logs.push(`Finished. Success: ${this.success} / Total: ${this.total}`);
@@ -111,7 +111,7 @@ export class SimpleDocsScraper {
     /**
      * Processes a single target directory by scanning files and generating documentation.
      */
-    async startTarget(target: Target, targetIndex: number) {
+    async handleTarget(target: Target, targetIndex: number) {
 
         const fileProcessor = new FileProcesser(this.config)
 
@@ -153,9 +153,8 @@ export class SimpleDocsScraper {
             return;
         }
         
-        preProcessedFiles.push(processedResult);
-
         // Process the file
+        preProcessedFiles.push(processedResult);
         await fileProcessor.processFile(processedResult, target, targetIndex)
 
         // Log the success

@@ -104,7 +104,7 @@ export class FileProcesser {
             outDir: processedResult.outDir,
             searchAndReplace: this.config.searchAndReplace.replace,
         })
-            .generateContent(processedResult.content, outFile);
+        .saveToMarkdownFile(processedResult.content, outFile);
 
     }
 }
