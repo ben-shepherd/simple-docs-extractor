@@ -1,0 +1,26 @@
+Well-formatted Commit Message Rules
+
+Description:
+Ensure commit messages follow standardized best practices.
+
+Rules:
+1. Commit message must start with a type (feat, fix, docs, style, refactor, test, chore)
+   followed by a colon and a space.
+   Example: feat: add new login feature
+
+2. Commit message subject should be no longer than 72 characters.
+
+3. Subject should be written in the imperative mood (e.g., "Add", "Fix", "Update").
+   Use imperative verbs in the subject line.
+
+4. Do not end the subject line with a period.
+
+5. If a body is present, separate the subject from the body with a blank line.
+
+6. Body lines should be wrapped at 72 characters.
+
+7. Each feature should be on a new line prefixed with a dash.
+Examples:
+- feat: add user authentication module
+- fix: resolve crash on startup
+- docs: update README with installation instructions
