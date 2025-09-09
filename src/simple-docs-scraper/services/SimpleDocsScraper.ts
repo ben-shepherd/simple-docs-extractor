@@ -1,12 +1,11 @@
 import fs from 'fs';
 import { GlobOptions } from "glob";
-import path from 'path';
-import { DocsExtractor, DocsExtractorConfig } from "../files/Extractor.js";
+import { DocsExtractorConfig } from "../files/Extractor.js";
 import { FileScanner } from "../files/FileScanner.js";
-import { DocGenerator, DocGeneratorConfig } from "../generators/DocGenerator.js";
+import { DocGeneratorConfig } from "../generators/DocGenerator.js";
 import { IndexGenerator, IndexGeneratorConfig } from "../generators/IndexGenerator.js";
-import { Injection } from "../transformers/Injection.js";
 import { TFormatter } from '../types/formatter.t.js';
+import { FileProcesser, PreProcessFileErrorResult, PreProcessFileResult } from './FileProcesser.js';
 
 // Configuration for a single target directory to process
 export type Target = {
@@ -41,16 +40,6 @@ export type SimpleDocsScraperResult = {
     logs: string[];
 }
 
-type PreProcessFileSuccessResult = {
-    content: string;
-    outDir: string;
-    fileName: string;
-    loggableFileName: string;
-}
-type PreProcessFileErrorResult = {
-    error: string;
-}
-type PreProcessFileResult = PreProcessFileSuccessResult | PreProcessFileErrorResult;
 
 /**
  * <docs>
@@ -91,14 +80,12 @@ export class SimpleDocsScraper {
         private config: SimpleDocsScraperConfig,
         protected logs: string[] = [],
         protected success: number = 0,
-        protected total: number = 0
+        protected total: number = 0,
     ) {
     }
 
     /**
      * Returns the current configuration.
-     * 
-     * @returns The scraper configuration object
      */
     getConfig(): SimpleDocsScraperConfig {
         return this.config;
@@ -106,8 +93,6 @@ export class SimpleDocsScraper {
 
     /**
      * Starts the documentation generation process for all configured targets.
-     * 
-     * @returns Promise resolving to processing results with success count and logs
      */
     async start(): Promise<SimpleDocsScraperResult> {
         for(const target of this.config.targets) {
@@ -125,11 +110,10 @@ export class SimpleDocsScraper {
 
     /**
      * Processes a single target directory by scanning files and generating documentation.
-     * 
-     * @param target - The target configuration to process
-     * @param targetIndex - The index of the target in the targets array (for logging)
      */
     async startTarget(target: Target, targetIndex: number) {
+
+        const fileProcessor = new FileProcesser(this.config)
 
         this.logs.push(`targets[${targetIndex}]: Starting target`);
 
@@ -139,26 +123,55 @@ export class SimpleDocsScraper {
             return;
         }
 
-        const fileScanner = new FileScanner({
-            cwd: target.globOptions.cwd,
-            extensions: target.globOptions.extensions,
-        });
-
-        const files = await fileScanner.collect(target.globOptions);
+        const files = await this.getFiles(target);
         let preProcessedFiles: PreProcessFileResult[] = [];
 
         for(const file of files) {
-            const preProcessedFile = await this.preProcessFile(file, target);
-
-            if('error' in preProcessedFile) {
-                this.logs.push(`Error: ${(preProcessedFile as unknown as PreProcessFileErrorResult).error}`);
-                continue;
-            }
-            
-            preProcessedFiles.push(preProcessedFile);
-            await this.processFile(preProcessedFile as PreProcessFileSuccessResult, target, targetIndex);
+            await this.processSingleFile(file, target, targetIndex, preProcessedFiles, fileProcessor);
         }
 
+        // Create the index file
+        await this.createIndexFile(files, preProcessedFiles, target, targetIndex);
+    }
+
+    /**
+     * Processes a single file by extracting documentation and generating output.
+     */
+    private async processSingleFile(
+        file: string,
+        target: Target,
+        targetIndex: number,
+        preProcessedFiles: PreProcessFileResult[],
+        fileProcessor: FileProcesser
+    ) {
+        const processedResult = await new FileProcesser(this.config).preProcess(file, target)
+        this.total++;
+
+        // If there is an error, log it and return
+        if('error' in processedResult) {
+            this.logs.push(`Error: ${(processedResult as unknown as PreProcessFileErrorResult).error}`);
+            return;
+        }
+        
+        preProcessedFiles.push(processedResult);
+
+        // Process the file
+        await fileProcessor.processFile(processedResult, target, targetIndex)
+
+        // Log the success
+        this.logs.push(`targets[${targetIndex}]: Generated documentation file for ${processedResult.loggableFileName}`);
+        this.success++;
+    }
+
+    /**
+     * Creates an index file for the target.
+     */
+    private async createIndexFile(
+        files: string[],
+        preProcessedFiles: PreProcessFileResult[],
+        target: Target,
+        targetIndex: number
+    ) {
         const shouldCreateIndexFile = target.createIndexFile 
             && typeof this.config.generators?.index?.template === 'string'
             && preProcessedFiles.length > 0;
@@ -177,82 +190,15 @@ export class SimpleDocsScraper {
         }
     }
 
-    async preProcessFile(file: string, target: Target): Promise<PreProcessFileResult> {
-
-        this.total++;
-        
-        const extractionResult = await new DocsExtractor(file, this.config.extraction).extract();
-
-        if(!extractionResult.sucess) {
-            return {
-                error: `Error: ${extractionResult.errorType} in file ${file}`,
-            };
-        }
-
-        // Inject the content into the template
-        let injectedContent = new Injection({
-            template: this.config.generators?.documentation?.template ?? '',
-            outDir: target.outDir,
-            searchAndReplace: this.config.searchAndReplace.replace,
-        })
-        .injectIntoString(extractionResult.docs, this.config.searchAndReplace.replace);
-
-        // Apply formatters
-        if(this.config.formatters) {
-            for(const formatter of this.config.formatters) {
-                injectedContent = formatter({ filePath: file, outFile: file, content: injectedContent });
-            }
-        }
-
-        // Generate the documentation file
-        const generatedContent = new DocGenerator({
-            template: this.config.generators?.documentation?.template,
-            outDir: target.outDir,
-            searchAndReplace: this.config.searchAndReplace.replace,
-        })
-        .generateContentString(injectedContent);
-
-        // Transform the out dir to match the files folder location
-        // e.g. /services/fileName.js
-        // should go to
-        // docs/services/fileName.md
-        let fileParentDir = path.dirname(file)
-        fileParentDir = fileParentDir.replace(target.globOptions.cwd, '')
-        const newOutDir = path.join(target.outDir, fileParentDir)
-
-        return {
-            content: generatedContent,
-            fileName: path.basename(file),
-            outDir: newOutDir,
-            loggableFileName: file.replace(this.config.baseDir, ''),
-        };
-    }
-
     /**
-     * Processes a single file by extracting documentation and generating output.
-     * 
-     * @param processedResult - The file path to process
-     * @param target - The target configuration containing output directory
+     * Gets the files for the target.
      */
-    async processFile(processedResult: PreProcessFileSuccessResult, target: Target, targetIndex: number) {
+    private async getFiles(target: Target) {
+        const fileScanner = new FileScanner({
+            cwd: target.globOptions.cwd,
+            extensions: target.globOptions.extensions,
+        });
 
-        // Create the out directory if it doesn't exist
-        if (!fs.existsSync(target.outDir)) {
-            fs.mkdirSync(target.outDir, { recursive: true });
-        }
-
-        const outFile = path.join(target.outDir, processedResult.fileName);
-
-        // Generate the documentation file
-        new DocGenerator({
-            template: this.config.generators?.documentation?.template,
-            outDir: processedResult.outDir,
-            searchAndReplace: this.config.searchAndReplace.replace,
-        })
-        .generateContent(processedResult.content, outFile);
-
-        this.logs.push(`targets[${targetIndex}]: Generated documentation file for ${processedResult.loggableFileName}`);
-        
-        this.success++;
+        return await fileScanner.collect(target.globOptions);
     }
 }
