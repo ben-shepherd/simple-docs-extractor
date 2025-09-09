@@ -1,5 +1,6 @@
 import { afterAll, afterEach, beforeEach, describe, expect, test } from "@jest/globals";
 import fs from 'fs';
+import { ExtensionReplacer } from "../simple-docs-scraper/services/ExtensionReplacer.js";
 import { IndexGenerator, IndexGeneratorConfig } from "../simple-docs-scraper/services/IndexGenerator.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputFilePath } from "./helpers/getOutputFilePath.js";
@@ -41,7 +42,7 @@ describe("Index Generator", () => {
             const fileContent = fs.readFileSync(generatedFilePath, 'utf8');
 
             expect(fileContent).toContain('Start.');
-            expect(fileContent).toContain('- ' + pathToTestFile);
+            expect(fileContent).toContain('- test.md');
             expect(fileContent).toContain('End.');
         })
 
@@ -50,7 +51,7 @@ describe("Index Generator", () => {
             indexGenerator = new IndexGenerator({
                 template: getOutputFilePath('test.template.md'),
                 outDir: process.cwd() + '/src/tests/output',
-                lineCallback: (fileNameEntry, lineNumber) => `${lineNumber}. ${fileNameEntry}`,
+                lineCallback: (fileNameEntry, lineNumber) => `${lineNumber}. ${ExtensionReplacer.replaceAllExtensions(fileNameEntry, 'md')}`,
             });
 
             indexGenerator.generateContent([pathToTestFile]);
@@ -58,7 +59,7 @@ describe("Index Generator", () => {
             const fileContent = fs.readFileSync(generatedFilePath, 'utf8');
 
             expect(fileContent).toContain('Start.');
-            expect(fileContent).toContain('1. ' + pathToTestFile);
+            expect(fileContent).toContain('1. test.md');
             expect(fileContent).toContain('End.');
         })
 
@@ -115,8 +116,8 @@ describe("Index Generator", () => {
             const fileContent = fs.readFileSync(generatedFilePath, 'utf8');
 
             expect(fileContent).toContain('Start.');
-            expect(fileContent).toContain('- [path/to/test.md](path/to/test.md)');
-            expect(fileContent).toContain('- [path/to/test2.md](path/to/test2.md)');
+            expect(fileContent).toContain('- [test.md](test.md)');
+            expect(fileContent).toContain('- [test2.md](test2.md)');
             expect(fileContent).toContain('End.');
         })
 
@@ -135,8 +136,8 @@ describe("Index Generator", () => {
             const fileContent = fs.readFileSync(generatedFilePath, 'utf8');
 
             expect(fileContent).toContain('Start.');
-            expect(fileContent).toContain('- [/test.md](/test.md)');
-            expect(fileContent).toContain('- [/test2.md](/test2.md)');
+            expect(fileContent).toContain('- [test.md](test.md)');
+            expect(fileContent).toContain('- [test2.md](test2.md)');
             expect(fileContent).toContain('End.');
         })
     })
@@ -148,7 +149,7 @@ describe("Index Generator", () => {
                 fileNameCallback: (filePath) => filePath.replace('path/to/', ''),
             });
 
-            const fileName = indexGenerator.getFileName('path/to/file1.md');
+            const fileName = indexGenerator.getFileName('path/to/file1.md', 'path/to/file1.md');
 
             expect(fileName).toBe('file1.md');
         })
@@ -160,7 +161,7 @@ describe("Index Generator", () => {
                 fileNameCallback: (filePath) => filePath.replace('path/to/', ''),
             });
 
-            const fileName = indexGenerator.getFileName('path/to/file1.md');
+            const fileName = indexGenerator.getFileName('path/to/file1.md', 'path/to/file1.md');
 
             expect(fileName).toBe('file1.md');
         })

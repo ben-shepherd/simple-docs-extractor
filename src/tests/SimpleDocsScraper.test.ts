@@ -1,7 +1,7 @@
-import { afterAll, afterEach, beforeEach, describe, expect, test } from "@jest/globals";
-import { SimpleDocsScraper, SimpleDocsScraperConfig } from "../simple-docs-scraper/services/SimpleDocsScraper.js";
+import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from 'fs';
 import path from "path";
+import { SimpleDocsScraper, SimpleDocsScraperConfig } from "../simple-docs-scraper/services/SimpleDocsScraper.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputFilePath } from "./helpers/getOutputFilePath.js";
 
@@ -125,7 +125,7 @@ End.`
             expect(result.total).toBe(1);
             expect(result.logs).toHaveLength(0);
             expect(twigFiles).toHaveLength(2);
-            expect(indexFileContent).toContain('example.html.twig (1)');
+            expect(indexFileContent).toContain('example.md (1)');
         })
 
         test("should be able to generate an index file with a fileName callback", async () => {
@@ -205,8 +205,7 @@ End.`
             expect(result.success).toBe(1);
             expect(result.total).toBe(1);
             expect(result.logs).toHaveLength(0);
-            expect(indexFileContent).toContain('- [example.html.twig](example.html.twig)');
-            expect(indexFileContent).not.toContain('example.html.twig');
+            expect(indexFileContent).toContain('- [example.md](example.md)');
         })
     });
 });

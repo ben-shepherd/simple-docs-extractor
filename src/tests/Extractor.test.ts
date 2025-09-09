@@ -1,10 +1,10 @@
 import { describe, expect, test } from "@jest/globals";
-import { DocsExtractor } from "../simple-docs-scraper/services/DocsExtractor.js";
+import { DocsExtractor } from "../simple-docs-scraper/services/Extractor.js";
 
 describe("Docs Extractor", () => {
     let docsExtractor!: DocsExtractor;
-    const fileWithDocs = process.cwd() + '/src/tests/js-files/exampleFunc.js';
-    const fileWithoutDocs = process.cwd() + '/src/tests/js-files/exampleFuncNoDocs.js';
+    const fileWithDocs = process.cwd() + '/src/tests/files/js-files/exampleFunc.js';
+    const fileWithoutDocs = process.cwd() + '/src/tests/files/js-files/exampleFuncNoDocs.js';
 
     describe("config", () => {
         test("should throw an error if the extract method is not valid", async () => {
@@ -119,9 +119,14 @@ describe("Docs Extractor", () => {
             docsExtractor = new DocsExtractor(fileWithDocs, {
                 extractMethod: 'callback',
                 callback: async (fileContent) => {
-                    return fileContent.match('/<docs>(.*?)<\/docs>/s')?.[1];
+                    return new RegExp(/<docs>(.*?)<\/docs>/s).exec(fileContent)?.[1];
                 },
             });
+
+            const result = await docsExtractor.extract();
+
+            expect(result.sucess).toBe(true);
+            expect(result.docs).toContain('#exampleFunc.js');
         });
 
         test("should return an error if the file does not contain the callback", async () => {

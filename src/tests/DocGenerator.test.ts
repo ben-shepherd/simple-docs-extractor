@@ -24,7 +24,7 @@ describe("Doc Generator", () => {
             expect(() => docGenerator = new DocGenerator({
                 template: getOutputFilePath('test.template.md'),
                 outDir: process.cwd() + '/src/tests/output',
-                injectInto: '%content%',
+                searchAndReplace: '%content%',
             })).not.toThrow();
         })
     });
@@ -34,7 +34,7 @@ describe("Doc Generator", () => {
             docGenerator = new DocGenerator({
                 template: getOutputFilePath('test.template.md'),
                 outDir: process.cwd() + '/src/tests/output',
-                injectInto: '%content%',
+                searchAndReplace: '%content%',
             });
 
             docGenerator.generateContent('This is a test string.', 'test.md');
@@ -52,7 +52,7 @@ describe("Doc Generator", () => {
             docGenerator = new DocGenerator({
                 template: 'nonexistent.md',
                 outDir: process.cwd() + '/src/tests/output',
-                injectInto: '%content%',
+                searchAndReplace: '%content%',
             });
 
             expect(() => docGenerator.generateContent('This is a test string.', 'test.md')).toThrow('Template file not found');
