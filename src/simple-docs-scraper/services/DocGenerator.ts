@@ -6,7 +6,7 @@ import { ExtensionReplacer } from './ExtensionReplacer.js';
 export type DocGeneratorConfig = {
     template: string;
     outDir: string;
-    injectInto: string;
+    searchAndReplace: string;
 }
 
 /**
@@ -22,7 +22,7 @@ export type DocGeneratorConfig = {
  * const generator = new DocGenerator({
  *   template: './templates/doc.template.md',
  *   outDir: './docs',
- *   injectInto: '{{CONTENT}}'
+ *   searchAndReplace: '{{CONTENT}}'
  * });
  * 
  * generator.generateContent('Some documentation content', 'example.js');
@@ -60,7 +60,7 @@ export class DocGenerator {
         }
 
         const fileContent = fs.readFileSync(this.config.template, 'utf8');
-        const injectedContent = fileContent.replace(this.config.injectInto, content);
+        const injectedContent = fileContent.replace(this.config.searchAndReplace, content);
         
         fs.writeFileSync(outFilePath, injectedContent);
     }
