@@ -17,8 +17,11 @@ export const DEFAULT_CONFIG: SimpleDocsScraperConfig = {
             markdownLink: true,
             filesHeading: '\n## Files\n',
             directoryHeading: '\n## Folders\n',
-            excerpt: true,
-            excerptLength: 75
+            excerpt: {
+                length: 75,
+                addEllipsis: false,
+                firstSentenceOnly: true
+            },
         },
         documentation: {
             template: path.join(process.cwd(), 'src/templates/documentation.template.md'),

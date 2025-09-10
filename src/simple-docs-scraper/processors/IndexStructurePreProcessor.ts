@@ -15,7 +15,7 @@ export type IndexStructurePreProcessorEntry = {
 
 /**
  * <docs>
- * Pre-processes directory structures to prepare entries for index file generation.
+ * Prepares a array of entries for index file generation.
  * 
  * This class scans directories and processes file and directory entries to create
  * structured data suitable for index file generation. It handles markdown file filtering,
