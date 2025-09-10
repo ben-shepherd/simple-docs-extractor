@@ -350,7 +350,7 @@ This additional text helps simulate a more realistic documentation scenario.`
 
             const indexFileContent = fs.readFileSync(getOutputPath('docs-excerpt/index.md'), 'utf8')
 
-            expect(1).toBe(1)
+            expect(indexFileContent).toContain('- excerpt.md - This is a readable English sentence for testing purposes. It is intended to...')
         })
     })
 });
