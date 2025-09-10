@@ -169,7 +169,7 @@ export class SimpleDocsScraper {
         
         // Process the file
         preProcessedFiles.push(processedResult);
-        await fileProcessor.processFile(processedResult, target, targetIndex)
+        await fileProcessor.processFile(processedResult, target)
 
         // Log the success
         this.logs.push(`targets[${targetIndex}]: Generated documentation file for ${processedResult.loggableFileName}`);

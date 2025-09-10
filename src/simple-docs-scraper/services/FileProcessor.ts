@@ -32,8 +32,19 @@ export type ProcessResult = ProcessResultSuccess | ProcessResultError;
  * const processor = new FileProcessor(config);
  * 
  * const result = await processor.preProcess('./src/example.js', target);
+ * 
  * if ('content' in result) {
- *   await processor.processFile(result, target, 0);
+ *   // Example result structure:
+ *   // {
+ *   //   content: '...generated markdown...',
+ *   //   outDir: './docs',
+ *   //   fileName: 'example.js',
+ *   //   loggableFileName: 'src/example.js'
+ *   // }
+ *   await processor.processFile(result, target);
+ * } else if ('error' in result) {
+ *   // Handle the error, e.g.:
+ *   console.error(result.error);
  * }
  * ```
  * </docs>
@@ -116,7 +127,7 @@ export class FileProcessor {
      * @param processedResult - The file path to process
      * @param target - The target configuration containing output directory
      */
-    async processFile(processedResult: ProcessResultSuccess, target: Target, targetIndex: number) {
+    async processFile(processedResult: ProcessResultSuccess, target: Target) {
 
         // Create the out directory if it doesn't exist
         if (!fs.existsSync(target.outDir)) {

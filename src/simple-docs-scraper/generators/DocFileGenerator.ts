@@ -11,23 +11,13 @@ export type DocGeneratorConfig = {
 
 /**
  * <docs>
- * Generates documentation files from content using a template.
+ * Generates documentation files by injecting content into templates.
  * 
- * This class takes content and generates markdown documentation files by injecting
- * the content into a template file. It handles file path creation, directory creation,
- * and extension replacement to ensure proper markdown output.
+ * This class handles the creation of markdown documentation files by taking
+ * content and injecting it into a template file. It can save the generated
+ * content to files with proper markdown extensions and directory structure.
  * 
- * @example
- * ```typescript
- * const generator = new DocFileGenerator({
- *   template: './templates/doc.template.md',
- *   outDir: './docs',
- *   searchAndReplace: '{{CONTENT}}'
- * });
- * 
- * generator.generateContent('Some documentation content', 'example.js');
- * // Creates ./docs/example.md with content injected into template
- * ```
+ * @param {DocGeneratorConfig} config - Configuration object containing template path, output directory, and search/replace pattern
  * </docs>
  */
 export class DocFileGenerator {
@@ -37,7 +27,7 @@ export class DocFileGenerator {
     /**
      * Generates a documentation file by injecting content into a template.
      * 
-     * @param content - The documentation content to inject into the template
+     * @param injectedContent - The documentation content to inject into the template
      * @param outFile - The original file path used to determine the output filename
      * @throws {Error} When the template file is not found
      */

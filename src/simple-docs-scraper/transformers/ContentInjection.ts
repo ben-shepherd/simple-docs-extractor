@@ -35,7 +35,7 @@ export type InjectionResult = {
  * // Returns 'Hello World'
  * 
  * // Inject into file
- * injection.injectIntoFile('Documentation content', 'output.md');
+ * injection.injectIntoFile('Documentation content: {{CONTENT}}', 'output.md');
  * ```
  * </docs>
  */

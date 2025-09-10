@@ -7,11 +7,7 @@ This is the index file for the generated documentation. Below you will find the 
 
 ## Files
 
-- [index.md](index.md) - This is the index file for the generated documentation. Below you will find...
-
-## Folders
-
-- [simple-docs-scraper/](simple-docs-scraper/index.md)
+- [IndexStructurePreProcessor.ts.md](IndexStructurePreProcessor.ts.md) - Pre This class scans directories and processes file and directory entries...
 
 
 

@@ -10,9 +10,15 @@
 export class ExcerptExtractor {
 
     /**
-     * Determines and formats an excerpt from the given content
+     * Determines and formats an excerpt from the given content using intelligent text extraction.
+     * 
+     * This method extracts a clean, readable excerpt from content by filtering out
+     * lines that start with non-word characters (like headings), joining the remaining
+     * content, and ensuring the excerpt ends with complete words. It adds ellipsis
+     * for truncated content and handles edge cases like empty content.
+     * 
      * @param content The source content to extract excerpt from
-     * @param length Maximum length of the excerpt (default: 100 characters)
+     * @param length Maximum length of the excerpt (default: 75 characters)
      * @returns Formatted excerpt string or undefined if content is empty
      */
     static determineExcerpt(content: string, length: number = 75): string | undefined {

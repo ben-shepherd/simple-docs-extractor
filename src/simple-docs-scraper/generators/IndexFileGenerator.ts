@@ -3,7 +3,6 @@ import path from 'path';
 import { IndexStructurePreProcessorEntry } from '../processors/IndexStructurePreProcessor.js';
 import { ExcerptExtractor } from '../transformers/ExcerptExtractor.js';
 
-// Configuration for generating index files from a list of file paths
 export type IndexFileGeneratorConfig = {
     outDir: string;
     searchAndReplace?: string;
@@ -18,10 +17,43 @@ export type IndexFileGeneratorConfig = {
     fileNameCallback?: (filePath: string) => string;
 }
 
+/**
+ * <docs>
+ * Generates index files from processed directory entries with configurable templates and formatting.
+ * 
+ * This class creates markdown index files that list files and directories in a structured format.
+ * It supports custom templates, search-and-replace patterns, excerpt generation, and flexible
+ * formatting through callback functions. The generated index files help organize documentation
+ * by providing navigation links and summaries.
+ * 
+ * @example
+ * ```typescript
+ * const generator = new IndexFileGenerator({
+ *   outDir: './docs',
+ *   template: './templates/index.md',
+ *   searchAndReplace: '{{CONTENT}}',
+ *   excerpt: true,
+ *   excerptLength: 100
+ * });
+ * 
+ * generator.saveIndexFile(processedEntries);
+ * // Creates index.md with formatted file listings
+ * ```
+ * </docs>
+ */
 export class IndexFileGenerator {
     constructor(private config: IndexFileGeneratorConfig) {
     }
 
+    /**
+     * Saves an index file by processing entries and generating formatted content.
+     * 
+     * This method creates a markdown index file that lists files and directories
+     * in a structured format. It handles excerpt generation, custom formatting
+     * through callbacks, and template injection to create the final index file.
+     * 
+     * @param processedArray - Array of processed directory entries to include in the index
+     */
     saveIndexFile(processedArray: IndexStructurePreProcessorEntry[]) {
 
         // Check if the out directory exists
