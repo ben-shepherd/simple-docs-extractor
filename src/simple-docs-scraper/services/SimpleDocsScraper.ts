@@ -6,7 +6,7 @@ import { DocGeneratorConfig } from "../generators/DocFileGenerator.js";
 import { IndexFileGeneratorConfig } from "../generators/IndexFileGenerator.js";
 import { TFormatter } from '../types/formatter.t.js';
 import { FileProcessor, ProcessResult, ProcessResultError } from './FileProcessor.js';
-import { IndexProcessor } from './IndexProcessor.js';
+import { IndexPreProcessStructure } from './IndexProcessor.js';
 
 // Configuration for a single target directory to process
 export type Target = {
@@ -186,7 +186,7 @@ export class SimpleDocsScraper {
             return;
         }
 
-        await new IndexProcessor({
+        await new IndexPreProcessStructure({
             ...(this.config.generators?.index ?? {}),
         }).handle(target.outDir);
     }

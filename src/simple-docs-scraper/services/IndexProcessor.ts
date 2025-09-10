@@ -1,5 +1,5 @@
 import { IndexFileGenerator, IndexFileGeneratorConfig } from '../generators/IndexFileGenerator.js';
-import { IndexDirectoryProcessor } from '../processors/IndexDirectoryProcessor.js';
+import { IndexStructurePreProcessor, IndexStructurePreProcessorEntry } from '../processors/IndexStructurePreProcessor.js';
 
 export type IndexProcessorConfig = Omit<IndexFileGeneratorConfig, 'outDir'>
 
@@ -41,10 +41,13 @@ export class IndexProcessor {
      */
     async handleDirectoryRecusrively(directory: string) {
         // Process files and folders
-        const processedEntries = await new IndexDirectoryProcessor({
+        let processedEntries = await new IndexStructurePreProcessor({
             markdownLink: this.config?.markdownLink
         })
         .process(directory)
+
+        // Sort by files then folders
+        processedEntries = this.sortWithFilesAppearingFirst(processedEntries)
         
         // Save the index.md file
         await new IndexFileGenerator({
@@ -60,4 +63,11 @@ export class IndexProcessor {
         }
     }
 
+    sortWithFilesAppearingFirst(processedEntries: IndexStructurePreProcessorEntry[]): IndexStructurePreProcessorEntry[] {
+        return processedEntries.sort((a, b) => {
+            const aint = a.isDir === true ? 1 : 0
+            const bint = b.isDir === true ? 1 : 0
+            return Math.sign(aint - bint)
+        })
+    }
 }

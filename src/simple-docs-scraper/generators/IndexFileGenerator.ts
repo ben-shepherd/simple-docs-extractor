@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { IndexedDirectoryProcessedEntry } from '../processors/IndexDirectoryProcessor.js';
+import { IndexStructurePreProcessorEntry } from '../processors/IndexStructurePreProcessor.js';
 
 // Configuration for generating index files from a list of file paths
 export type IndexFileGeneratorConfig = {
@@ -9,6 +9,8 @@ export type IndexFileGeneratorConfig = {
     template?: string;
     baseDir?: string;
     markdownLink?: boolean;
+    filesHeading?: string;
+    directoryHeading?: string;
     lineCallback?: (fileNameEntry: string, lineNumber: number) => string;
     fileNameCallback?: (filePath: string) => string;
 }
@@ -17,7 +19,7 @@ export class IndexFileGenerator {
     constructor(private config: IndexFileGeneratorConfig) {
     }
 
-    saveIndexFile(processedArray: IndexedDirectoryProcessedEntry[]) {
+    saveIndexFile(processedArray: IndexStructurePreProcessorEntry[]) {
 
         // Check if the out directory exists
         if (!fs.existsSync(this.config.outDir)) {
@@ -29,11 +31,22 @@ export class IndexFileGenerator {
         let lineNumber = 1;
         const outFilePath = path.join(this.config.outDir, 'index.md');
 
+        let filesTotalCount = processedArray.filter(proc => proc.isDir === false).length
+        let filesProcessed = 0
+        let dirsProcessed = 0
+
         for(const processed of processedArray) {
             const {
                 entryName,
                 markdownLink
             } = processed
+
+            content = this.createFileHeading(filesProcessed, content)
+
+            // We should only consider creating a directory heading once all files have been rendered
+            if(filesProcessed === filesTotalCount) {
+                content = this.createDirectoryHeading(dirsProcessed, content)
+            }
 
             if(this.config.lineCallback) {
                 content += this.config.lineCallback(entryName, lineNumber);
@@ -43,10 +56,33 @@ export class IndexFileGenerator {
             }
 
             lineNumber++;
+
+            if(false === processed.isDir) {
+                filesProcessed++
+            }
+            else {
+                dirsProcessed++
+            }
         }
 
         templateContent = templateContent.replace(this.getSearchAndReplace(), content);
         fs.writeFileSync(outFilePath, templateContent);
+    }
+
+    protected createFileHeading(processedFiles: number, content: string = '') {
+        if(this.config.filesHeading && processedFiles === 0) {
+            content += this.config.filesHeading + '\n'
+        }
+
+        return content
+    }
+
+    protected createDirectoryHeading(processedDirs: number, content: string = '') {
+        if(this.config.directoryHeading && processedDirs === 0) {
+            content += this.config.directoryHeading + '\n'
+        }
+
+        return content
     }
 
     private getTemplateContent(): string {

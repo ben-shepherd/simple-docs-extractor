@@ -1,11 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 
-type IndexDirectoryProcessorConfig = {
+type IndexStructurePreProcessorConfig = {
     markdownLink?: boolean;
 }
 
-export type IndexedDirectoryProcessedEntry = {
+export type IndexStructurePreProcessorEntry = {
     src: string;
     entryName: string;
     isDir: boolean;
@@ -13,9 +13,9 @@ export type IndexedDirectoryProcessedEntry = {
     markdownLink: string;
 }
 
-export class IndexDirectoryProcessor {
+export class IndexStructurePreProcessor {
 
-    constructor(private config: IndexDirectoryProcessorConfig = {}) {}
+    constructor(private config: IndexStructurePreProcessorConfig = {}) {}
 
     async scanDirectory(baseDir: string): Promise<string[]> {
         return fs.readdirSync(baseDir)
@@ -25,16 +25,16 @@ export class IndexDirectoryProcessor {
             })
     }
 
-    async process(baseDir: string): Promise<IndexedDirectoryProcessedEntry[]> {
+    async process(baseDir: string): Promise<IndexStructurePreProcessorEntry[]> {
         const srcArray = await this.scanDirectory(baseDir)
-        let results: IndexedDirectoryProcessedEntry[] = []
+        let results: IndexStructurePreProcessorEntry[] = []
 
         for(const src of srcArray) {
             // const parentDirectory = path.dirname(entry);
             const excerpt = undefined
             const basename = path.basename(src)
             
-            let result: Partial<IndexedDirectoryProcessedEntry> = {
+            let result: Partial<IndexStructurePreProcessorEntry> = {
                 src: src,
                 isDir: false,
                 basename
@@ -53,13 +53,13 @@ export class IndexDirectoryProcessor {
                 result.markdownLink = this.markdownLink(result.entryName, result.entryName, excerpt)
             }
     
-            results.push(result as IndexedDirectoryProcessedEntry)
+            results.push(result as IndexStructurePreProcessorEntry)
         }
 
         return results
     }
 
-    private appendIndexMdIfFound(result: Partial<IndexedDirectoryProcessedEntry>, excerpt?: string): void {
+    private appendIndexMdIfFound(result: Partial<IndexStructurePreProcessorEntry>, excerpt?: string): void {
         const directoryContainsIndex = fs.existsSync(path.join(result.src as string, 'index.md'));
 
         if(!directoryContainsIndex) {
