@@ -19,9 +19,6 @@ export type Target = {
 export interface SimpleDocsScraperConfig {
     baseDir: string;
     extraction: DocumentContentExtractorConfig;
-    searchAndReplace: {
-        replace: string;
-    };
     generators?: {
         index?: {
             template: string;

@@ -61,7 +61,7 @@ export class FileProcessor {
      */
     async preProcess(file: string, target: Target): Promise<ProcessResult> {
 
-        const extractionResult = await new DocumentContentExtractor(file, this.config.extraction).extract();
+        const extractionResult = await new DocumentContentExtractor(file, this.config.extraction).extractFromFile();
 
         if (!extractionResult.sucess) {
             return {
