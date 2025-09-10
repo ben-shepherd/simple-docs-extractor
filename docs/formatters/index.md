@@ -1,4 +1,5 @@
 ## Table of Contents
 
-- [index.md](index.md)
+## Files
+
 - [MultiLineCommentClear.md](MultiLineCommentClear.md)

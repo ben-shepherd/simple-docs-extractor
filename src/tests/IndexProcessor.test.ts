@@ -51,6 +51,24 @@ describe("Example Test Suite", () => {
             expect(file).toBeDefined()
             expect(dir).toBeDefined()
         })
+
+        test("should ignore irrelevant files", async () => {
+
+            fs.mkdirSync(getOutputPath('docs-ignore'))
+            fs.writeFileSync(getOutputPath('docs-ignore/picture.png'), '');
+            fs.writeFileSync(getOutputPath('docs-ignore/.gitkeep'), '');
+            fs.writeFileSync(getOutputPath('docs-ignore/a.md'), '');
+
+            const entries = await indexStructurePreProcessor.scanDirectory(getOutputPath('docs-ignore'))
+
+            const picture = entries.find(entry => entry.includes('picture'))
+            const gitkeep = entries.find(entry => entry.includes('gitkeep'))
+            const a = entries.find(entry => entry.includes('a.md'))
+
+            expect(picture).toBeUndefined()
+            expect(gitkeep).toBeUndefined()
+            expect(a).toBeDefined()
+        })
     })
 
     describe("processor", () => {

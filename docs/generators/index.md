@@ -1,5 +1,5 @@
 ## Table of Contents
 
+## Files
+
 - [DocFileGenerator.md](DocFileGenerator.md)
-- [index.md](index.md)
-- [IndexFileGenerator.md](IndexFileGenerator.md)

@@ -18,15 +18,22 @@ export class IndexStructurePreProcessor {
     constructor(private config: IndexStructurePreProcessorConfig = {}) {}
 
     async scanDirectory(baseDir: string): Promise<string[]> {
+
         return fs.readdirSync(baseDir)
-            .filter(entry => false === ['.', '..'].includes(entry))
+            .filter(entry => entry.endsWith('.md'))
             .map(entry => {
                 return path.join(baseDir, entry)
             })
     }
 
     async process(baseDir: string): Promise<IndexStructurePreProcessorEntry[]> {
-        const srcArray = await this.scanDirectory(baseDir)
+        const srcArray = fs.readdirSync(baseDir)
+            .filter(entry => false === ['.', '..'].includes(entry))
+            .map(entry => {
+                return path.join(baseDir, entry)
+            })
+
+
         let results: IndexStructurePreProcessorEntry[] = []
 
         for(const src of srcArray) {

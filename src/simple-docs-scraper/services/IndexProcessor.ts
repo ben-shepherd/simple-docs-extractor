@@ -48,19 +48,25 @@ export class IndexProcessor {
 
         // Sort by files then folders
         processedEntries = this.sortWithFilesAppearingFirst(processedEntries)
-        
+    
+        // Handle directories recursively
+        const directoryEntries = processedEntries.filter(entry => entry.isDir)
+        for(const dirEntry of directoryEntries) {
+            await this.handleDirectoryRecusrively(dirEntry.src)
+        }
+
+        // Re-process entries
+        processedEntries = await new IndexStructurePreProcessor({
+            markdownLink: this.config?.markdownLink
+        })
+        .process(directory)
+
         // Save the index.md file
         await new IndexFileGenerator({
             ...(this.config ?? {}),
             outDir: directory,
         })
         .saveIndexFile(processedEntries)
-        
-        // Handle directories recursively
-        const directoryEntries = processedEntries.filter(entry => entry.isDir)
-        for(const dirEntry of directoryEntries) {
-            await this.handleDirectoryRecusrively(dirEntry.src)
-        }
     }
 
     sortWithFilesAppearingFirst(processedEntries: IndexStructurePreProcessorEntry[]): IndexStructurePreProcessorEntry[] {

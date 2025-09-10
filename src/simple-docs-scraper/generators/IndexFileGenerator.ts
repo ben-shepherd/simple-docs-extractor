@@ -33,6 +33,7 @@ export class IndexFileGenerator {
 
         let filesTotalCount = processedArray.filter(proc => proc.isDir === false).length
         let filesProcessed = 0
+        let dirsTotalCount = processedArray.filter(proc => proc.isDir === true).length
         let dirsProcessed = 0
 
         for(const processed of processedArray) {
@@ -41,11 +42,11 @@ export class IndexFileGenerator {
                 markdownLink
             } = processed
 
-            content = this.createFileHeading(filesProcessed, content)
+            content = this.createFileHeading(filesProcessed, filesTotalCount, content)
 
             // We should only consider creating a directory heading once all files have been rendered
             if(filesProcessed === filesTotalCount) {
-                content = this.createDirectoryHeading(dirsProcessed, content)
+                content = this.createDirectoryHeading(dirsProcessed, dirsTotalCount, content)
             }
 
             if(this.config.lineCallback) {
@@ -69,16 +70,16 @@ export class IndexFileGenerator {
         fs.writeFileSync(outFilePath, templateContent);
     }
 
-    protected createFileHeading(processedFiles: number, content: string = '') {
-        if(this.config.filesHeading && processedFiles === 0) {
+    protected createFileHeading(processedFiles: number, totalCount: number, content: string = '') {
+        if(this.config.filesHeading && processedFiles === 0 && totalCount > 0) {
             content += this.config.filesHeading + '\n'
         }
 
         return content
     }
 
-    protected createDirectoryHeading(processedDirs: number, content: string = '') {
-        if(this.config.directoryHeading && processedDirs === 0) {
+    protected createDirectoryHeading(processedDirs: number, totalCount: number, content: string = '') {
+        if(this.config.directoryHeading && processedDirs === 0 && totalCount > 0) {
             content += this.config.directoryHeading + '\n'
         }
 

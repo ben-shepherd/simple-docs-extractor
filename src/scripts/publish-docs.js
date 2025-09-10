@@ -15,6 +15,8 @@ const config = {
         index: {
             template: path.join(process.cwd(), 'templates/index.template.md'),
             markdownLink: true,
+            filesHeading: '## Files\n',
+            directoryHeading: '## Folders\n'
         },
         documentation: {
             template: path.join(process.cwd(), 'templates/documentation.template.md'),
