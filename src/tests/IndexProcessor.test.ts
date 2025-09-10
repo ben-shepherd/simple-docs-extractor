@@ -69,6 +69,18 @@ describe("Example Test Suite", () => {
             expect(gitkeep).toBeUndefined()
             expect(a).toBeDefined()
         })
+
+        test("should not create an index.md of itself", async () => {
+            await indexProcessor.handle(docsPath);
+
+            expect(fs.existsSync(path.join(docsPath, 'index.md'))).toBe(true);
+            expect(fs.existsSync(path.join(docsPath, 'sub-folder/index.md'))).toBe(true);
+            expect(fs.existsSync(path.join(docsPath, 'sub-folder/sub-folder2/index.md'))).toBe(true);
+
+            const indexFileContents = fs.readFileSync(path.join(docsPath, 'index.md'))
+            expect(indexFileContents).not.toContain('- index.md')
+            expect(indexFileContents).not.toContain('- [index.md](index.md)')
+        })
     })
 
     describe("processor", () => {

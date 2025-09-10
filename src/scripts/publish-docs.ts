@@ -28,7 +28,7 @@ export const DEFAULT_CONFIG: SimpleDocsScraperConfig = {
         globOptions: {
             cwd: path.join(process.cwd(), 'src'),
             extensions: '**/*.{js,ts}',
-            ignore: ['**/tests/**'],
+            ignore: ['**/tests/**', '**/scripts/**'],
         },
         outDir: path.join(process.cwd(), 'docs'),
         createIndexFile: true,
@@ -49,5 +49,3 @@ export const publishDocs = async (config: SimpleDocsScraperConfig = DEFAULT_CONF
 
     return result
 }
-
-publishDocs(DEFAULT_CONFIG);
