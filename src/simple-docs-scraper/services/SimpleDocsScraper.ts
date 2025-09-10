@@ -158,7 +158,7 @@ export class SimpleDocsScraper {
         preProcessedFiles: ProcessResult[],
         fileProcessor: FileProcessor
     ) {
-        const processedResult = await new FileProcessor(this.config).preProcess(file, target)
+        const processedResult = await fileProcessor.preProcess(file, target)
         this.total++;
 
         // If there is an error, log it and return

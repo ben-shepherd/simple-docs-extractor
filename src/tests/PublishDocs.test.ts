@@ -10,6 +10,9 @@ describe("Publish Docs", () => {
 
     beforeEach(() => {
         deleteOutputFiles();
+        
+        // Mock console.log to suppress output during test
+        console.log = (...args: any[]) => {};
     });
 
     // afterEach(() => {
@@ -35,18 +38,20 @@ describe("Publish Docs", () => {
             }
 
             const result = await publishDocs(testConfig as SimpleDocsScraperConfig)
-            const files = await glob('**/**.*', {
+
+            const outputFiles = await glob('**/**.*', {
                 absolute: true,
                 cwd: path.join(process.cwd(), 'src/tests/output/docs'),
                 nodir: true
             });
 
+
             expect(result?.successCount).toBeGreaterThanOrEqual(1);
             expect(result?.totalCount).toBeGreaterThanOrEqual(1);
-            expect(files.length).toBeGreaterThanOrEqual(1);
-            expect(files.some(file => file.includes('index.md'))).toBe(true);
-            expect(files.some(file => file.includes('services\\SimpleDocsScraper.ts.md'))).toBe(true);
-            expect(files.some(file => file.includes('generators\\DocFileGenerator.ts.md'))).toBe(true);
+            expect(outputFiles.length).toBeGreaterThanOrEqual(1);
+            expect(outputFiles.some(file => file.includes('index.md'))).toBe(true);
+            expect(outputFiles.some(file => file.includes('services\\SimpleDocsScraper.ts.md'))).toBe(true);
+            expect(outputFiles.some(file => file.includes('generators\\DocFileGenerator.ts.md'))).toBe(true);
         })
     });
 });
