@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { IndexStructurePreProcessorEntry } from '../processors/IndexStructurePreProcessor.js';
-import { ExcerptExtractor } from '../transformers/ExcerptExtractor.js';
+import { DEFAULT_CONFIG as DEFAULT_EXCERPT_CONFIG, ExcerptExtractor, ExcerptExtractorConfig } from '../transformers/ExcerptExtractor.js';
 
 export type IndexFileGeneratorConfig = {
     outDir: string;
@@ -11,8 +11,7 @@ export type IndexFileGeneratorConfig = {
     markdownLink?: boolean;
     filesHeading?: string;
     directoryHeading?: string;
-    excerpt?: boolean;
-    excerptLength?: number;
+    excerpt?: ExcerptExtractorConfig;
     lineCallback?: (fileNameEntry: string, lineNumber: number, excerpt?: string) => string;
     fileNameCallback?: (filePath: string) => string;
 }
@@ -130,7 +129,7 @@ export class IndexFileGenerator {
             return undefined
         }
 
-        return ExcerptExtractor.determineExcerpt(content, this.config.excerptLength)
+        return ExcerptExtractor.determineExcerpt(content, this.config?.excerpt ?? DEFAULT_EXCERPT_CONFIG)
     }
 
     protected createFileHeading(processedFiles: number, totalCount: number, content: string = '') {

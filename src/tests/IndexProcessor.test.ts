@@ -355,8 +355,11 @@ This additional text helps simulate a more realistic documentation scenario.`
             fs.writeFileSync(getOutputPath('docs-excerpt/excerpt.md'), sourceCode)
 
             indexProcessor = new IndexProcessor({
-                excerpt: true,
-                excerptLength: 75
+                excerpt: {
+                    length: 75,
+                    addEllipsis: true,
+                    firstSentenceOnly: false
+                }
             })
             await indexProcessor.handle(getOutputPath('docs-excerpt'))
 
