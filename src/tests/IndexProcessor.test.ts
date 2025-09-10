@@ -43,7 +43,7 @@ describe("Example Test Suite", () => {
 
     describe("files", () => {
         test("should return a list of absolute paths", async () => {
-            const entries = await indexStructurePreProcessor.scanDirectory(getOutputPath('docs'))
+            const entries = await indexStructurePreProcessor.getDirectoryEntries(getOutputPath('docs'))
 
             const file = entries.find(entry => entry === getOutputPath('docs/file.md'))
             const dir = entries.find(entry => entry === getOutputPath('docs/sub-folder'))
@@ -59,7 +59,7 @@ describe("Example Test Suite", () => {
             fs.writeFileSync(getOutputPath('docs-ignore/.gitkeep'), '');
             fs.writeFileSync(getOutputPath('docs-ignore/a.md'), '');
 
-            const entries = await indexStructurePreProcessor.scanDirectory(getOutputPath('docs-ignore'))
+            const entries = await indexStructurePreProcessor.getDirectoryEntries(getOutputPath('docs-ignore'))
 
             const picture = entries.find(entry => entry.includes('picture'))
             const gitkeep = entries.find(entry => entry.includes('gitkeep'))
@@ -145,7 +145,7 @@ describe("Example Test Suite", () => {
 
         test("should be able to read all md files and directories", async () => {
             const indexDirectoryProcessor = new IndexStructurePreProcessor()
-            const entries = await indexDirectoryProcessor.scanDirectory(getOutputPath('docs'))
+            const entries = await indexDirectoryProcessor.getDirectoryEntries(getOutputPath('docs'))
 
             expect(entries.length).toBe(2)
             expect(entries[0]).toBe(getOutputPath('docs/file.md'))
@@ -196,7 +196,7 @@ describe("Example Test Suite", () => {
 
             expect(indexFileContent).toContain('- [a.md](a.md)');
             expect(indexFileContent).toContain('- [b.md](b.md)');
-            expect(indexFileContent).toContain('- [sub-folder/](sub-folder/)');
+            expect(indexFileContent).toContain('- [sub-folder/](sub-folder/index.md)');
         })
 
         test("should only list the folder when no index.md file is found", async () => {
@@ -217,7 +217,7 @@ describe("Example Test Suite", () => {
 
             expect(indexFileContent).toContain('- [a.md](a.md)');
             expect(indexFileContent).toContain('- [b.md](b.md)');
-            expect(indexFileContent).toContain('- [sub-folder/](sub-folder/)');
+            expect(indexFileContent).toContain('- [sub-folder/](sub-folder/index.md)');
         })
 
         test("should list the directories with a markdown link when an index.md file is found", async () => {
@@ -252,12 +252,11 @@ describe("Example Test Suite", () => {
             fs.mkdirSync(getOutputPath('docs-sorting/d'))
 
             const results = await indexStructurePreProcessor.process(getOutputPath('docs-sorting'))
-            const sortedResults = indexProcessor.sortWithFilesAppearingFirst(results)
 
-            expect(sortedResults[0].basename).toBe('a.md')
-            expect(sortedResults[1].basename).toBe('b.md')
-            expect(sortedResults[2].basename).toBe('c')
-            expect(sortedResults[3].basename).toBe('d')
+            expect(results[0].basename).toBe('a.md')
+            expect(results[1].basename).toBe('b.md')
+            expect(results[2].basename).toBe('c')
+            expect(results[3].basename).toBe('d')
         })
 
         test('should generate the index file with the sorted results', async () => {

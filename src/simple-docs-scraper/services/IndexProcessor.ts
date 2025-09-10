@@ -1,5 +1,5 @@
 import { IndexFileGenerator, IndexFileGeneratorConfig } from '../generators/IndexFileGenerator.js';
-import { IndexStructurePreProcessor, IndexStructurePreProcessorEntry } from '../processors/IndexStructurePreProcessor.js';
+import { IndexStructurePreProcessor } from '../processors/IndexStructurePreProcessor.js';
 
 export type IndexProcessorConfig = Omit<IndexFileGeneratorConfig, 'outDir'>
 
@@ -46,9 +46,6 @@ export class IndexProcessor {
         })
         .process(directory)
 
-        // Sort by files then folders
-        processedEntries = this.sortWithFilesAppearingFirst(processedEntries)
-    
         // Handle directories recursively
         const directoryEntries = processedEntries.filter(entry => entry.isDir)
         for(const dirEntry of directoryEntries) {
@@ -69,11 +66,4 @@ export class IndexProcessor {
         .saveIndexFile(processedEntries)
     }
 
-    sortWithFilesAppearingFirst(processedEntries: IndexStructurePreProcessorEntry[]): IndexStructurePreProcessorEntry[] {
-        return processedEntries.sort((a, b) => {
-            const aint = a.isDir === true ? 1 : 0
-            const bint = b.isDir === true ? 1 : 0
-            return Math.sign(aint - bint)
-        })
-    }
 }

@@ -17,22 +17,25 @@ export class IndexStructurePreProcessor {
 
     constructor(private config: IndexStructurePreProcessorConfig = {}) {}
 
-    async scanDirectory(baseDir: string): Promise<string[]> {
+    async getDirectoryEntries(baseDir: string): Promise<string[]> {
 
         return fs.readdirSync(baseDir)
-            .filter(entry => entry.endsWith('.md'))
+            .filter(entry => {
+                const isDir = fs.statSync(path.join(baseDir, entry)).isDirectory()
+
+                if(false === isDir) {
+                    return entry.endsWith('.md')
+                }
+                
+                return true
+            })
             .map(entry => {
                 return path.join(baseDir, entry)
             })
     }
 
     async process(baseDir: string): Promise<IndexStructurePreProcessorEntry[]> {
-        const srcArray = fs.readdirSync(baseDir)
-            .filter(entry => false === ['.', '..'].includes(entry))
-            .map(entry => {
-                return path.join(baseDir, entry)
-            })
-
+        const srcArray = await this.getDirectoryEntries(baseDir)
 
         let results: IndexStructurePreProcessorEntry[] = []
 
@@ -63,7 +66,19 @@ export class IndexStructurePreProcessor {
             results.push(result as IndexStructurePreProcessorEntry)
         }
 
+        // Sort results so files appear first
+        results = this.sortWithFilesAppearingFirst(results)
+
         return results
+    }
+
+    
+    sortWithFilesAppearingFirst(processedEntries: IndexStructurePreProcessorEntry[]): IndexStructurePreProcessorEntry[] {
+        return processedEntries.sort((a, b) => {
+            const aint = a.isDir === false ? 0 : 1;
+            const bint = b.isDir === false ? 0 : 1;
+            return aint - bint;
+        });
     }
 
     private appendIndexMdIfFound(result: Partial<IndexStructurePreProcessorEntry>, excerpt?: string): void {

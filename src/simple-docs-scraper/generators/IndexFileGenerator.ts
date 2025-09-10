@@ -36,13 +36,16 @@ export class IndexFileGenerator {
         let dirsTotalCount = processedArray.filter(proc => proc.isDir === true).length
         let dirsProcessed = 0
 
-        for(const processed of processedArray) {
+        for(const current of processedArray) {
             const {
                 entryName,
                 markdownLink
-            } = processed
+            } = current
 
-            content = this.createFileHeading(filesProcessed, filesTotalCount, content)
+            // We should only consider creating a file heading once we have reached the files
+            if(false === current.isDir) {
+                content = this.createFileHeading(filesProcessed, filesTotalCount, content)
+            }
 
             // We should only consider creating a directory heading once all files have been rendered
             if(filesProcessed === filesTotalCount) {
@@ -58,7 +61,7 @@ export class IndexFileGenerator {
 
             lineNumber++;
 
-            if(false === processed.isDir) {
+            if(false === current.isDir) {
                 filesProcessed++
             }
             else {
