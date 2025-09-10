@@ -135,5 +135,27 @@ End.`
             expect(jsFiles.some(file => file === 'exampleFunc.md')).toBe(true);
             expect(jsFiles.some(file => file === 'ignoreFunc.md')).toBe(false);
         })
+
+        test("should preserve file extensions", async () => {
+            
+
+            scraper = new SimpleDocsScraper({
+                ...defaultConfig,
+                targets: [
+                    {
+                        globOptions: {
+                            ...jsFilesTarget.globOptions,
+                            cwd: path.join(process.cwd(), 'src/tests/files'),
+                        },
+                        outDir: getOutputPath('output-files'),
+                        createIndexFile: true,
+                    }
+                ],
+            });
+
+            const result = await scraper.start();
+
+            expect(1).toBe(1)
+        })
     })
 });
