@@ -51,7 +51,7 @@ describe("Publish Docs", () => {
             };
             
             const result = await (new SimpleDocsScraper(config)).start()
-            const files = await glob('**/**.md', {
+            const files = await glob('**/**.*', {
                 absolute: true,
                 cwd: path.join(process.cwd(), 'src/tests/output'),
                 nodir: true
@@ -61,8 +61,8 @@ describe("Publish Docs", () => {
             expect(result?.totalCount).toBeGreaterThanOrEqual(1);
             expect(files.length).toBeGreaterThanOrEqual(1);
             expect(files.some(file => file.includes('index.md'))).toBe(true);
-            expect(files.some(file => file.includes('services\\SimpleDocsScraper.md'))).toBe(true);
-            expect(files.some(file => file.includes('generators\\DocFileGenerator.md'))).toBe(true);
+            expect(files.some(file => file.includes('services\\SimpleDocsScraper.ts.md'))).toBe(true);
+            expect(files.some(file => file.includes('generators\\DocFileGenerator.ts.md'))).toBe(true);
         })
     });
 });

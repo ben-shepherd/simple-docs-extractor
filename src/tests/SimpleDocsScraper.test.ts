@@ -132,13 +132,11 @@ End.`
             const jsFiles = fs.readdirSync(getOutputPath('output-files/js-files'));
         
             expect(result.successCount).toBeGreaterThan(1);
-            expect(jsFiles.some(file => file === 'exampleFunc.md')).toBe(true);
-            expect(jsFiles.some(file => file === 'ignoreFunc.md')).toBe(false);
+            expect(jsFiles.some(file => file === 'exampleFunc.js.md')).toBe(true);
+            expect(jsFiles.some(file => file === 'ignoreFunc.js.md')).toBe(false);
         })
 
         test("should preserve file extensions", async () => {
-            
-
             scraper = new SimpleDocsScraper({
                 ...defaultConfig,
                 targets: [
@@ -155,7 +153,10 @@ End.`
 
             const result = await scraper.start();
 
-            expect(1).toBe(1)
+            const jsFiles = fs.readdirSync(getOutputPath('output-files/js-files'));
+        
+            expect(result.successCount).toBeGreaterThan(1);
+            expect(jsFiles.some(file => file === 'exampleFunc.js.md')).toBe(true);
         })
     })
 });

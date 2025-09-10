@@ -25,4 +25,17 @@ export class ExtensionReplacer {
         const split = filePath.split('.');
         return `${split[0]}.${replaceWith}`;
     }
+
+    /**
+     * Appends a '.md' extension to a file path if it doesn't already end with '.md'.
+     * 
+     * @param filePath - The file path to modify
+     * @returns The file path with the '.md' extension
+     */
+    static appendMdExtension(filePath: string): string {
+        if(!filePath.endsWith('.md')) {
+            filePath += '.md'
+        }
+        return filePath
+    }
 }

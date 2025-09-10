@@ -76,7 +76,7 @@ const exampleFunc = () => {
 
         const result = await scraper.start();
 
-        const docsFileContent = fs.readFileSync(getOutputPath('js-files/exampleFunc.md'), 'utf8');
+        const docsFileContent = fs.readFileSync(getOutputPath('js-files/exampleFunc.js.md'), 'utf8');
 
         expect(result.successCount).toBe(1);
         expect(result.totalCount).toBe(1);

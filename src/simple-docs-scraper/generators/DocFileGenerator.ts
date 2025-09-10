@@ -47,7 +47,7 @@ export class DocFileGenerator {
         let outFilePath = path.join(this.config.outDir, fileBaseName);
 
         // Replace all extensions with .md
-        outFilePath = ExtensionReplacer.replaceAllExtensions(outFilePath, 'md');
+        outFilePath = ExtensionReplacer.appendMdExtension(outFilePath);
 
         // Create the out directory if it doesn't exist
         if (!fs.existsSync(this.config.outDir)) {
