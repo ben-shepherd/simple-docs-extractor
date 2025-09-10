@@ -1,7 +1,7 @@
+import { MultiLineCommentClear, SimpleDocsScraper, SimpleDocsScraperConfig } from '@/simple-docs-scraper/index.js';
 import path from 'path';
-import { MultiLineCommentClear, SimpleDocsScraper } from '../../dist/index.js';
 
-const config = {
+export const DEFAULT_CONFIG: SimpleDocsScraperConfig = {
     baseDir: process.cwd(),
     extraction: {
         extractMethod: 'tags',
@@ -13,7 +13,7 @@ const config = {
     },
     generators: {
         index: {
-            template: path.join(process.cwd(), 'templates/index.template.md'),
+            template: path.join(process.cwd(), 'src/templates/index.template.md'),
             markdownLink: true,
             filesHeading: '\n## Files\n',
             directoryHeading: '\n## Folders\n',
@@ -21,13 +21,14 @@ const config = {
             excerptLength: 75
         },
         documentation: {
-            template: path.join(process.cwd(), 'templates/documentation.template.md'),
+            template: path.join(process.cwd(), 'src/templates/documentation.template.md'),
         },
     },
     targets: [{
         globOptions: {
-            cwd: path.join(process.cwd(), 'src/simple-docs-scraper'),
+            cwd: path.join(process.cwd(), 'src'),
             extensions: '**/*.{js,ts}',
+            ignore: ['**/tests/**'],
         },
         outDir: path.join(process.cwd(), 'docs'),
         createIndexFile: true,
@@ -35,11 +36,18 @@ const config = {
     formatters: [MultiLineCommentClear],
 };
 
-new SimpleDocsScraper(config).start().then(result => {
+export const publishDocs = async (config: SimpleDocsScraperConfig = DEFAULT_CONFIG) => {
+
+    const result = await new SimpleDocsScraper(config).start()
     console.log('Success count: ', result.successCount);
     console.log('Total count: ', result.totalCount);
     console.log('Logs:');
+
     result.logs.forEach(log => {
         console.log(log);
     });
-});
+
+    return result
+}
+
+publishDocs(DEFAULT_CONFIG);
