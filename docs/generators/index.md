@@ -2,4 +2,4 @@
 
 ## Files
 
-- [DocFileGenerator.md](DocFileGenerator.md)
+- [DocFileGenerator.ts.md](DocFileGenerator.ts.md)

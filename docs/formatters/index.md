@@ -2,4 +2,4 @@
 
 ## Files
 
-- [MultiLineCommentClear.md](MultiLineCommentClear.md)
+- [MultiLineCommentClear.ts.md](MultiLineCommentClear.ts.md)

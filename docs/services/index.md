@@ -2,6 +2,6 @@
 
 ## Files
 
-- [FileProcessor.md](FileProcessor.md)
-- [IndexProcessor.md](IndexProcessor.md)
-- [SimpleDocsScraper.md](SimpleDocsScraper.md)
+- [FileProcessor.ts.md](FileProcessor.ts.md)
+- [IndexProcessor.ts.md](IndexProcessor.ts.md)
+- [SimpleDocsScraper.ts.md](SimpleDocsScraper.ts.md)

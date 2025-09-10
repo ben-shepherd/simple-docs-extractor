@@ -2,5 +2,5 @@
 
 ## Files
 
-- [ContentInjection.md](ContentInjection.md)
-- [ExtensionReplacer.md](ExtensionReplacer.md)
+- [ContentInjection.ts.md](ContentInjection.ts.md)
+- [ExtensionReplacer.ts.md](ExtensionReplacer.ts.md)

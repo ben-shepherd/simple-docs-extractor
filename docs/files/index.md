@@ -2,5 +2,5 @@
 
 ## Files
 
-- [DocumentContentExtractor.md](DocumentContentExtractor.md)
-- [FileScanner.md](FileScanner.md)
+- [DocumentContentExtractor.ts.md](DocumentContentExtractor.ts.md)
+- [FileScanner.ts.md](FileScanner.ts.md)
