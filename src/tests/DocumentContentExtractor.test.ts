@@ -1,10 +1,18 @@
-import { describe, expect, test } from "@jest/globals";
+import { beforeEach, describe, expect, test } from "@jest/globals";
+import fs from 'fs';
 import { DocumentContentExtractor } from "../simple-docs-scraper/files/DocumentContentExtractor.js";
+import { MultiLineCommentClear } from '../simple-docs-scraper/formatters/MultiLineCommentClear.js';
+import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
+import { getOutputPath } from './helpers/getOutputPath.js';
 
 describe("Docs Extractor", () => {
     let docsExtractor!: DocumentContentExtractor;
     const fileWithDocs = process.cwd() + '/src/tests/files/js-files/exampleFunc.js';
     const fileWithoutDocs = process.cwd() + '/src/tests/files/js-files/exampleFuncNoDocs.js';
+
+    beforeEach(() => {
+        deleteOutputFiles()
+    })
 
     describe("config", () => {
         test("should throw an error if the extract method is not valid", async () => {
@@ -143,4 +151,95 @@ describe("Docs Extractor", () => {
             expect(result.errorType).toBe('noDocs');
         });
     });
+
+    describe("code block checks", () => {
+        test("should correctly extract documentation with code blocks using the tag method", async () => {
+
+            const sourceCode: string = 
+`/**
+ * <docs>
+ * Some description here
+ * 
+ * @example
+ * \`\`\`typescript
+ *  console.log('code block example')
+ * \`\`\`
+ * </docs>
+ */
+const example = () => null;`;
+
+            fs.mkdirSync(getOutputPath('code-block-check'))
+            fs.writeFileSync(getOutputPath('code-block-check/example.js'), sourceCode)
+
+            docsExtractor = new DocumentContentExtractor(getOutputPath('code-block-check/example.js'), {
+                extractMethod: 'tags',
+                startTag: '<docs>',
+                endTag: '</docs>'
+            });
+            let result =  await docsExtractor.extract()
+            const extractedContent = MultiLineCommentClear({
+                filePath: '',
+                outFile: '',
+                content: result.docs
+            })
+
+            expect(extractedContent.endsWith('```\n')).toBe(true)
+        })
+
+        test("should correctly extract documentation with code blocks using known bugged contents", async () => {
+
+            const sourceCode: string = 
+`/**
+ * <docs>
+ * Main orchestrator class for extracting and generating documentation from source files.
+ * 
+ * This class coordinates the entire documentation generation process by scanning files,
+ * extracting documentation content, and generating both individual documentation files
+ * and index files. It supports multiple targets and provides comprehensive logging.
+ * 
+ * @example
+ * \`\`\`typescript
+ * const scraper = new SimpleDocsScraper({
+ *   baseDir: './src',
+ *   extraction: {
+ *     extractMethod: 'tags',
+ *     startTag: '#START',
+ *     endTag: '#END'
+ *   },
+ *   searchAndReplace: { replace: '{{CONTENT}}' },
+ *   generators: {
+ *     index: { template: './templates/index.md' },
+ *     documentation: { template: './templates/doc.md' }
+ *   },
+ *   targets: [{
+ *     globOptions: { cwd: './src', extensions: '*.js' },
+ *     outDir: './docs',
+ *     createIndexFile: true
+ *   }]
+ * });
+ * 
+ * const result = await scraper.start();
+ * \`\`\`
+ * </docs>
+ */
+export class SimpleDocsScraper {`;
+
+            fs.mkdirSync(getOutputPath('code-block-check'))
+            fs.writeFileSync(getOutputPath('code-block-check/example.js'), sourceCode)
+
+            docsExtractor = new DocumentContentExtractor(getOutputPath('code-block-check/example.js'), {
+                extractMethod: 'tags',
+                startTag: '<docs>',
+                endTag: '</docs>'
+            });
+            let result =  await docsExtractor.extract()
+            const extractedContent = MultiLineCommentClear({
+                filePath: '',
+                outFile: '',
+                content: result.docs
+            })
+
+            expect(extractedContent.endsWith('```\n')).toBe(true)
+        })
+    })
 });

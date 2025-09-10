@@ -56,8 +56,8 @@ export type SimpleDocsScraperResult = {
  *   baseDir: './src',
  *   extraction: {
  *     extractMethod: 'tags',
- *     startTag: '<docs>',
- *     endTag: '</docs>'
+ *     startTag: '#START',
+ *     endTag: '#END'
  *   },
  *   searchAndReplace: { replace: '{{CONTENT}}' },
  *   generators: {

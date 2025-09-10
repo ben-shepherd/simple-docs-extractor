@@ -45,8 +45,8 @@ export type DocumentContentExtractorResult = {
  * // Extract using tags
  * const extractor = new DocumentContentExtractor('example.js', {
  *   extractMethod: 'tags',
- *   startTag: '<docs>',
- *   endTag: '</docs>'
+ *   startTag: '#START',
+ *   endTag: '#END'
  * });
  * 
  * // Extract using regex
