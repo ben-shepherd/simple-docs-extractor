@@ -1,5 +1,8 @@
 ## Table of Contents
 
+## Files
+
+- [index.md](index.md)
 ## Folders
 
 - [files/](files/index.md)
