@@ -1,8 +1,9 @@
 ## Table of Contents
 
+
 ## Files
 
-- [FileProcessor.ts.md](FileProcessor.ts.md)
+- [FileProcessor.ts.md](FileProcessor.ts.md) - Processes individual files to extract documentation and generate output fil...
 - [index.md](index.md)
-- [IndexProcessor.ts.md](IndexProcessor.ts.md)
-- [SimpleDocsScraper.ts.md](SimpleDocsScraper.ts.md)
+- [IndexProcessor.ts.md](IndexProcessor.ts.md) - Processes directories recursively to generate index files for documentation...
+- [SimpleDocsScraper.ts.md](SimpleDocsScraper.ts.md) - Main orchestrator class for extracting and generating documentation from so...

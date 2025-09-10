@@ -28,6 +28,10 @@ const config = {
         index: {
             template: path.join(process.cwd(), 'templates/index.template.md'),
             markdownLink: true,
+            filesHeading: '\n## Files\n',
+            directoryHeading: '\n## Folders\n',
+            excerpt: true,
+            excerptLength: 75
         },
         documentation: {
             template: path.join(process.cwd(), 'templates/documentation.template.md'),
