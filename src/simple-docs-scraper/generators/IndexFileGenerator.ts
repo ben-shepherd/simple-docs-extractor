@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { IndexStructurePreProcessorEntry } from '../processors/IndexStructurePreProcessor.js';
+import { ExcerptExtractor } from '../transformers/ExcerptExtractor.js';
 
 // Configuration for generating index files from a list of file paths
 export type IndexFileGeneratorConfig = {
@@ -11,7 +12,9 @@ export type IndexFileGeneratorConfig = {
     markdownLink?: boolean;
     filesHeading?: string;
     directoryHeading?: string;
-    lineCallback?: (fileNameEntry: string, lineNumber: number) => string;
+    excerpt?: boolean;
+    excerptLength?: number;
+    lineCallback?: (fileNameEntry: string, lineNumber: number, excerpt?: string) => string;
     fileNameCallback?: (filePath: string) => string;
 }
 
@@ -28,19 +31,23 @@ export class IndexFileGenerator {
 
         let templateContent = this.getTemplateContent();
         let content = ''
+        let excerpt: string | undefined = undefined
         let lineNumber = 1;
         const outFilePath = path.join(this.config.outDir, 'index.md');
-
+        
         let filesTotalCount = processedArray.filter(proc => proc.isDir === false).length
         let filesProcessed = 0
         let dirsTotalCount = processedArray.filter(proc => proc.isDir === true).length
         let dirsProcessed = 0
-
+        
         for(const current of processedArray) {
             const {
                 entryName,
                 markdownLink
             } = current
+
+            // If we're a file, genereate an excerpt
+            excerpt = this.createExcerpt(excerpt, current);
 
             // We should only consider creating a file heading once we have reached the files
             if(false === current.isDir) {
@@ -53,10 +60,14 @@ export class IndexFileGenerator {
             }
 
             if(this.config.lineCallback) {
-                content += this.config.lineCallback(entryName, lineNumber);
+                content += this.config.lineCallback(entryName, lineNumber, excerpt);
             }
             else {
-                content += `- ${markdownLink ?? entryName}\n`;
+                let line = `- ${markdownLink ?? entryName}`;
+                if(excerpt) {
+                    line += ` - ${excerpt}`
+                }
+                content += `${line}\n`;
             }
 
             lineNumber++;
@@ -71,6 +82,23 @@ export class IndexFileGenerator {
 
         templateContent = templateContent.replace(this.getSearchAndReplace(), content);
         fs.writeFileSync(outFilePath, templateContent);
+    }
+
+    private createExcerpt(excerpt: string | undefined, current: IndexStructurePreProcessorEntry) {
+        excerpt = undefined;
+        if (false === current.isDir) {
+            const fileContents = fs.readFileSync(current.src, 'utf8');
+            excerpt = this.generateExcerpt(fileContents);
+        }
+        return excerpt;
+    }
+
+    protected generateExcerpt(content: string) {
+        if(!this.config.excerpt) {
+            return undefined
+        }
+
+        return ExcerptExtractor.determineExcerpt(content, this.config.excerptLength)
     }
 
     protected createFileHeading(processedFiles: number, totalCount: number, content: string = '') {

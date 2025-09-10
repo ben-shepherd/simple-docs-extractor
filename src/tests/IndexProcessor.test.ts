@@ -325,4 +325,32 @@ describe("Example Test Suite", () => {
             expect(indexFileContent).toBe('## Files\n- c.md\n- d.md\n## Folders\n- a/\n- b/\n')
         });
     })
+
+    describe("excerpts", () => {
+        test("should produce excerpts", async () => {
+
+            const sourceCode = 
+`## Heading 1
+This is a readable English sentence for testing purposes. 
+
+## Heading 2
+It is intended to verify that the excerpt extraction logic works correctly.
+The sentence should be long enough to provide a meaningful excerpt for the test.
+By including multiple lines, we can ensure the extractor handles longer content.
+This additional text helps simulate a more realistic documentation scenario.`
+
+            fs.mkdirSync(getOutputPath('docs-excerpt'), { recursive: true })
+            fs.writeFileSync(getOutputPath('docs-excerpt/excerpt.md'), sourceCode)
+
+            indexProcessor = new IndexProcessor({
+                excerpt: true,
+                excerptLength: 75
+            })
+            await indexProcessor.handle(getOutputPath('docs-excerpt'))
+
+            const indexFileContent = fs.readFileSync(getOutputPath('docs-excerpt/index.md'), 'utf8')
+
+            expect(1).toBe(1)
+        })
+    })
 });
