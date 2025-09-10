@@ -7,7 +7,11 @@ This is the index file for the generated documentation. Below you will find the 
 
 ## Folders
 
-- [simple-docs-scraper/](simple-docs-scraper/index.md)
+- [files/](files/index.md)
+- [formatters/](formatters/index.md)
+- [generators/](generators/index.md)
+- [services/](services/index.md)
+- [transformers/](transformers/index.md)
 
 
 

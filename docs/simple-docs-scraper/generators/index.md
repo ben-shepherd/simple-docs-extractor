@@ -5,9 +5,9 @@ This is the index file for the generated documentation. Below you will find the 
 ---
 
 
-## Folders
+## Files
 
-- [simple-docs-scraper/](simple-docs-scraper/index.md)
+- [DocFileGenerator.ts.md](DocFileGenerator.ts.md) - Generates documentation files from content using a template. This class tak...
 
 
 

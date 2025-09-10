@@ -5,9 +5,9 @@ This is the index file for the generated documentation. Below you will find the 
 ---
 
 
-## Folders
+## Files
 
-- [simple-docs-scraper/](simple-docs-scraper/index.md)
+- [MultiLineCommentClear.ts.md](MultiLineCommentClear.ts.md) - MultiLineCommentClear formatter removes leading asterisks and whitespace fr...
 
 
 
