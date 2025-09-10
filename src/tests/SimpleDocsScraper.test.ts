@@ -83,7 +83,7 @@ End.`
     });
 
     describe("start", () => {
-        test("should be able to start the scraper", async () => {
+        test("should be able to run the scraper", async () => {
             const result = await scraper.start();
 
             const jsFiles = fs.readdirSync(getOutputPath('js-files'));
@@ -100,149 +100,40 @@ End.`
             expect(twigFiles).toHaveLength(expectedTwigFilesCount);
         })
 
-        test("should be able to generate an index file with a line callback", async () => {
+        test('should generate logs', async () => {
             scraper = new SimpleDocsScraper({
                 ...defaultConfig,
-                generators: {
-                    ...defaultConfig.generators,
-                    index: {
-                        ...(defaultConfig.generators?.index ?? {}),
-                        template: getOutputPath('index.template.md'),
-                        lineCallback(fileNameEntry, lineNumber) {
-                            return `- ${fileNameEntry} (${lineNumber})`;
-                        },
-                    }
-                },
-                targets: [
-                    twigFilesTarget
-                ]
+                targets: [jsFilesTarget],
             });
-
+            
             const result = await scraper.start();
-
-            const twigFiles = fs.readdirSync(getOutputPath('twig-files'));
-            const indexFileContent = fs.readFileSync(getOutputPath('twig-files/index.md'), 'utf8');
-
-            expect(result.successCount).toBe(1);
-            expect(result.totalCount).toBe(1);
-            expect(twigFiles).toHaveLength(2);
-            expect(indexFileContent).toContain('example.md (1)');
-        })
-
-        test("should be able to generate an index file with a fileName callback", async () => {
-            scraper = new SimpleDocsScraper({
-                ...defaultConfig,
-                generators: {
-                    ...(defaultConfig.generators ?? {}),
-                    index: {
-                        ...(defaultConfig.generators?.index ?? {}),
-                        template: getOutputPath('index.template.md'),
-                        fileNameCallback(filePath) {
-                            filePath = path.basename(filePath);
-                            return filePath.replace('example.html.twig', 'example.twig');
-                        },
-                    }
-                },
-                targets: [
-                    twigFilesTarget
-                ]
-            });
-
-            const result = await scraper.start();
-
-            const indexFileContent = fs.readFileSync(getOutputPath('twig-files/index.md'), 'utf8');
-
-            expect(result.successCount).toBe(1);
-            expect(result.totalCount).toBe(1);
-            expect(indexFileContent).toContain('- example.md');
-        })
-
-        test('should be able to generate an index file with a fileName callback and a line callback', async () => {
-            scraper = new SimpleDocsScraper({
-                ...defaultConfig,
-                generators: {
-                    ...defaultConfig.generators,
-                    index: {
-                        ...(defaultConfig.generators?.index ?? {}),
-                        template: getOutputPath('index.template.md'),
-                        lineCallback(fileNameEntry, lineNumber) {
-                            return `- ${fileNameEntry} (${lineNumber})`;
-                        },
-                        fileNameCallback(filePath) {
-                            filePath = path.basename(filePath);
-                            return filePath.replace('example.html.twig', 'example.twig');
-                        },
-                    }
-                },
-                targets: [twigFilesTarget]
-            });
-
-            const result = await scraper.start();
-
-            const indexFileContent = fs.readFileSync(getOutputPath('twig-files/index.md'), 'utf8');
-
-            expect(result.successCount).toBe(1);
-            expect(result.totalCount).toBe(1);
-            expect(indexFileContent).toContain('- example.md (1)');
-        })
-
-        test('should be able to generate an index file with the fileNameAsLink option', async () => {
-            scraper = new SimpleDocsScraper({
-                ...defaultConfig,
-                generators: {
-                    ...defaultConfig.generators,
-                    index: {
-                        ...(defaultConfig.generators?.index ?? {}),
-                        template: getOutputPath('index.template.md'),
-                        markdownLink: true,
-                    }
-                },
-                targets: [twigFilesTarget]
-            });
-
-            const result = await scraper.start();
-
-            const indexFileContent = fs.readFileSync(getOutputPath('twig-files/index.md'), 'utf8');
-
-            expect(result.successCount).toBe(1);
-            expect(result.totalCount).toBe(1);
-            expect(indexFileContent).toContain('- [example.md](example.md)');
-        })
-    });
-
-    test('should generate logs', async () => {
-        scraper = new SimpleDocsScraper({
-            ...defaultConfig,
-            targets: [jsFilesTarget],
-        });
-        
-        const result = await scraper.start();
-
-        expect(result.successCount >= 1).toBe(true);
-        expect(result.logs.length >= 1).toBe(true);
-    })
-
-    test("should ignore files", async () => {
-        scraper = new SimpleDocsScraper({
-            ...defaultConfig,
-            targets: [
-                {
-                    globOptions: {
-                        ...jsFilesTarget.globOptions,
-                        cwd: path.join(process.cwd(), 'src/tests/files'),
-                        ignore: ['ignored-files/**'],
-                    },
-                    outDir: getOutputPath('output-files'),
-                    createIndexFile: true,
-                }
-            ],
-        });
-        
-        const result = await scraper.start();
-        const jsFiles = fs.readdirSync(getOutputPath('output-files/js-files'));
     
-        expect(result.successCount).toBeGreaterThan(1);
-        expect(jsFiles.some(file => file === 'exampleFunc.md')).toBe(true);
-        expect(jsFiles.some(file => file === 'ignoreFunc.md')).toBe(false);
+            expect(result.successCount >= 1).toBe(true);
+            expect(result.logs.length >= 1).toBe(true);
+        })
+    
+        test("should ignore files", async () => {
+            scraper = new SimpleDocsScraper({
+                ...defaultConfig,
+                targets: [
+                    {
+                        globOptions: {
+                            ...jsFilesTarget.globOptions,
+                            cwd: path.join(process.cwd(), 'src/tests/files'),
+                            ignore: ['ignored-files/**'],
+                        },
+                        outDir: getOutputPath('output-files'),
+                        createIndexFile: true,
+                    }
+                ],
+            });
+            
+            const result = await scraper.start();
+            const jsFiles = fs.readdirSync(getOutputPath('output-files/js-files'));
+        
+            expect(result.successCount).toBeGreaterThan(1);
+            expect(jsFiles.some(file => file === 'exampleFunc.md')).toBe(true);
+            expect(jsFiles.some(file => file === 'ignoreFunc.md')).toBe(false);
+        })
     })
 });

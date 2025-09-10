@@ -17,8 +17,8 @@
   },
   "scripts": {
     "prepare": "npm run build",
-    "test": "jest --passWithNoTests",
-    "test:watch": "jest --watch --passWithNoTests",
+    "test": "jest --passWithNoTests --runInBand",
+    "test:watch": "jest --watch --passWithNoTests --runInBand",
     "test:coverage": "jest --coverage --passWithNoTests",
     "build": "tsc --skipLibCheck && npx tsc-alias",
     "build:watch": "tsc --watch --skipLibCheck",

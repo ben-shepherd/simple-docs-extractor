@@ -1,27 +1,36 @@
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from 'fs';
 import path from "path";
+import { IndexDirectoryProcessor } from '../simple-docs-scraper/processors/IndexDirectoryProcessor';
 import { IndexProcessor } from "../simple-docs-scraper/services/IndexProcessor";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles";
 import { getOutputPath } from "./helpers/getOutputPath";
 
 describe("Example Test Suite", () => {
     let docsPath = getOutputPath('docs');
+    let indexProcessor: IndexProcessor;
+    let indexDirectoryProcessor: IndexDirectoryProcessor;
 
     beforeEach(() => {
         deleteOutputFiles();
 
         // Make folders
         fs.mkdirSync(getOutputPath('docs/sub-folder/sub-folder2'), { recursive: true });
+        fs.mkdirSync(getOutputPath('docs/sub-folder'), { recursive: true });
 
         // Make test md files
-        fs.writeFileSync(getOutputPath('docs/file.md'), 'File 1');
-        fs.writeFileSync(getOutputPath('docs/sub-folder/file.md'), 'File 1');
-        fs.writeFileSync(getOutputPath('docs/sub-folder/sub-folder2/file.md'), 'File 3');
+        fs.writeFileSync(getOutputPath('docs/file.md'), '');
+        fs.writeFileSync(getOutputPath('docs/file.md'), '');
+        fs.writeFileSync(getOutputPath('docs/sub-folder/file.md'), '');
+        fs.writeFileSync(getOutputPath('docs/sub-folder/sub-folder2/file.md'), '');
+        fs.writeFileSync(getOutputPath('docs/sub-folder/sub-folder2/index.md'), '');
 
         // Custom template file
         fs.mkdirSync(getOutputPath('templates'), { recursive: true });
         fs.writeFileSync(getOutputPath('templates/index.template.md'), 'Start.%content%End.');
+
+        indexProcessor = new IndexProcessor()
+        indexDirectoryProcessor = new IndexDirectoryProcessor()
     });
 
     // afterEach(() => {
@@ -32,13 +41,104 @@ describe("Example Test Suite", () => {
     //     deleteOutputFiles();
     // })
 
+    describe("files", () => {
+        test("should return a list of absolute paths", async () => {
+            const entries = await indexDirectoryProcessor.scanDirectory(getOutputPath('docs'))
+
+            const file = entries.find(entry => entry === getOutputPath('docs/file.md'))
+            const dir = entries.find(entry => entry === getOutputPath('docs/sub-folder'))
+
+            expect(file).toBeDefined()
+            expect(dir).toBeDefined()
+        })
+    })
+
+    describe("processor", () => {
+        test("should format entry", () => {
+            const entry1 = getOutputPath("docs/file.md")
+            const formatted1 = indexDirectoryProcessor.formatEntry(entry1)
+
+            const entry2 = getOutputPath("docs/sub-folder/file.md")
+            const formatted2 = indexDirectoryProcessor.formatEntry(entry2)
+
+            const entry3 = getOutputPath("docs/sub-folder/sub-folder2/file.md")
+            const formatted3 = indexDirectoryProcessor.formatEntry(entry3)
+
+            const dir1 = getOutputPath("docs/sub-folder")
+            const formatted4 = indexDirectoryProcessor.formatEntry(dir1)
+
+            expect(formatted1).toBe('file.md')
+            expect(formatted2).toBe('file.md')
+            expect(formatted3).toBe('file.md')
+            expect(formatted4).toBe('sub-folder')
+        })
+        
+        test("should create plain text entries when markdownLink is disabled", async () => {
+            indexDirectoryProcessor = new IndexDirectoryProcessor({
+                markdownLink: false
+            })
+            const results = await indexDirectoryProcessor.process(docsPath)
+
+            const file1 = results.find(result => result.src === getOutputPath('docs/file.md'))
+            expect(file1?.entryName).toBe('file.md')
+            expect(file1?.isDir).toBe(false)
+            expect(file1?.markdownLink).toBe('file.md')
+
+            const dir1 = results.find(result => result.src === getOutputPath('docs/sub-folder')) 
+            expect(dir1?.entryName).toBe('sub-folder/')
+            expect(dir1?.isDir).toBe(true)
+            expect(dir1?.markdownLink).toBe('sub-folder/')
+        })
+
+        test("should create markdown links for files and folders", async () => {
+            indexDirectoryProcessor = new IndexDirectoryProcessor({
+                markdownLink: true
+            })
+            const results = await indexDirectoryProcessor.process(docsPath)
+
+            const file1 = results.find(result => result.src === getOutputPath('docs/file.md'))
+            expect(file1?.entryName).toBe('file.md')
+            expect(file1?.isDir).toBe(false)
+            expect(file1?.markdownLink).toBe('[file.md](file.md)')
+
+            const dir1 = results.find(result => result.src === getOutputPath('docs/sub-folder')) 
+            expect(dir1?.entryName).toBe('sub-folder/')
+            expect(dir1?.isDir).toBe(true)
+            expect(dir1?.markdownLink).toBe('[sub-folder/](sub-folder/)')
+        })
+
+        test("should format markdown links with sub folders with an index.md", async () => {
+            const subFolder2Path = getOutputPath('docs/sub-folder')
+            indexDirectoryProcessor = new IndexDirectoryProcessor({
+                markdownLink: true
+            })
+            const results = await indexDirectoryProcessor.process(subFolder2Path)
+
+            const file1 = results.find(result => result.src === getOutputPath('docs/sub-folder/file.md'))
+            expect(file1?.entryName).toBe('file.md')
+            expect(file1?.isDir).toBe(false)
+            expect(file1?.markdownLink).toBe('[file.md](file.md)')
+
+            const subfolder2 = results.find(result => result.src === getOutputPath('docs/sub-folder/sub-folder2')) 
+            expect(subfolder2?.entryName).toBe('sub-folder2/')
+            expect(subfolder2?.isDir).toBe(true)
+            expect(subfolder2?.markdownLink).toBe('[sub-folder2/](sub-folder2/index.md)')
+        })
+
+        test("should be able to read all md files and directories", async () => {
+            const indexDirectoryProcessor = new IndexDirectoryProcessor()
+            const entries = await indexDirectoryProcessor.scanDirectory(getOutputPath('docs'))
+
+            expect(entries.length).toBe(2)
+            expect(entries[0]).toBe(getOutputPath('docs/file.md'))
+            expect(entries[1]).toBe(getOutputPath('docs/sub-folder'))
+        })
+    })
+
+
     describe("handle", () => {
         test("should generate the index files", async () => {
-            const indexProcessor = new IndexProcessor({
-                baseDir: docsPath,
-            });
-            
-            await indexProcessor.handle();
+            await indexProcessor.handle(docsPath);
 
             expect(fs.existsSync(path.join(docsPath, 'index.md'))).toBe(true);
             expect(fs.existsSync(path.join(docsPath, 'sub-folder/index.md'))).toBe(true);
@@ -47,19 +147,17 @@ describe("Example Test Suite", () => {
 
         test("should generate the index files with a custom template", async () => {
             const indexProcessor = new IndexProcessor({
-                baseDir: docsPath,
-                indexFileGenerator: {
-                    template: getOutputPath('templates/index.template.md'),
-                },
+                markdownLink: true,
+                template: getOutputPath('templates/index.template.md'),
             });
             
-            await indexProcessor.handle();
+            await indexProcessor.handle(docsPath);
 
             expect(fs.existsSync(path.join(docsPath, 'sub-folder/sub-folder2/index.md'))).toBe(true);
 
             const indexFileContent = fs.readFileSync(path.join(docsPath, 'sub-folder/sub-folder2/index.md'), 'utf8');
             expect(indexFileContent).toContain('Start.');
-            expect(indexFileContent).toContain('- file.md');
+            expect(indexFileContent).toContain('- [file.md](file.md)');
             expect(indexFileContent).toContain('End.');
         })
 
@@ -67,64 +165,61 @@ describe("Example Test Suite", () => {
             const docsListDirs = getOutputPath('docs-list-dirs');
 
             fs.mkdirSync(getOutputPath('docs-list-dirs/sub-folder'), { recursive: true });
-            fs.writeFileSync(getOutputPath('docs-list-dirs/a.md'), 'File 1');
-            fs.writeFileSync(getOutputPath('docs-list-dirs/b.md'), 'File 1');
-            fs.writeFileSync(getOutputPath('docs-list-dirs/sub-folder/c.md'), 'File 1');
+            fs.writeFileSync(getOutputPath('docs-list-dirs/a.md'), '');
+            fs.writeFileSync(getOutputPath('docs-list-dirs/b.md'), '');
+            fs.writeFileSync(getOutputPath('docs-list-dirs/sub-folder/c.md'), '');
 
             const indexProcessor = new IndexProcessor({
-                baseDir: docsListDirs,
+                markdownLink: true
             });
-            
-            await indexProcessor.handle();
+            await indexProcessor.handle(docsListDirs);
 
             const indexFileContent = fs.readFileSync(path.join(docsListDirs, 'index.md'), 'utf8');
 
-            expect(indexFileContent).toBe('- a.md\n- b.md\n- sub-folder\n');
+            expect(indexFileContent).toBe('- [a.md](a.md)\n- [b.md](b.md)\n- [sub-folder/](sub-folder/)\n');
         })
 
         test("should list the directories without a markdown link when no index.md file is found", async () => {
             const docsListDirs = getOutputPath('docs-list-dirs');
 
             fs.mkdirSync(getOutputPath('docs-list-dirs/sub-folder'), { recursive: true });
-            fs.writeFileSync(getOutputPath('docs-list-dirs/a.md'), 'File 1');
-            fs.writeFileSync(getOutputPath('docs-list-dirs/b.md'), 'File 1');
-            fs.writeFileSync(getOutputPath('docs-list-dirs/sub-folder/c.md'), 'File 1');
+            fs.writeFileSync(getOutputPath('docs-list-dirs/a.md'), '');
+            fs.writeFileSync(getOutputPath('docs-list-dirs/b.md'), '');
+            fs.writeFileSync(getOutputPath('docs-list-dirs/sub-folder/c.md'), '');
 
             const indexProcessor = new IndexProcessor({
-                baseDir: docsListDirs,
-                indexFileGenerator: {
-                    markdownLink: true,
-                },
+                markdownLink: true
             });
             
-            await indexProcessor.handle();
+            await indexProcessor.handle(docsListDirs);
 
             const indexFileContent = fs.readFileSync(path.join(docsListDirs, 'index.md'), 'utf8');
 
-            expect(indexFileContent).toBe('- [a.md](a.md)\n- [b.md](b.md)\n- sub-folder\n');
+            expect(indexFileContent).toContain('- [a.md](a.md)');
+            expect(indexFileContent).toContain('- [b.md](b.md)');
+            expect(indexFileContent).toContain('- [sub-folder/](sub-folder/)');
         })
 
         test("should list the directories with a markdown link when an index.md file is found", async () => {
             const docsListDirs = getOutputPath('docs-list-dirs');
 
             fs.mkdirSync(getOutputPath('docs-list-dirs/sub-folder'), { recursive: true });
-            fs.writeFileSync(getOutputPath('docs-list-dirs/a.md'), 'File 1');
-            fs.writeFileSync(getOutputPath('docs-list-dirs/b.md'), 'File 1');
-            fs.writeFileSync(getOutputPath('docs-list-dirs/sub-folder/index.md'), 'File 1');
-            fs.writeFileSync(getOutputPath('docs-list-dirs/sub-folder/c.md'), 'File 1');
+            fs.writeFileSync(getOutputPath('docs-list-dirs/a.md'), '');
+            fs.writeFileSync(getOutputPath('docs-list-dirs/b.md'), '');
+            fs.writeFileSync(getOutputPath('docs-list-dirs/sub-folder/index.md'), '');
+            fs.writeFileSync(getOutputPath('docs-list-dirs/sub-folder/c.md'), '');
 
             const indexProcessor = new IndexProcessor({
-                baseDir: docsListDirs,
-                indexFileGenerator: {
-                    markdownLink: true,
-                },
+                markdownLink: true,
             });
             
-            await indexProcessor.handle();
+            await indexProcessor.handle(docsListDirs);
 
             const indexFileContent = fs.readFileSync(path.join(docsListDirs, 'index.md'), 'utf8');
 
-            expect(indexFileContent).toBe('- [a.md](a.md)\n- [b.md](b.md)\n- [sub-folder/index.md](sub-folder/index.md)\n');
+            expect(indexFileContent).toContain('- [a.md](a.md)');
+            expect(indexFileContent).toContain('- [b.md](b.md)');
+            expect(indexFileContent).toContain('- [sub-folder/](sub-folder/index.md)');
         })
     });
 });

@@ -1,11 +1,7 @@
-import fs from 'fs';
-import path from 'path';
 import { IndexFileGenerator, IndexFileGeneratorConfig } from '../generators/IndexFileGenerator.js';
+import { IndexDirectoryProcessor } from '../processors/IndexDirectoryProcessor.js';
 
-export type IndexProcessorConfig = {
-    baseDir: string;
-    indexFileGenerator?: Omit<IndexFileGeneratorConfig, 'outDir'>;
-}
+export type IndexProcessorConfig = Omit<IndexFileGeneratorConfig, 'outDir'>
 
 /**
  * <docs>
@@ -29,13 +25,13 @@ export type IndexProcessorConfig = {
  * </docs>
  */
 export class IndexProcessor {
-    constructor(private config: IndexProcessorConfig) {}
+    constructor(private config: IndexProcessorConfig = {}) {}
 
     /**
      * Starts the index file generation process for the configured base directory.
      */
-    async handle() {
-        await this.handleDirectoryRecusrively(this.config.baseDir);
+    async handle(baseDir: string) {
+        await this.handleDirectoryRecusrively(baseDir);
     }
 
     /**
@@ -44,29 +40,24 @@ export class IndexProcessor {
      * @param directory - The directory path to process
      */
     async handleDirectoryRecusrively(directory: string) {
-        const entries = fs.readdirSync(directory);
-        const absoluteEntries = entries.map(entry => path.join(directory, entry));
+        // Process files and folders
+        const processedEntries = await new IndexDirectoryProcessor({
+            markdownLink: this.config?.markdownLink
+        })
+        .process(directory)
         
-        await this.handleSaveIndexFile(directory, absoluteEntries);
+        // Save the index.md file
+        await new IndexFileGenerator({
+            ...(this.config ?? {}),
+            outDir: directory,
+        })
+        .saveIndexFile(processedEntries)
         
-        const directories = absoluteEntries.filter(file => fs.statSync(file).isDirectory());
-        for(const directory of directories) {
-            await this.handleDirectoryRecusrively(directory);
+        // Handle directories recursively
+        const directoryEntries = processedEntries.filter(entry => entry.isDir)
+        for(const dirEntry of directoryEntries) {
+            await this.handleDirectoryRecusrively(dirEntry.src)
         }
-    }
-
-    /**
-     * Creates an index file for the specified directory containing the provided files.
-     * 
-     * @param outDir - The output directory where the index file should be created
-     * @param files - Array of markdown file paths to include in the index
-     */
-    async handleSaveIndexFile(outDir: string, files: string[]) {
-        const indexGenerator = new IndexFileGenerator({
-            ...(this.config?.indexFileGenerator ?? {}),
-            outDir: outDir,
-        });
-        indexGenerator.generateContent(files);
     }
 
 }

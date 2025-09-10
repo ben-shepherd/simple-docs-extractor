@@ -187,11 +187,8 @@ export class SimpleDocsScraper {
         }
 
         await new IndexProcessor({
-            baseDir: target.outDir,
-            indexFileGenerator: {
-                ...(this.config.generators?.index ?? {}),
-            },
-        }).handle();
+            ...(this.config.generators?.index ?? {}),
+        }).handle(target.outDir);
     }
 
     /**
