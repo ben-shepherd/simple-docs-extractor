@@ -50,7 +50,7 @@ describe("Publish Docs", () => {
                 formatters: [MultiLineCommentClear],
             };
             
-            const result = await new SimpleDocsScraper(config).start()
+            const result = await (new SimpleDocsScraper(config)).start()
             const files = await glob('**/**.md', {
                 absolute: true,
                 cwd: path.join(process.cwd(), 'src/tests/output'),
