@@ -20,7 +20,7 @@ describe("Docs Extractor", () => {
     test("should throw an error if the extract method is not valid", async () => {
       docsExtractor = new DocumentContentExtractor({
         extractMethod: "invalid",
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
       await expect(docsExtractor.extractFromFile(fileWithDocs)).rejects.toThrow(

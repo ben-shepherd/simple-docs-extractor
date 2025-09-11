@@ -141,7 +141,7 @@ export class IndexStructurePreProcessor {
    * @param result - The partial entry result to update
    * @param excerpt - Optional excerpt to include in the link
    */
-  private appendIndexMdIfFound(
+  appendIndexMdIfFound(
     result: Partial<IndexStructurePreProcessorEntry>,
     excerpt?: string,
   ): void {
