@@ -1,81 +1,98 @@
-import { afterAll, afterEach, beforeEach, describe, expect, test } from "@jest/globals";
-import fs from 'fs';
+import {
+  afterAll,
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  test,
+} from "@jest/globals";
+import fs from "fs";
 import { DocFileGenerator } from "../simple-docs-scraper/generators/DocFileGenerator";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles";
 import { getOutputPath } from "./helpers/getOutputPath";
 
 describe("Doc File Generator", () => {
-    let docGenerator!: DocFileGenerator;
+  let docGenerator!: DocFileGenerator;
 
-    beforeEach(() => {
-        fs.writeFileSync(getOutputPath('test.template.md'), 'Start. %content% End.');
+  beforeEach(() => {
+    fs.writeFileSync(
+      getOutputPath("test.template.md"),
+      "Start. %content% End.",
+    );
+  });
+
+  afterEach(() => {
+    deleteOutputFiles();
+  });
+
+  afterAll(() => {
+    deleteOutputFiles();
+  });
+
+  describe("config", () => {
+    test("should accept config", () => {
+      expect(
+        () =>
+          (docGenerator = new DocFileGenerator({
+            template: getOutputPath("test.template.md"),
+            outDir: process.cwd() + "/src/tests/output",
+          })),
+      ).not.toThrow();
     });
 
-    afterEach(() => {
-        deleteOutputFiles();
-    })
+    test("should accept no template file", () => {
+      expect(
+        () =>
+          (docGenerator = new DocFileGenerator({
+            outDir: process.cwd() + "/src/tests/output",
+          })),
+      ).not.toThrow();
+    });
+  });
 
-    afterAll(() => {
-        deleteOutputFiles();
-    })
+  describe("generateContent", () => {
+    test("should save the content to markdown file", () => {
+      docGenerator = new DocFileGenerator({
+        template: getOutputPath("test.template.md"),
+        outDir: process.cwd() + "/src/tests/output",
+      });
 
-    describe("config", () => {
-        test("should accept config", () => {
-            expect(() => docGenerator = new DocFileGenerator({
-                template: getOutputPath('test.template.md'),
-                outDir: process.cwd() + '/src/tests/output',
-            })).not.toThrow();
-        })
+      docGenerator.saveToMarkdownFile("This is a test string.", "test.md");
 
-        test("should accept no template file", () => {
-            expect(() => docGenerator = new DocFileGenerator({
-                outDir: process.cwd() + '/src/tests/output',
-            })).not.toThrow();
-        })
+      const fileContent = fs.readFileSync(getOutputPath("test.md"), "utf8");
+
+      expect(fileContent).toContain("This is a test string.");
+    });
+  });
+
+  describe("getTemplateContent", () => {
+    test("should get the template content if file exists", () => {
+      const templateContent = docGenerator.getTemplateContent();
+
+      expect(templateContent).toContain("Start.");
+      expect(templateContent).toContain("%content%");
+      expect(templateContent).toContain("End.");
     });
 
-    describe("generateContent", () => {
-        test("should save the content to markdown file", () => {
-            docGenerator = new DocFileGenerator({
-                template: getOutputPath('test.template.md'),
-                outDir: process.cwd() + '/src/tests/output',
-            });
+    test("should use default search and replace if no template file is provided", () => {
+      new DocFileGenerator({
+        outDir: process.cwd() + "/src/tests/output",
+      });
 
-            docGenerator.saveToMarkdownFile('This is a test string.', 'test.md');
+      const templateContent = docGenerator.getTemplateContent();
 
-            const fileContent = fs.readFileSync(getOutputPath('test.md'), 'utf8');
-
-            expect(fileContent).toContain('This is a test string.');
-        })
+      expect(templateContent).toContain("%content%");
     });
 
-    describe("getTemplateContent", () => {
-        test("should get the template content if file exists", () => {
-            const templateContent = docGenerator.getTemplateContent();
+    test("should throw an error if the template file does not exist", () => {
+      const docGenerator = new DocFileGenerator({
+        template: "path-to-non-existent.md",
+        outDir: process.cwd() + "/src/tests/output",
+      });
 
-            expect(templateContent).toContain('Start.');
-            expect(templateContent).toContain('%content%');
-            expect(templateContent).toContain('End.');
-        })
-
-        test("should use default search and replace if no template file is provided", () => {
-            new DocFileGenerator({
-                outDir: process.cwd() + '/src/tests/output',
-            })
-
-            const templateContent = docGenerator.getTemplateContent();
-
-            expect(templateContent).toContain('%content%');
-        })
-
-        test("should throw an error if the template file does not exist", () => {
-            const docGenerator = new DocFileGenerator({
-                template: 'path-to-non-existent.md',
-                outDir: process.cwd() + '/src/tests/output',
-            });
-
-            expect(() => docGenerator.getTemplateContent()).toThrow('Template file not found');
-        })
-    })
-
+      expect(() => docGenerator.getTemplateContent()).toThrow(
+        "Template file not found",
+      );
+    });
+  });
 });

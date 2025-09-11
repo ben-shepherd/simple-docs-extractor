@@ -1,5 +1,5 @@
 const exampleFunc = () => {
-    return 'exampleFunc';
-}
+  return "exampleFunc";
+};
 
 export default exampleFunc;
