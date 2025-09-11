@@ -12,6 +12,7 @@ describe("Publish Docs", () => {
     deleteOutputFiles();
 
     // Mock console.log to suppress output during test
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
     console.log = (...args: any[]) => {};
   });
 

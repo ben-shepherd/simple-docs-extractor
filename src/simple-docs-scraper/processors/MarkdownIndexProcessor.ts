@@ -4,7 +4,10 @@ import {
 } from "../generators/IndexFileGenerator.js";
 import { IndexStructurePreProcessor } from "./IndexStructurePreProcessor.js";
 
-export type MarkdownIndexProcessorConfig = Omit<IndexFileGeneratorConfig, "outDir">;
+export type MarkdownIndexProcessorConfig = Omit<
+  IndexFileGeneratorConfig,
+  "outDir"
+>;
 
 /**
  * <docs>

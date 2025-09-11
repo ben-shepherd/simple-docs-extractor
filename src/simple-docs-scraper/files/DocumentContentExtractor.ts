@@ -97,7 +97,7 @@ export class DocumentContentExtractor {
     const extractionMethodsArray = Array.isArray(this.config)
       ? this.config
       : [this.config];
-    let results: ExtractionResult[] = [];
+    const results: ExtractionResult[] = [];
 
     for (const i in extractionMethodsArray) {
       const method = extractionMethodsArray[i];

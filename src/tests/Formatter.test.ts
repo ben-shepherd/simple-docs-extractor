@@ -2,13 +2,10 @@ import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import path from "path";
 import { MultiLineCommentClear } from "../simple-docs-scraper/formatters/MultiLineCommentClear.js";
-import {
-  SimpleDocExtractor,
-} from "../simple-docs-scraper/index.js";
+import { SimpleDocExtractor } from "../simple-docs-scraper/index.js";
 import { SimpleDocExtractorConfig } from "../simple-docs-scraper/types/config.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";
-
 
 const defaultConfig: SimpleDocExtractorConfig = {
   baseDir: process.cwd(),

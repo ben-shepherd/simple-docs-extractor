@@ -7,7 +7,11 @@ import {
   ProcessResultError,
 } from "../processors/CodeFileProcessor.js";
 import { MarkdownIndexProcessor } from "../processors/MarkdownIndexProcessor.js";
-import { DocumentationGeneratorConfig, IndexGeneratorConfig, SimpleDocExtractorConfig } from "../types/config.js";
+import {
+  DocumentationGeneratorConfig,
+  IndexGeneratorConfig,
+  SimpleDocExtractorConfig,
+} from "../types/config.js";
 
 // Configuration for a single target directory to process
 export type Target = {
@@ -122,7 +126,7 @@ export class SimpleDocExtractor {
     }
 
     const files = await this.getFiles(target);
-    let preProcessedFiles: ProcessResult[] = [];
+    const preProcessedFiles: ProcessResult[] = [];
 
     for (const file of files) {
       await this.processSingleFile(
@@ -204,10 +208,10 @@ export class SimpleDocExtractor {
    * </method>
    */
   getIndexProcessorConfig(target: Target) {
-    if(target.generators?.index) {
+    if (target.generators?.index) {
       return target.generators.index;
     }
-    if(typeof this.config.generators?.index === "undefined") {
+    if (typeof this.config.generators?.index === "undefined") {
       return {};
     }
     return this.config.generators.index;

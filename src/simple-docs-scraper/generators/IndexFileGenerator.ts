@@ -72,11 +72,11 @@ export class IndexFileGenerator {
     let lineNumber = 1;
     const outFilePath = path.join(this.config.outDir, "index.md");
 
-    let filesTotalCount = processedArray.filter(
+    const filesTotalCount = processedArray.filter(
       (proc) => proc.isDir === false,
     ).length;
     let filesProcessed = 0;
-    let dirsTotalCount = processedArray.filter(
+    const dirsTotalCount = processedArray.filter(
       (proc) => proc.isDir === true,
     ).length;
     let dirsProcessed = 0;

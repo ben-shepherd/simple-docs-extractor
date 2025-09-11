@@ -20,6 +20,7 @@ describe("Docs Extractor", () => {
     test("should throw an error if the extract method is not valid", async () => {
       docsExtractor = new DocumentContentExtractor({
         extractMethod: "invalid",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
       await expect(docsExtractor.extractFromFile(fileWithDocs)).rejects.toThrow(
@@ -152,7 +153,7 @@ describe("Docs Extractor", () => {
     test("should return an error if the file does not contain the callback", async () => {
       docsExtractor = new DocumentContentExtractor({
         extractMethod: "callback",
-        callback: async (fileContent) => {
+        callback: async () => {
           return undefined;
         },
         searchAndReplace: "%content%",
@@ -190,7 +191,7 @@ const example = () => null;`;
         endTag: "</docs>",
         searchAndReplace: "%content%",
       });
-      let result = await docsExtractor.extractFromFile(
+      const result = await docsExtractor.extractFromFile(
         getOutputPath("code-block-check/example.js"),
       );
       const extractedContent = MultiLineCommentClear({

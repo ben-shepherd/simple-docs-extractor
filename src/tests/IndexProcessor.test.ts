@@ -7,7 +7,7 @@ import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";
 
 describe("Example Test Suite", () => {
-  let docsPath = getOutputPath("docs");
+  const docsPath = getOutputPath("docs");
   let indexProcessor: MarkdownIndexProcessor;
   let indexStructurePreProcessor: IndexStructurePreProcessor;
 

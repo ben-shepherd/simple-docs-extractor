@@ -1,9 +1,7 @@
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import path from "path";
-import {
-  SimpleDocExtractor,
-} from "../simple-docs-scraper/services/SimpleDocExtractor.js";
+import { SimpleDocExtractor } from "../simple-docs-scraper/services/SimpleDocExtractor.js";
 import { SimpleDocExtractorConfig } from "../simple-docs-scraper/types/config.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";
@@ -61,26 +59,19 @@ describe("Example Test Suite", () => {
     scraper = new SimpleDocExtractor(defaultConfig);
 
     // Create a mock template file
-    fs.writeFileSync(
-      getOutputPath("index.template.md"),
-      TEMPLATE_CONTENT,
-    );
+    fs.writeFileSync(getOutputPath("index.template.md"), TEMPLATE_CONTENT);
     fs.writeFileSync(
       getOutputPath("documentation.template.md"),
       TEMPLATE_CONTENT,
     );
 
     // Createa second mock template file
-    fs.writeFileSync(
-      getOutputPath("index2.template.md"),
-      TEMPLATE_CONTENT2,
-    );
+    fs.writeFileSync(getOutputPath("index2.template.md"), TEMPLATE_CONTENT2);
     fs.writeFileSync(
       getOutputPath("documentation2.template.md"),
       TEMPLATE_CONTENT2,
     );
   });
-
 
   describe("config", () => {
     test("should be able to configure the scraper", () => {
@@ -108,14 +99,20 @@ describe("Example Test Suite", () => {
       });
       await scraper.start();
 
-      const indexContent = fs.readFileSync(getOutputPath("js-files/index.md"), "utf8");
-      const documentationContent = fs.readFileSync(getOutputPath("js-files/exampleFunc.js.md"), "utf8");
+      const indexContent = fs.readFileSync(
+        getOutputPath("js-files/index.md"),
+        "utf8",
+      );
+      const documentationContent = fs.readFileSync(
+        getOutputPath("js-files/exampleFunc.js.md"),
+        "utf8",
+      );
 
       expect(indexContent).toContain("Begin.");
       expect(indexContent).toContain("Finish.");
       expect(documentationContent).toContain("Begin.");
       expect(documentationContent).toContain("Finish.");
-    })
+    });
   });
 
   describe("start", () => {

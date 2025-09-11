@@ -1,51 +1,30 @@
-export const jestConfig = {
-  preset: "ts-jest",
-  testEnvironment: "node",
-  extensionsToTreatAsEsm: [".ts"],
-  transform: {
-    "^.+\\.ts$": [
-      "ts-jest",
-      {
-        useESM: true,
-        tsconfig: {
-          module: "ESNext",
-          target: "ES2022",
-        },
+import globals from "globals";
+import * as tseslint from "typescript-eslint";
+
+export default tseslint.config(
+  {
+    files: ["src/**/*.{js,mjs,cjs,ts,mts,cts}"],
+    languageOptions: { 
+      globals: globals.browser,
+      parser: tseslint.parser,
+      parserOptions: {
+        project: true,
+        tsconfigRootDir: process.cwd(),
       },
-    ],
-    "^.+\\.js$": [
-      "ts-jest",
-      {
-        useESM: true,
-        tsconfig: {
-          module: "ESNext",
-          target: "ES2022",
+    },
+    ignores: ["src/tests/**/*"],
+  },
+  ...tseslint.configs.recommended,
+  {
+    rules: {
+      "@typescript-eslint/no-unused-expressions": [
+        "error",
+        {
+          allowShortCircuit: false,
+          allowTernary: false,
+          allowTaggedTemplates: false,
         },
-      },
-    ],
-  },
-  moduleNameMapper: {
-    "^@/(.*)\\.js$": "<rootDir>/src/$1",
-    "^@/(.*)$": "<rootDir>/src/$1",
-    "^(\\.{1,2}/.*)\\.js$": "$1",
-  },
-  testMatch: ["<rootDir>/src/tests/**/*.test.ts"],
-  collectCoverageFrom: [
-    "src/**/*.{ts,js}",
-    "!src/**/*.test.{ts,js}",
-    "!src/**/*.d.ts",
-    "!src/tests/**", // Exclude test utilities
-  ],
-  coverageDirectory: "coverage",
-  coverageReporters: ["text", "lcov", "html"],
-  coverageThreshold: {
-    global: {
-      branches: 80,
-      functions: 80,
-      lines: 80,
-      statements: 80,
+      ],
     },
   },
-};
-
-export default jestConfig;
+);

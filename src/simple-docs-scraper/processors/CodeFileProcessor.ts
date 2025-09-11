@@ -4,7 +4,10 @@ import { DocumentContentExtractor } from "../files/DocumentContentExtractor.js";
 import { DocFileGenerator } from "../generators/DocFileGenerator.js";
 import { Target } from "../services/SimpleDocExtractor.js";
 import { ContentInjection } from "../transformers/ContentInjection.js";
-import { DocumentationGeneratorConfig, SimpleDocExtractorConfig } from "../types/config.js";
+import {
+  DocumentationGeneratorConfig,
+  SimpleDocExtractorConfig,
+} from "../types/config.js";
 
 export type ProcessResultSuccess = {
   content: string;
@@ -151,10 +154,10 @@ export class CodeFileProcessor {
   }
 
   getDocFileGeneratorConfig(target: Target): DocumentationGeneratorConfig {
-    if(target.generators?.documentation) {
+    if (target.generators?.documentation) {
       return target.generators.documentation;
     }
-    if(typeof this.config.generators?.documentation === "undefined") {
+    if (typeof this.config.generators?.documentation === "undefined") {
       return {} as DocumentationGeneratorConfig;
     }
     return this.config.generators?.documentation;

@@ -87,7 +87,7 @@ export class IndexStructurePreProcessor {
       const excerpt = undefined;
       const basename = path.basename(src);
 
-      let result: Partial<IndexStructurePreProcessorEntry> = {
+      const result: Partial<IndexStructurePreProcessorEntry> = {
         src: src,
         isDir: false,
         basename,
