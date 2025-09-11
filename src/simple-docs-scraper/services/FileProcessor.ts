@@ -85,15 +85,15 @@ export class FileProcessor {
             }
         }
 
+        // Build the output directory
+        const transformedOutDir = this.buildOutputPath(file, target);
+
         // Generate the documentation file
         new DocFileGenerator({
             template: this.config.generators?.documentation?.template,
-            outDir: target.outDir
+            outDir: transformedOutDir
         })
         .saveToMarkdownFile(injectedContent, file);
-
-        // Build the output directory
-        const transformedOutDir = this.buildOutputPath(file, target);
 
         return {
             content: injectedContent,

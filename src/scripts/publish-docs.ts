@@ -3,12 +3,20 @@ import path from 'path';
 
 export const DEFAULT_CONFIG: SimpleDocsScraperConfig = {
     baseDir: process.cwd(),
-    extraction: {
-        extractMethod: 'tags',
-        startTag: '<docs>',
-        endTag: '</docs>',
-        searchAndReplace: '%content%',
-    },
+    extraction: [
+        {
+            extractMethod: 'tags',
+            startTag: '<docs>',
+            endTag: '</docs>',
+            searchAndReplace: '%content%',
+        },
+        {
+            extractMethod: 'tags',
+            startTag: '<methods>',
+            endTag: '</methods>',
+            searchAndReplace: '%methods%',
+        }
+    ],
     generators: {
         index: {
             template: path.join(process.cwd(), 'src/templates/index.template.md'),

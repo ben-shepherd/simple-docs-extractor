@@ -1,4 +1,12 @@
+## File Name
+
 %content%
+
+---
+
+## Methods
+
+%methods%
 
 ---
 
