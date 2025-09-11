@@ -48,6 +48,9 @@ export class IndexStructurePreProcessor {
      * @returns Promise resolving to array of filtered file and directory paths
      */
     async getDirectoryEntries(baseDir: string): Promise<string[]> {
+        if(!fs.existsSync(baseDir)) {
+            return []
+        }
 
         return fs.readdirSync(baseDir)
             .filter(entry => {

@@ -21,7 +21,7 @@
     "test:watch": "jest --watch --passWithNoTests --runInBand",
     "test:coverage": "jest --coverage --passWithNoTests",
     "build": "tsc --skipLibCheck && npx tsc-alias && npm run copy-templates",
-    "copy-templates": "copyfiles templates dist/templates",
+    "copy-templates": "copyfiles -f src/templates/*.md dist/templates",
     "build:watch": "tsc --watch --skipLibCheck",
     "lint": "eslint --ignore-pattern .gitignore \"{src,tests}/**/*.+(ts|js|tsx)\"",
     "lint:fix": "eslint --fix --ignore-pattern .gitignore \"{src,tests}/**/*.+(ts|js|tsx)\"",
