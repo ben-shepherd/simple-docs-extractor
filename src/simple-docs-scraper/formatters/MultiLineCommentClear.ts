@@ -22,16 +22,17 @@ import { TFormatter } from "../types/formatter.t.js";
  * </docs>
  */
 export const MultiLineCommentClear: TFormatter = (config) => {
-
   const lines = config.content.split("\n");
   const unwantedPrefixes = ["*", " *", " * "];
 
-  return lines.map(line => {
-    for(const prefix of unwantedPrefixes) {
-      if(line.startsWith(prefix)) {
-        return line.replace(prefix, "");
+  return lines
+    .map((line) => {
+      for (const prefix of unwantedPrefixes) {
+        if (line.startsWith(prefix)) {
+          return line.replace(prefix, "");
+        }
       }
-    }
-    return line;
-  }).join("\n");
+      return line;
+    })
+    .join("\n");
 };
