@@ -5,47 +5,55 @@ on:
     branches: [ $default-branch ]
   pull_request:
     branches: [ $default-branch ]
-    types: ['opened', 'synchronize']
+    types: [opened, synchronize]
 
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-     - name: Checkout Repository
-     - uses: actions/checkout@v5
-     - name: Setup Node
-     - uses: actions/setup-node@v5
-       with:
-        node-version: "lts/*"
-     - name: Setup Dependencies
-     - run: npm ci
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "lts/*"
+
+      - name: Setup Dependencies
+        run: npm ci
 
   format:
     needs: lint
     runs-on: ubuntu-latest
     steps:
-     - name: Checkout Repository
-     - uses: actions/checkout@v5
-     - name: Setup Node
-     - uses: actions/setup-node@v5
-       with:
-        node-version: "lts/*"
-     - name: Setup Dependencies
-     - run: npm ci
-     - name: format
-     - run: npm run format:check
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "lts/*"
+
+      - name: Setup Dependencies
+        run: npm ci
+
+      - name: Format Check
+        run: npm run format:check
 
   test:
     needs: [lint, format]
     runs-on: ubuntu-latest
     steps:
-     - name: Checkout Repository
-     - uses: actions/checkout@v5
-     - name: Setup Node
-     - uses: actions/setup-node@v5
-       with:
-        node-version: "lts/*"
-     - name: Setup Dependencies
-     - run: npm ci
-     - name: Run Tests
-     - run: npm run test:coverage
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "lts/*"
+
+      - name: Setup Dependencies
+        run: npm ci
+
+      - name: Run Tests
+        run: npm run test:coverage
