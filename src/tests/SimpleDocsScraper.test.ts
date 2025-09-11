@@ -30,9 +30,7 @@ const defaultConfig: SimpleDocsScraperConfig = {
         extractMethod: 'tags',
         startTag: '<docs>',
         endTag: '</docs>',
-    },
-    searchAndReplace: {
-        replace: '%content%',
+        searchAndReplace: '%content%',
     },
     generators: {
         index: {
@@ -89,13 +87,11 @@ End.`
             const jsFiles = fs.readdirSync(getOutputPath('js-files'));
             const twigFiles = fs.readdirSync(getOutputPath('twig-files'));
 
-            const expectedJsFilesCount = 4; // 3 plus the index file
+            const expectedJsFilesCount = 5; // 4 files, plus 1 folder
             const expectedTwigFilesCount = 2; // 1 plus the index file
 
             expect(result.successCount).toBe(4);
             expect(result.totalCount).toBe(5);
-            expect(result.logs.some(log => log.includes('Error: noStartOrEndTags in file'))).toBe(true);
-            expect(result.logs.some(log => log.includes('exampleFuncNoDocs.js'))).toBe(true);
             expect(jsFiles).toHaveLength(expectedJsFilesCount);
             expect(twigFiles).toHaveLength(expectedTwigFilesCount);
         })

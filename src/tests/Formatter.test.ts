@@ -12,9 +12,7 @@ const defaultConfig: SimpleDocsScraperConfig = {
         extractMethod: 'tags',
         startTag: '<docs>',
         endTag: '</docs>',
-    },
-    searchAndReplace: {
-        replace: '%content%',
+        searchAndReplace: '%content%',
     },
     targets: [
         {

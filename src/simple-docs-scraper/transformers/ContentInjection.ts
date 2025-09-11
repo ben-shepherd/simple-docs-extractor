@@ -1,11 +1,11 @@
 import fs from 'fs';
 import path from 'path';
+import { ExtractionResult } from '../files/DocumentContentExtractor.js';
 
 // Configuration for content injection operations
 export type InjectionConfig = {
     template?: string;
     outDir: string;
-    searchAndReplace: string;
 }
 
 // Result object for injection operations
@@ -43,17 +43,29 @@ export class ContentInjection {
     constructor(private config: InjectionConfig) {
     }
 
-    /**
-     * Injects content into a string by replacing the configured placeholder.
-     * 
-     * @param content - The string content to inject into
-     * @param replaceWith - The content to replace the placeholder with
-     * @returns The string with injected content
-     */
-    injectIntoString(content: string, replaceWith: string): string {
-        return content.replace(this.config.searchAndReplace, replaceWith);
+    replace(replaceWith: string, searchAndReplace: string = '%content%'): string {
+        const templateContent = this.getTemplateContent(searchAndReplace);
+        return templateContent.replace(searchAndReplace, replaceWith);
     }
-    
+
+    /**
+     * Creates a content string from extraction results by replacing the configured placeholder.
+     * 
+     * @param extractionResults - The extraction results to create the content from
+     * @returns The content string with injected content
+     */
+    mergeExtractionResultsIntoTemplateString(extractionResults: ExtractionResult[]): string {
+        const defaultSearchAndReplace = extractionResults?.[0].searchAndReplace ?? '%content%';
+        let templateContent = this.getTemplateContent(defaultSearchAndReplace);
+
+        for(const extractionResult of extractionResults) {
+            const extractedContentOnNewLines = extractionResult.content.join('\n');
+            templateContent = templateContent.replace(extractionResult.searchAndReplace, extractedContentOnNewLines);
+        }
+
+        return templateContent;
+    }
+
     /**
      * Injects content into a template file and writes the result to an output file.
      * 
@@ -61,14 +73,14 @@ export class ContentInjection {
      * @param outFile - The output file path to write the result to
      * @throws {Error} When the template file is not found
      */
-    injectIntoFile(replaceWith: string, outFile: string): void {
+    writeFile(injectedContent: string, outFile: string): void {
 
-        const fileContent = this.getTemplateContent();
-        const injectedContent = fileContent.replace(this.config.searchAndReplace, replaceWith);
-        const outFilePath = path.join(this.config.outDir, outFile);
+        if(fs.existsSync(outFile)) {
+            outFile = path.join(this.config.outDir, outFile);
+        }
         
         // Add the injected content to the file
-        fs.writeFileSync(outFilePath, injectedContent);
+        fs.writeFileSync(outFile, injectedContent);
     }
 
     /**
@@ -77,9 +89,9 @@ export class ContentInjection {
      * @returns The template content as a string
      * @throws {Error} When the template file is not found
      */
-    protected getTemplateContent(): string {
+    protected getTemplateContent(searchAndReplace: string = '%content%'): string {
         if (!this.config.template) {
-            return this.config.searchAndReplace;
+            return searchAndReplace;
         }
 
         // Check if the template file exists

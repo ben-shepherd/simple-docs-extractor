@@ -61,21 +61,22 @@ export class FileProcessor {
      */
     async preProcess(file: string, target: Target): Promise<ProcessResult> {
 
-        const extractionResult = await new DocumentContentExtractor(file, this.config.extraction).extractFromFile();
+        const contentInjection = new ContentInjection({
+            template: this.config.generators?.documentation?.template ?? '',
+            outDir: target.outDir,
+        })
+        let injectedContent = '';
 
-        if (!extractionResult.sucess) {
+        const extractionResults = await new DocumentContentExtractor(this.config.extraction).extractFromFile(file);
+
+        if (!extractionResults.length) {
             return {
-                error: `Error: ${extractionResult.errorType} in file ${file}`,
+                error: `Error: No extraction results in file ${file}`,
             };
         }
 
-        // Inject the content into the template
-        let injectedContent = new ContentInjection({
-            template: this.config.generators?.documentation?.template ?? '',
-            outDir: target.outDir,
-            searchAndReplace: this.config.searchAndReplace.replace,
-        })
-        .injectIntoString(extractionResult.docs, this.config.searchAndReplace.replace);
+        // Merge the extraction results into the template string
+        injectedContent = contentInjection.mergeExtractionResultsIntoTemplateString(extractionResults);
 
         // Apply formatters
         if (this.config.formatters) {
@@ -85,18 +86,17 @@ export class FileProcessor {
         }
 
         // Generate the documentation file
-        const generatedContent = new DocFileGenerator({
+        new DocFileGenerator({
             template: this.config.generators?.documentation?.template,
-            outDir: target.outDir,
-            searchAndReplace: this.config.searchAndReplace.replace,
+            outDir: target.outDir
         })
-        .generateContentString(injectedContent);
+        .saveToMarkdownFile(injectedContent, file);
 
         // Build the output directory
         const transformedOutDir = this.buildOutputPath(file, target);
 
         return {
-            content: generatedContent,
+            content: injectedContent,
             fileName: path.basename(file),
             outDir: transformedOutDir,
             loggableFileName: file.replace(this.config.baseDir, ''),
@@ -140,7 +140,6 @@ export class FileProcessor {
         new DocFileGenerator({
             template: this.config.generators?.documentation?.template,
             outDir: processedResult.outDir,
-            searchAndReplace: this.config.searchAndReplace.replace,
         })
         .saveToMarkdownFile(processedResult.content, outFile);
 
