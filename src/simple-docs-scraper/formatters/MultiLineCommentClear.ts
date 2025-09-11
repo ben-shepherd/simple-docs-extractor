@@ -24,7 +24,7 @@ import { TFormatter } from "../types/formatter.t.js";
 export const MultiLineCommentClear: TFormatter = (config) => {
   // Pattern to match lines that start with optional whitespace followed by an asterisk
   // and capture the content after the asterisk (with optional space)
-  const pattern = /^(\s*\*\s?)(.*)$/gm;
+  const pattern = /^([\s\*]\*+)(.+)?$/gm;
 
   // Replace with just the content part (group 2), removing the leading spaces and asterisk
   return config.content.replace(pattern, "$2");
