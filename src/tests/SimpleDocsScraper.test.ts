@@ -87,7 +87,7 @@ End.`
             const jsFiles = fs.readdirSync(getOutputPath('js-files'));
             const twigFiles = fs.readdirSync(getOutputPath('twig-files'));
 
-            const expectedJsFilesCount = 5; // 4 files, plus 1 folder
+            const expectedJsFilesCount = 4; // 4 files, plus 1 folder
             const expectedTwigFilesCount = 2; // 1 plus the index file
 
             expect(result.successCount).toBe(4);

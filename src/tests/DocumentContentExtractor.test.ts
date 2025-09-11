@@ -304,5 +304,72 @@ class Example {
             expect(methodResultContentArray?.[1]).toContain('This is a method #2');
             
         })
+
+        test("should work with multiple extraction methods", async () => {
+            const sourceCode: string = 
+`/**
+ * <docs>
+ * Some description here
+ * </docs>
+ */
+class Example {
+
+    /**
+     * <method>
+     * This is a method #1
+     * @param {string} str - The string to print
+     * @param {number} num - The number to print
+     * @returns {string} 'method'
+     * </method>
+     */
+    static method(str: string, num: number) {
+        return 'method';
+    }
+
+     /**
+     * <method>
+     * This is a method #2
+     * @param {string} str - The string to print
+     * @param {number} num - The number to print
+     * @returns {string} 'method'
+     * </method>
+     */
+    static method2(str: string, num: number) {
+        return 'method2';
+    }
+
+}`
+            docsExtractor = new DocumentContentExtractor([
+                {
+                    extractMethod: 'tags',
+                    startTag: '<docs>',
+                    endTag: '</docs>',
+                    searchAndReplace: '%content%'
+                },
+                {
+                    extractMethod: 'tags',
+                    startTag: '<method>',
+                    endTag: '</method>',
+                    searchAndReplace: '%methods%'
+                }
+            ])
+
+            const results = await docsExtractor.extractFromString(sourceCode);
+            expect(results).toHaveLength(2);
+
+            const docResult = results.find(result => result.extractMethod === 'tags' && result.startTag === '<docs>');
+            const docResultContentArray = docResult?.content;
+
+            expect(docResultContentArray).toHaveLength(1);
+            expect(docResultContentArray?.[0]).toContain('Some description here');
+
+            const methodResult = results.find(result => result.extractMethod === 'tags' && result.startTag === '<method>');
+            const methodResultContentArray = methodResult?.content;
+
+            expect(methodResultContentArray).toHaveLength(2);
+            expect(methodResultContentArray?.[0]).toContain('This is a method #1');
+            expect(methodResultContentArray?.[1]).toContain('This is a method #2');
+            
+        })
     })
 });

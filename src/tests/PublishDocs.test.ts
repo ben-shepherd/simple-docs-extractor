@@ -5,6 +5,7 @@ import { DEFAULT_CONFIG, publishDocs } from '../scripts/publish-docs.js';
 import { SimpleDocsScraperConfig } from "../simple-docs-scraper/index.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";
+import fs from 'fs';
 
 describe("Publish Docs", () => {
 
@@ -50,8 +51,14 @@ describe("Publish Docs", () => {
             expect(result?.totalCount).toBeGreaterThanOrEqual(1);
             expect(outputFiles.length).toBeGreaterThanOrEqual(1);
             expect(outputFiles.some(file => file.includes('index.md'))).toBe(true);
-            expect(outputFiles.some(file => file.includes('services\\SimpleDocsScraper.ts.md'))).toBe(true);
-            expect(outputFiles.some(file => file.includes('generators\\DocFileGenerator.ts.md'))).toBe(true);
+
+            const pathToSimpleDocsScraper = path.join(getOutputPath(), 'docs/simple-docs-scraper/services/SimpleDocsScraper.ts.md');
+            const pathToDocFileGenerator = path.join(getOutputPath(), 'docs/simple-docs-scraper/generators/DocFileGenerator.ts.md');
+
+            expect(fs.existsSync(pathToSimpleDocsScraper)).toBe(true);
+            expect(fs.existsSync(pathToDocFileGenerator)).toBe(true);
+        
         })
     });
+
 });

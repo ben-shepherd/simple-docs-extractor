@@ -9,12 +9,6 @@ export const DEFAULT_CONFIG: SimpleDocsScraperConfig = {
             startTag: '<docs>',
             endTag: '</docs>',
             searchAndReplace: '%content%',
-        },
-        {
-            extractMethod: 'tags',
-            startTag: '<methods>',
-            endTag: '</methods>',
-            searchAndReplace: '%methods%',
         }
     ],
     generators: {
