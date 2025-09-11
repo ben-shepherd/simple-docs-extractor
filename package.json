@@ -1,5 +1,5 @@
 {
-  "name": "@ben-shepherd/simple-docs-scraper",
+  "name": "@benjamins94/simple-docs-scraper",
   "type": "module",
   "version": "1.0.0",
   "description": "A simple docs scraper",
@@ -13,7 +13,7 @@
   "types": "dist/index.d.ts",
   "publishConfig": {
     "access": "public",
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://registry.npmjs.org"
   },
   "scripts": {
     "prepare": "npm run build",
