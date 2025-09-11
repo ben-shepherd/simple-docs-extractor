@@ -18,7 +18,7 @@ export const DEFAULT_CONFIG: SimpleDocsScraperConfig = {
             filesHeading: '\n## Files\n',
             directoryHeading: '\n## Folders\n',
             excerpt: {
-                length: 75,
+                length: 100,
                 addEllipsis: false,
                 firstSentenceOnly: true
             },
