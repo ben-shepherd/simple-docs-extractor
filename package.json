@@ -5,7 +5,7 @@
   "description": "A simple docs scraper",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ben-shepherd/simple-docs-scraper"
+    "url": "git+https://github.com/ben-shepherd/simple-docs-scraper.git"
   },
   "license": "ISC",
   "author": "ben.shepherd@gmx.com",
@@ -27,6 +27,7 @@
     "lint:fix": "eslint --fix --ignore-pattern .gitignore \"{src,tests}/**/*.+(ts|js|tsx)\"",
     "typecheck": "tsc --noEmit",
     "format": "prettier --ignore-path .prettierignore --write \"**/*.+(js|ts|json|tsx|mdx)\" --log-level silent",
+    "format:check": "prettier --ignore-path .prettierignore --check \"**/*.+(js|ts|json|tsx|mdx)\" --log-level silent",
     "check-exports": "node ./scripts/check-exports.js",
     "check": "npm run format && npm run lint:fix && npm run typecheck && npm run check-exports",
     "version:patch": "npm version patch",
