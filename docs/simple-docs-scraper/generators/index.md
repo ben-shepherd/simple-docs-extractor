@@ -9,6 +9,7 @@ This is the index file for the generated documentation. Below you will find the 
 
 - [DocFileGenerator.ts.md](DocFileGenerator.ts.md) - This file is auto generated.
 - [IndexFileGenerator.ts.md](IndexFileGenerator.ts.md) - This file is auto generated.
+- [index.md](index.md) - This is the index file for the generated documentation.
 
 
 

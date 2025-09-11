@@ -1,4 +1,5 @@
 ## File Name
+
  Prepares a array of entries for index file generation.
 
  This class scans directories and processes file and directory entries to create
@@ -18,4 +19,5 @@
 
 
 ---
+
 This file is auto generated. Do not edit manually.*

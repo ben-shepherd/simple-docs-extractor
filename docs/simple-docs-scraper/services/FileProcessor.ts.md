@@ -1,4 +1,5 @@
 ## File Name
+
  Processes individual files to extract documentation and generate output files.
 
  This class handles the complete file processing pipeline including documentation
@@ -29,4 +30,5 @@
 
 
 ---
+
 This file is auto generated. Do not edit manually.*

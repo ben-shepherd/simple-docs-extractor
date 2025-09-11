@@ -1,4 +1,5 @@
 ## File Name
+
  Main orchestrator class for extracting and generating documentation from source files.
 
  This class coordinates the entire documentation generation process by scanning files,
@@ -31,4 +32,5 @@
 
 
 ---
+
 This file is auto generated. Do not edit manually.*

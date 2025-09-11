@@ -9,6 +9,7 @@ This is the index file for the generated documentation. Below you will find the 
 
 - [DocumentContentExtractor.ts.md](DocumentContentExtractor.ts.md) - This file is auto generated.
 - [FileScanner.ts.md](FileScanner.ts.md) - This file is auto generated.
+- [index.md](index.md) - This is the index file for the generated documentation.
 
 
 

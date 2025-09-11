@@ -1,4 +1,5 @@
 ## File Name
+
  Extracts and formats text excerpts from content with configurable length.
 
  This utility class provides static methods for creating clean, readable excerpts
@@ -40,4 +41,5 @@
 
 
 ---
+
 This file is auto generated. Do not edit manually.*

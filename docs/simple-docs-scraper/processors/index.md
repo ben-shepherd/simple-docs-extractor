@@ -8,6 +8,7 @@ This is the index file for the generated documentation. Below you will find the 
 ## Files
 
 - [IndexStructurePreProcessor.ts.md](IndexStructurePreProcessor.ts.md) - This file is auto generated.
+- [index.md](index.md) - This is the index file for the generated documentation.
 
 
 

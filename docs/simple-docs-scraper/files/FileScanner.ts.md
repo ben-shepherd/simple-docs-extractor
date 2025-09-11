@@ -1,4 +1,5 @@
 ## File Name
+
  Scans directories for files matching specified extensions using glob patterns.
 
  This class provides file discovery capabilities by scanning directories
@@ -18,4 +19,5 @@
 
 
 ---
+
 This file is auto generated. Do not edit manually.*

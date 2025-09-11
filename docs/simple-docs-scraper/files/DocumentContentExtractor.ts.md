@@ -1,4 +1,5 @@
 ## File Name
+
  Extracts documentation from source files using various methods.
 
  This class provides flexible documentation extraction capabilities supporting
@@ -26,4 +27,5 @@
 
 
 ---
+
 This file is auto generated. Do not edit manually.*

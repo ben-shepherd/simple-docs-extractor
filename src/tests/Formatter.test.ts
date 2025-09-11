@@ -36,7 +36,7 @@ describe("Formatter", () => {
     // Create a mock js file with a multi line comment
     fs.writeFileSync(
       getOutputPath("exampleFunc.js"),
-      `/**
+`/**
  * <docs>
  * Some documentation here
  * 
