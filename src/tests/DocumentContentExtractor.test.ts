@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
-import { DocumentContentExtractor } from "../simple-docs-scraper/files/DocumentContentExtractor.js";
+import { DocumentContentExtractor } from "../simple-docs-scraper/extractors/DocumentContentExtractor.js";
 import { MultiLineCommentClear } from "../simple-docs-scraper/formatters/MultiLineCommentClear.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";

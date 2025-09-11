@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { ExtractionResult } from "../files/DocumentContentExtractor.js";
+import { ExtractionResult } from "../extractors/DocumentContentExtractor.js";
 
 // Configuration for content injection operations
 export type InjectionConfig = {

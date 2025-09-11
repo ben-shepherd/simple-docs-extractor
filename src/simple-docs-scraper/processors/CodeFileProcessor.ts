@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { DocumentContentExtractor } from "../files/DocumentContentExtractor.js";
+import { DocumentContentExtractor } from "../extractors/DocumentContentExtractor.js";
 import { DocFileGenerator } from "../generators/DocFileGenerator.js";
 import { Target } from "../services/SimpleDocExtractor.js";
 import { ContentInjection } from "../transformers/ContentInjection.js";

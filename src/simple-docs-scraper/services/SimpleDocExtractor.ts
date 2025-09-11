@@ -80,7 +80,7 @@ export class SimpleDocExtractor {
   }
 
   /**
-   * <method>
+   * <method name="start">
    * Starts the documentation generation process for all configured targets.
    *
    * @returns Promise resolving to result object with success count, total count, and logs
@@ -101,7 +101,7 @@ export class SimpleDocExtractor {
   }
 
   /**
-   * <method>
+   * <method name="handleTarget">
    * Processes a single target directory by scanning files and generating documentation.
    *
    * @param target - The target configuration to process
@@ -139,7 +139,7 @@ export class SimpleDocExtractor {
   }
 
   /**
-   * <method>
+   * <method name="processSingleFile">
    * Processes a single file by extracting documentation and generating output.
    *
    * @param file - The file path to process
@@ -179,7 +179,7 @@ export class SimpleDocExtractor {
   }
 
   /**
-   * <method>
+   * <method name="handleRecursivelyCreateIndexFiles">
    * Creates an index file recursively for the target if configured to do so.
    *
    * @param target - The target configuration
@@ -196,7 +196,7 @@ export class SimpleDocExtractor {
   }
 
   /**
-   * <method>
+   * <method name="getIndexProcessorConfig">
    * Gets the index processor config for the target.
    *
    * @param target - The target configuration
