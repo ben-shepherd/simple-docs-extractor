@@ -1,3 +1,4 @@
-export * from "./FileProcessor.js";
-export * from "./IndexProcessor.js";
-export * from "./SimpleDocsScraper.js";
+export * from "../processors/CodeFileProcessor.js";
+export * from "../processors/MarkdownIndexProcessor.js";
+export * from "./SimpleDocExtractor.js";
+

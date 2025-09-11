@@ -1,13 +1,13 @@
 import fs from "fs";
 import { GlobOptions } from "glob";
 import { FileScanner } from "../files/FileScanner.js";
-import { DocumentationGeneratorConfig, IndexGeneratorConfig, SimpleDocsScraperConfig } from "../types/config.js";
 import {
-  FileProcessor,
+  CodeFileProcessor,
   ProcessResult,
   ProcessResultError,
-} from "./FileProcessor.js";
-import { IndexProcessor } from "./IndexProcessor.js";
+} from "../processors/CodeFileProcessor.js";
+import { MarkdownIndexProcessor } from "../processors/MarkdownIndexProcessor.js";
+import { DocumentationGeneratorConfig, IndexGeneratorConfig, SimpleDocExtractorConfig } from "../types/config.js";
 
 // Configuration for a single target directory to process
 export type Target = {
@@ -21,7 +21,7 @@ export type Target = {
 };
 
 // Result object returned after processing all targets
-export type SimpleDocsScraperResult = {
+export type SimpleDocExtractorResult = {
   successCount: number;
   totalCount: number;
   logs: string[];
@@ -60,9 +60,9 @@ export type SimpleDocsScraperResult = {
  * ```
  * </docs>
  */
-export class SimpleDocsScraper {
+export class SimpleDocExtractor {
   constructor(
-    private config: SimpleDocsScraperConfig,
+    private config: SimpleDocExtractorConfig,
     protected logs: string[] = [],
     protected success: number = 0,
     protected total: number = 0,
@@ -75,7 +75,7 @@ export class SimpleDocsScraper {
    * @returns The current SimpleDocsScraper configuration
    * </method>
    */
-  getConfig(): SimpleDocsScraperConfig {
+  getConfig(): SimpleDocExtractorConfig {
     return this.config;
   }
 
@@ -86,7 +86,7 @@ export class SimpleDocsScraper {
    * @returns Promise resolving to result object with success count, total count, and logs
    * </method>
    */
-  async start(): Promise<SimpleDocsScraperResult> {
+  async start(): Promise<SimpleDocExtractorResult> {
     for (const target of this.config.targets) {
       await this.handleTarget(target, this.config.targets.indexOf(target));
     }
@@ -109,7 +109,7 @@ export class SimpleDocsScraper {
    * </method>
    */
   async handleTarget(target: Target, targetIndex: number) {
-    const fileProcessor = new FileProcessor(this.config);
+    const fileProcessor = new CodeFileProcessor(this.config);
 
     this.logs.push(`targets[${targetIndex}]: Starting target`);
 
@@ -154,7 +154,7 @@ export class SimpleDocsScraper {
     target: Target,
     targetIndex: number,
     preProcessedFiles: ProcessResult[],
-    fileProcessor: FileProcessor,
+    fileProcessor: CodeFileProcessor,
   ) {
     const processedResult = await fileProcessor.preProcess(file, target);
     this.total++;
@@ -190,7 +190,7 @@ export class SimpleDocsScraper {
       return;
     }
 
-    await new IndexProcessor({
+    await new MarkdownIndexProcessor({
       ...this.getIndexProcessorConfig(target),
     }).handle(target.outDir);
   }

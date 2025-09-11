@@ -7,9 +7,9 @@ import {
   test,
 } from "@jest/globals";
 import fs from "fs";
-import { DocFileGenerator } from "../simple-docs-scraper/generators/DocFileGenerator";
-import { deleteOutputFiles } from "./helpers/deleteOutputFiles";
-import { getOutputPath } from "./helpers/getOutputPath";
+import { DocFileGenerator } from "../simple-docs-scraper/generators/DocFileGenerator.js";
+import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
+import { getOutputPath } from "./helpers/getOutputPath.js";
 
 describe("Doc File Generator", () => {
   let docGenerator!: DocFileGenerator;

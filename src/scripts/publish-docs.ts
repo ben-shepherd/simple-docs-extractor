@@ -1,11 +1,11 @@
 import {
   MultiLineCommentClear,
-  SimpleDocsScraper,
+  SimpleDocExtractor,
 } from "@/simple-docs-scraper/index.js";
-import { SimpleDocsScraperConfig } from "@/simple-docs-scraper/types/config.js";
+import { SimpleDocExtractorConfig } from "@/simple-docs-scraper/types/config.js";
 import path from "path";
 
-export const DEFAULT_CONFIG: SimpleDocsScraperConfig = {
+export const DEFAULT_CONFIG: SimpleDocExtractorConfig = {
   baseDir: process.cwd(),
   extraction: [
     {
@@ -49,9 +49,9 @@ export const DEFAULT_CONFIG: SimpleDocsScraperConfig = {
 };
 
 export const publishDocs = async (
-  config: SimpleDocsScraperConfig = DEFAULT_CONFIG,
+  config: SimpleDocExtractorConfig = DEFAULT_CONFIG,
 ) => {
-  const result = await new SimpleDocsScraper(config).start();
+  const result = await new SimpleDocExtractor(config).start();
   console.log("Success count: ", result.successCount);
   console.log("Total count: ", result.totalCount);
   console.log("Logs:");

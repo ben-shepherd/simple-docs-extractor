@@ -1,14 +1,14 @@
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import path from "path";
-import { IndexStructurePreProcessor } from "../simple-docs-scraper/processors/IndexStructurePreProcessor";
-import { IndexProcessor } from "../simple-docs-scraper/services/IndexProcessor";
-import { deleteOutputFiles } from "./helpers/deleteOutputFiles";
-import { getOutputPath } from "./helpers/getOutputPath";
+import { IndexStructurePreProcessor } from "../simple-docs-scraper/processors/IndexStructurePreProcessor.js";
+import { MarkdownIndexProcessor } from "../simple-docs-scraper/processors/MarkdownIndexProcessor.js";
+import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
+import { getOutputPath } from "./helpers/getOutputPath.js";
 
 describe("Example Test Suite", () => {
   let docsPath = getOutputPath("docs");
-  let indexProcessor: IndexProcessor;
+  let indexProcessor: MarkdownIndexProcessor;
   let indexStructurePreProcessor: IndexStructurePreProcessor;
 
   beforeEach(() => {
@@ -34,7 +34,7 @@ describe("Example Test Suite", () => {
       "Start.%content%End.",
     );
 
-    indexProcessor = new IndexProcessor();
+    indexProcessor = new MarkdownIndexProcessor();
     indexStructurePreProcessor = new IndexStructurePreProcessor();
   });
 
@@ -213,7 +213,7 @@ describe("Example Test Suite", () => {
     });
 
     test("should generate the index files with a custom template", async () => {
-      const indexProcessor = new IndexProcessor({
+      const indexProcessor = new MarkdownIndexProcessor({
         markdownLink: true,
         template: getOutputPath("templates/index.template.md"),
       });
@@ -243,7 +243,7 @@ describe("Example Test Suite", () => {
       fs.writeFileSync(getOutputPath("docs-list-dirs/b.md"), "");
       fs.writeFileSync(getOutputPath("docs-list-dirs/sub-folder/c.md"), "");
 
-      const indexProcessor = new IndexProcessor({
+      const indexProcessor = new MarkdownIndexProcessor({
         markdownLink: true,
       });
       await indexProcessor.handle(docsListDirs);
@@ -270,7 +270,7 @@ describe("Example Test Suite", () => {
       fs.writeFileSync(getOutputPath("docs-list-dirs/b.md"), "");
       fs.writeFileSync(getOutputPath("docs-list-dirs/sub-folder/c.md"), "");
 
-      const indexProcessor = new IndexProcessor({
+      const indexProcessor = new MarkdownIndexProcessor({
         markdownLink: true,
       });
 
@@ -299,7 +299,7 @@ describe("Example Test Suite", () => {
       fs.writeFileSync(getOutputPath("docs-list-dirs/sub-folder/index.md"), "");
       fs.writeFileSync(getOutputPath("docs-list-dirs/sub-folder/c.md"), "");
 
-      const indexProcessor = new IndexProcessor({
+      const indexProcessor = new MarkdownIndexProcessor({
         markdownLink: true,
       });
 
@@ -356,7 +356,7 @@ describe("Example Test Suite", () => {
 
   describe("heading", () => {
     test("should create files with a heading", async () => {
-      indexProcessor = new IndexProcessor({
+      indexProcessor = new MarkdownIndexProcessor({
         filesHeading: "## Files",
       });
 
@@ -375,7 +375,7 @@ describe("Example Test Suite", () => {
     });
 
     test("should create directories with a heading", async () => {
-      indexProcessor = new IndexProcessor({
+      indexProcessor = new MarkdownIndexProcessor({
         directoryHeading: "## Folders",
       });
 
@@ -393,7 +393,7 @@ describe("Example Test Suite", () => {
     });
 
     test("should create both file and directories headings", async () => {
-      indexProcessor = new IndexProcessor({
+      indexProcessor = new MarkdownIndexProcessor({
         directoryHeading: "## Folders",
         filesHeading: "## Files",
       });
@@ -430,7 +430,7 @@ This additional text helps simulate a more realistic documentation scenario.`;
       fs.mkdirSync(getOutputPath("docs-excerpt"), { recursive: true });
       fs.writeFileSync(getOutputPath("docs-excerpt/excerpt.md"), sourceCode);
 
-      indexProcessor = new IndexProcessor({
+      indexProcessor = new MarkdownIndexProcessor({
         excerpt: {
           length: 75,
           addEllipsis: true,

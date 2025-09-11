@@ -3,7 +3,7 @@ import fs from "fs";
 import { glob } from "glob";
 import path from "path";
 import { DEFAULT_CONFIG, publishDocs } from "../scripts/publish-docs.js";
-import { SimpleDocsScraperConfig } from "../simple-docs-scraper/types/config.js";
+import { SimpleDocExtractorConfig } from "../simple-docs-scraper/types/config.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";
 
@@ -36,7 +36,7 @@ describe("Publish Docs", () => {
         }),
       };
 
-      const result = await publishDocs(testConfig as SimpleDocsScraperConfig);
+      const result = await publishDocs(testConfig as SimpleDocExtractorConfig);
 
       const outputFiles = await glob("**/**.*", {
         absolute: true,
@@ -51,7 +51,7 @@ describe("Publish Docs", () => {
 
       const pathToSimpleDocsScraper = path.join(
         getOutputPath(),
-        "docs/simple-docs-scraper/services/SimpleDocsScraper.ts.md",
+        "docs/simple-docs-scraper/services/SimpleDocExtractor.ts.md",
       );
       const pathToDocFileGenerator = path.join(
         getOutputPath(),

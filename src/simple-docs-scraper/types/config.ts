@@ -1,7 +1,7 @@
 import { DocumentContentExtractorConfig } from "../files/DocumentContentExtractor.js";
 import { DocFileGeneratorConfig } from "../generators/DocFileGenerator.js";
 import { IndexFileGeneratorConfig } from "../generators/IndexFileGenerator.js";
-import { Target } from "../services/SimpleDocsScraper.js";
+import { Target } from "../services/SimpleDocExtractor.js";
 import { TFormatter } from "./formatter.t.js";
 
 export type IndexGeneratorConfig = {
@@ -12,7 +12,7 @@ export type DocumentationGeneratorConfig = {
     template: string;
 } & Partial<DocFileGeneratorConfig>;
 
-export interface SimpleDocsScraperConfig {
+export interface SimpleDocExtractorConfig {
     baseDir: string;
     extraction: DocumentContentExtractorConfig;
     generators?: {

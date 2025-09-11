@@ -2,9 +2,9 @@ import fs from "fs";
 import path from "path";
 import { DocumentContentExtractor } from "../files/DocumentContentExtractor.js";
 import { DocFileGenerator } from "../generators/DocFileGenerator.js";
+import { Target } from "../services/SimpleDocExtractor.js";
 import { ContentInjection } from "../transformers/ContentInjection.js";
-import { DocumentationGeneratorConfig, SimpleDocsScraperConfig } from "../types/config.js";
-import { Target } from "./SimpleDocsScraper.js";
+import { DocumentationGeneratorConfig, SimpleDocExtractorConfig } from "../types/config.js";
 
 export type ProcessResultSuccess = {
   content: string;
@@ -50,8 +50,8 @@ export type ProcessResult = ProcessResultSuccess | ProcessResultError;
  * ```
  * </docs>
  */
-export class FileProcessor {
-  constructor(private config: SimpleDocsScraperConfig) {}
+export class CodeFileProcessor {
+  constructor(private config: SimpleDocExtractorConfig) {}
 
   /**
    * Pre-processes a file by extracting documentation and preparing it for output generation.

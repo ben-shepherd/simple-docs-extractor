@@ -2,9 +2,9 @@ import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import path from "path";
 import {
-  SimpleDocsScraper,
-} from "../simple-docs-scraper/services/SimpleDocsScraper.js";
-import { SimpleDocsScraperConfig } from "../simple-docs-scraper/types/config.js";
+  SimpleDocExtractor,
+} from "../simple-docs-scraper/services/SimpleDocExtractor.js";
+import { SimpleDocExtractorConfig } from "../simple-docs-scraper/types/config.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";
 
@@ -33,7 +33,7 @@ const twigFilesTarget = {
   createIndexFile: true,
 };
 
-const defaultConfig: SimpleDocsScraperConfig = {
+const defaultConfig: SimpleDocExtractorConfig = {
   baseDir: path.join(process.cwd(), "src/tests/files"),
   extraction: {
     extractMethod: "tags",
@@ -53,12 +53,12 @@ const defaultConfig: SimpleDocsScraperConfig = {
 };
 
 describe("Example Test Suite", () => {
-  let scraper!: SimpleDocsScraper;
+  let scraper!: SimpleDocExtractor;
 
   beforeEach(() => {
     deleteOutputFiles();
 
-    scraper = new SimpleDocsScraper(defaultConfig);
+    scraper = new SimpleDocExtractor(defaultConfig);
 
     // Create a mock template file
     fs.writeFileSync(
@@ -90,7 +90,7 @@ describe("Example Test Suite", () => {
     });
 
     test("should be able to configure target with it's own templates", async () => {
-      scraper = new SimpleDocsScraper({
+      scraper = new SimpleDocExtractor({
         ...defaultConfig,
         targets: [
           {
@@ -135,7 +135,7 @@ describe("Example Test Suite", () => {
     });
 
     test("should generate logs", async () => {
-      scraper = new SimpleDocsScraper({
+      scraper = new SimpleDocExtractor({
         ...defaultConfig,
         targets: [jsFilesTarget],
       });
@@ -147,7 +147,7 @@ describe("Example Test Suite", () => {
     });
 
     test("should ignore files", async () => {
-      scraper = new SimpleDocsScraper({
+      scraper = new SimpleDocExtractor({
         ...defaultConfig,
         targets: [
           {
@@ -171,7 +171,7 @@ describe("Example Test Suite", () => {
     });
 
     test("should preserve file extensions", async () => {
-      scraper = new SimpleDocsScraper({
+      scraper = new SimpleDocExtractor({
         ...defaultConfig,
         targets: [
           {

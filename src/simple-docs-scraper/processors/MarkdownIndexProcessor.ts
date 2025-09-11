@@ -2,9 +2,9 @@ import {
   IndexFileGenerator,
   IndexFileGeneratorConfig,
 } from "../generators/IndexFileGenerator.js";
-import { IndexStructurePreProcessor } from "../processors/IndexStructurePreProcessor.js";
+import { IndexStructurePreProcessor } from "./IndexStructurePreProcessor.js";
 
-export type IndexProcessorConfig = Omit<IndexFileGeneratorConfig, "outDir">;
+export type MarkdownIndexProcessorConfig = Omit<IndexFileGeneratorConfig, "outDir">;
 
 /**
  * <docs>
@@ -27,8 +27,8 @@ export type IndexProcessorConfig = Omit<IndexFileGeneratorConfig, "outDir">;
  * ```
  * </docs>
  */
-export class IndexProcessor {
-  constructor(private config: IndexProcessorConfig = {}) {}
+export class MarkdownIndexProcessor {
+  constructor(private config: MarkdownIndexProcessorConfig = {}) {}
 
   /**
    * Starts the index file generation process for the configured base directory.

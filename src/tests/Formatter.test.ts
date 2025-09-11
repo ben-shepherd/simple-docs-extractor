@@ -3,14 +3,14 @@ import fs from "fs";
 import path from "path";
 import { MultiLineCommentClear } from "../simple-docs-scraper/formatters/MultiLineCommentClear.js";
 import {
-  SimpleDocsScraper,
+  SimpleDocExtractor,
 } from "../simple-docs-scraper/index.js";
-import { SimpleDocsScraperConfig } from "../simple-docs-scraper/types/config.js";
+import { SimpleDocExtractorConfig } from "../simple-docs-scraper/types/config.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";
 
 
-const defaultConfig: SimpleDocsScraperConfig = {
+const defaultConfig: SimpleDocExtractorConfig = {
   baseDir: process.cwd(),
   extraction: {
     extractMethod: "tags",
@@ -66,7 +66,7 @@ const exampleFunc = () => {
     test("should accept formatters", () => {
       expect(
         () =>
-          new SimpleDocsScraper({
+          new SimpleDocExtractor({
             ...defaultConfig,
             formatters: [MultiLineCommentClear],
           }),
@@ -74,7 +74,7 @@ const exampleFunc = () => {
     });
 
     test("should apply multi line comment clear formatter", async () => {
-      const scraper = new SimpleDocsScraper({
+      const scraper = new SimpleDocExtractor({
         ...defaultConfig,
         formatters: [MultiLineCommentClear],
       });
