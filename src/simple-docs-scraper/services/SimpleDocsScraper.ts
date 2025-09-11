@@ -1,10 +1,7 @@
 import fs from "fs";
 import { GlobOptions } from "glob";
-import { DocumentContentExtractorConfig } from "../files/DocumentContentExtractor.js";
 import { FileScanner } from "../files/FileScanner.js";
-import { DocGeneratorConfig } from "../generators/DocFileGenerator.js";
-import { IndexFileGeneratorConfig } from "../generators/IndexFileGenerator.js";
-import { TFormatter } from "../types/formatter.t.js";
+import { DocumentationGeneratorConfig, IndexGeneratorConfig, SimpleDocsScraperConfig } from "../types/config.js";
 import {
   FileProcessor,
   ProcessResult,
@@ -17,23 +14,11 @@ export type Target = {
   globOptions: GlobOptions & { cwd: string; extensions: string | string[] };
   outDir: string;
   createIndexFile: boolean;
-};
-
-// Main configuration interface for the SimpleDocsScraper
-export interface SimpleDocsScraperConfig {
-  baseDir: string;
-  extraction: DocumentContentExtractorConfig;
   generators?: {
-    index?: {
-      template: string;
-    } & Partial<IndexFileGeneratorConfig>;
-    documentation?: {
-      template: string;
-    } & Partial<DocGeneratorConfig>;
+    index?: IndexGeneratorConfig;
+    documentation?: DocumentationGeneratorConfig;
   };
-  targets: Target[];
-  formatters?: TFormatter[];
-}
+};
 
 // Result object returned after processing all targets
 export type SimpleDocsScraperResult = {
@@ -206,8 +191,26 @@ export class SimpleDocsScraper {
     }
 
     await new IndexProcessor({
-      ...(this.config.generators?.index ?? {}),
+      ...this.getIndexProcessorConfig(target),
     }).handle(target.outDir);
+  }
+
+  /**
+   * <method>
+   * Gets the index processor config for the target.
+   *
+   * @param target - The target configuration
+   * @returns The index processor config
+   * </method>
+   */
+  getIndexProcessorConfig(target: Target) {
+    if(target.generators?.index) {
+      return target.generators.index;
+    }
+    if(typeof this.config.generators?.index === "undefined") {
+      return {};
+    }
+    return this.config.generators.index;
   }
 
   /**

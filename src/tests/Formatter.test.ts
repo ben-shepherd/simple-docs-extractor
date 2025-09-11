@@ -4,10 +4,11 @@ import path from "path";
 import { MultiLineCommentClear } from "../simple-docs-scraper/formatters/MultiLineCommentClear.js";
 import {
   SimpleDocsScraper,
-  SimpleDocsScraperConfig,
-} from "../simple-docs-scraper/services/SimpleDocsScraper.js";
+} from "../simple-docs-scraper/index.js";
+import { SimpleDocsScraperConfig } from "../simple-docs-scraper/types/config.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";
+
 
 const defaultConfig: SimpleDocsScraperConfig = {
   baseDir: process.cwd(),

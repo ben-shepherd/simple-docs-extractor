@@ -3,7 +3,8 @@ import path from "path";
 import { DocumentContentExtractor } from "../files/DocumentContentExtractor.js";
 import { DocFileGenerator } from "../generators/DocFileGenerator.js";
 import { ContentInjection } from "../transformers/ContentInjection.js";
-import { SimpleDocsScraperConfig, Target } from "./SimpleDocsScraper.js";
+import { DocumentationGeneratorConfig, SimpleDocsScraperConfig } from "../types/config.js";
+import { Target } from "./SimpleDocsScraper.js";
 
 export type ProcessResultSuccess = {
   content: string;
@@ -61,7 +62,7 @@ export class FileProcessor {
    */
   async preProcess(file: string, target: Target): Promise<ProcessResult> {
     const contentInjection = new ContentInjection({
-      template: this.config.generators?.documentation?.template ?? "",
+      template: this.getDocFileGeneratorConfig(target).template ?? "",
       outDir: target.outDir,
     });
     let injectedContent = "";
@@ -98,7 +99,7 @@ export class FileProcessor {
 
     // Generate the documentation file
     new DocFileGenerator({
-      template: this.config.generators?.documentation?.template,
+      template: this.getDocFileGeneratorConfig(target).template,
       outDir: transformedOutDir,
     }).saveToMarkdownFile(injectedContent, file);
 
@@ -144,8 +145,18 @@ export class FileProcessor {
 
     // Generate the documentation file
     new DocFileGenerator({
-      template: this.config.generators?.documentation?.template,
+      template: this.getDocFileGeneratorConfig(target)?.template ?? undefined,
       outDir: processedResult.outDir,
     }).saveToMarkdownFile(processedResult.content, outFile);
+  }
+
+  getDocFileGeneratorConfig(target: Target): DocumentationGeneratorConfig {
+    if(target.generators?.documentation) {
+      return target.generators.documentation;
+    }
+    if(typeof this.config.generators?.documentation === "undefined") {
+      return {} as DocumentationGeneratorConfig;
+    }
+    return this.config.generators?.documentation;
   }
 }

@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, test } from "@jest/globals";
+import fs from "fs";
 import { glob } from "glob";
 import path from "path";
 import { DEFAULT_CONFIG, publishDocs } from "../scripts/publish-docs.js";
-import { SimpleDocsScraperConfig } from "../simple-docs-scraper/index.js";
+import { SimpleDocsScraperConfig } from "../simple-docs-scraper/types/config.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";
-import fs from "fs";
 
 describe("Publish Docs", () => {
   beforeEach(() => {

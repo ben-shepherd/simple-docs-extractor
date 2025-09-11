@@ -3,10 +3,17 @@ import fs from "fs";
 import path from "path";
 import {
   SimpleDocsScraper,
-  SimpleDocsScraperConfig,
 } from "../simple-docs-scraper/services/SimpleDocsScraper.js";
+import { SimpleDocsScraperConfig } from "../simple-docs-scraper/types/config.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";
+
+const TEMPLATE_CONTENT = `Start.
+%content%
+End.`;
+const TEMPLATE_CONTENT2 = `Begin.
+%content%
+Finish.`;
 
 const jsFilesTarget = {
   globOptions: {
@@ -56,25 +63,24 @@ describe("Example Test Suite", () => {
     // Create a mock template file
     fs.writeFileSync(
       getOutputPath("index.template.md"),
-      `Start.
-%content%
-End.    `,
+      TEMPLATE_CONTENT,
     );
     fs.writeFileSync(
       getOutputPath("documentation.template.md"),
-      `Start.
-%content%
-End.`,
+      TEMPLATE_CONTENT,
+    );
+
+    // Createa second mock template file
+    fs.writeFileSync(
+      getOutputPath("index2.template.md"),
+      TEMPLATE_CONTENT2,
+    );
+    fs.writeFileSync(
+      getOutputPath("documentation2.template.md"),
+      TEMPLATE_CONTENT2,
     );
   });
 
-  // afterEach(() => {
-  //     deleteOutputFiles();
-  // })
-
-  // afterAll(() => {
-  //     deleteOutputFiles();
-  // })
 
   describe("config", () => {
     test("should be able to configure the scraper", () => {
@@ -82,6 +88,34 @@ End.`,
 
       expect(config).toBe(defaultConfig);
     });
+
+    test("should be able to configure target with it's own templates", async () => {
+      scraper = new SimpleDocsScraper({
+        ...defaultConfig,
+        targets: [
+          {
+            ...jsFilesTarget,
+            generators: {
+              documentation: {
+                template: getOutputPath("documentation2.template.md"),
+              },
+              index: {
+                template: getOutputPath("index2.template.md"),
+              },
+            },
+          },
+        ],
+      });
+      await scraper.start();
+
+      const indexContent = fs.readFileSync(getOutputPath("js-files/index.md"), "utf8");
+      const documentationContent = fs.readFileSync(getOutputPath("js-files/exampleFunc.js.md"), "utf8");
+
+      expect(indexContent).toContain("Begin.");
+      expect(indexContent).toContain("Finish.");
+      expect(documentationContent).toContain("Begin.");
+      expect(documentationContent).toContain("Finish.");
+    })
   });
 
   describe("start", () => {

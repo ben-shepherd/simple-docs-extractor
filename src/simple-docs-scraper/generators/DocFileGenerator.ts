@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { ExtensionReplacer } from "../transformers/ExtensionReplacer.js";
 
-export type DocGeneratorConfig = {
+export type DocFileGeneratorConfig = {
   template?: string;
   outDir: string;
 };
@@ -15,11 +15,11 @@ export type DocGeneratorConfig = {
  * content and injecting it into a template file. It can save the generated
  * content to files with proper markdown extensions and directory structure.
  *
- * @param {DocGeneratorConfig} config - Configuration object containing template path, output directory, and search/replace pattern
+ * @param {DocFileGeneratorConfig} config - Configuration object containing template path, output directory, and search/replace pattern
  * </docs>
  */
 export class DocFileGenerator {
-  constructor(private config: DocGeneratorConfig) {}
+  constructor(private config: DocFileGeneratorConfig) {}
 
   /**
    * Generates a documentation file by injecting content into a template.

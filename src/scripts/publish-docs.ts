@@ -1,8 +1,8 @@
 import {
   MultiLineCommentClear,
   SimpleDocsScraper,
-  SimpleDocsScraperConfig,
 } from "@/simple-docs-scraper/index.js";
+import { SimpleDocsScraperConfig } from "@/simple-docs-scraper/types/config.js";
 import path from "path";
 
 export const DEFAULT_CONFIG: SimpleDocsScraperConfig = {
