@@ -1,16 +1,19 @@
-import { IndexFileGenerator, IndexFileGeneratorConfig } from '../generators/IndexFileGenerator.js';
-import { IndexStructurePreProcessor } from '../processors/IndexStructurePreProcessor.js';
+import {
+  IndexFileGenerator,
+  IndexFileGeneratorConfig,
+} from "../generators/IndexFileGenerator.js";
+import { IndexStructurePreProcessor } from "../processors/IndexStructurePreProcessor.js";
 
-export type IndexProcessorConfig = Omit<IndexFileGeneratorConfig, 'outDir'>
+export type IndexProcessorConfig = Omit<IndexFileGeneratorConfig, "outDir">;
 
 /**
  * <docs>
  * Processes directories recursively to generate index files for documentation.
- * 
+ *
  * This class traverses directory structures and creates index files (typically index.md)
  * that list all markdown files found in each directory. It supports custom templates
  * and search-and-replace patterns for flexible index file generation.
- * 
+ *
  * @example
  * ```typescript
  * const processor = new IndexProcessor({
@@ -18,52 +21,48 @@ export type IndexProcessorConfig = Omit<IndexFileGeneratorConfig, 'outDir'>
  *   template: './templates/index.template.md',
  *   searchAndReplace: '{{CONTENT}}'
  * });
- * 
+ *
  * await processor.handle();
  * // Creates index.md files in all subdirectories of ./docs
  * ```
  * </docs>
  */
 export class IndexProcessor {
-    constructor(private config: IndexProcessorConfig = {}) {}
+  constructor(private config: IndexProcessorConfig = {}) {}
 
-    /**
-     * Starts the index file generation process for the configured base directory.
-     */
-    async handle(baseDir: string) {
-        await this.handleDirectoryRecusrively(baseDir);
+  /**
+   * Starts the index file generation process for the configured base directory.
+   */
+  async handle(baseDir: string) {
+    await this.handleDirectoryRecusrively(baseDir);
+  }
+
+  /**
+   * Recursively processes a directory and all its subdirectories to create index files.
+   *
+   * @param directory - The directory path to process
+   */
+  async handleDirectoryRecusrively(directory: string) {
+    // Process files and folders
+    let processedEntries = await new IndexStructurePreProcessor({
+      markdownLink: this.config?.markdownLink,
+    }).process(directory);
+
+    // Handle directories recursively
+    const directoryEntries = processedEntries.filter((entry) => entry.isDir);
+    for (const dirEntry of directoryEntries) {
+      await this.handleDirectoryRecusrively(dirEntry.src);
     }
 
-    /**
-     * Recursively processes a directory and all its subdirectories to create index files.
-     * 
-     * @param directory - The directory path to process
-     */
-    async handleDirectoryRecusrively(directory: string) {
-        // Process files and folders
-        let processedEntries = await new IndexStructurePreProcessor({
-            markdownLink: this.config?.markdownLink
-        })
-        .process(directory)
+    // Re-process entries
+    processedEntries = await new IndexStructurePreProcessor({
+      markdownLink: this.config?.markdownLink,
+    }).process(directory);
 
-        // Handle directories recursively
-        const directoryEntries = processedEntries.filter(entry => entry.isDir)
-        for(const dirEntry of directoryEntries) {
-            await this.handleDirectoryRecusrively(dirEntry.src)
-        }
-
-        // Re-process entries
-        processedEntries = await new IndexStructurePreProcessor({
-            markdownLink: this.config?.markdownLink
-        })
-        .process(directory)
-
-        // Save the index.md file
-        await new IndexFileGenerator({
-            ...(this.config ?? {}),
-            outDir: directory,
-        })
-        .saveIndexFile(processedEntries)
-    }
-
+    // Save the index.md file
+    await new IndexFileGenerator({
+      ...(this.config ?? {}),
+      outDir: directory,
+    }).saveIndexFile(processedEntries);
+  }
 }

@@ -1,2 +1,2 @@
-export * from './documentation.template.md';
-export * from './index.template.md';
+export * from "./documentation.template.md";
+export * from "./index.template.md";

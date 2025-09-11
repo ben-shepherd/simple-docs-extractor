@@ -1,2 +1,2 @@
-export * from './ContentInjection.js';
-export * from './ExtensionReplacer.js';
+export * from "./ContentInjection.js";
+export * from "./ExtensionReplacer.js";

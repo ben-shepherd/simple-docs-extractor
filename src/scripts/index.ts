@@ -1,1 +1,1 @@
-export * from './publish-docs.js';
+export * from "./publish-docs.js";
