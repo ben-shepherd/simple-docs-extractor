@@ -1,5 +1,5 @@
 import fs from "fs";
-import { escapeRegExpString } from "../utils/escapeRegexString.js";
+import { TagExtractor } from "./TagExtractor.js";
 
 // Configuration for extracting documentation using start and end tags
 export type MethodTags = {
@@ -29,6 +29,7 @@ export type ExtractionMethod = (MethodTags | MethodRegex | MethodCallback) & {
 
 export type ExtractionResult = {
   content: string[];
+  attributes?: Record<string, string>;
 } & ExtractionMethod;
 
 export type ErrorResult = {
@@ -126,7 +127,7 @@ export class DocumentContentExtractor {
     } as ExtractionResult | ErrorResult;
 
     if (method.extractMethod === "tags" && method.startTag && method.endTag) {
-      result = this.extractUsingTags(method, fileContent);
+      result = TagExtractor.extractUsingTags(method, fileContent);
     } else if (method.extractMethod === "regex" && method.pattern) {
       result = this.extractUsingRegex(method, fileContent);
     } else if (
@@ -219,66 +220,4 @@ export class DocumentContentExtractor {
     } as unknown as ExtractionResult;
   }
 
-  /**
-   * Extracts documentation using start and end tags.
-   *
-   * @param fileContent - The content of the file to extract from
-   * @returns Extraction result with content between tags or error details
-   *
-   * For regex101 example:
-   * @see https://regex101.com/r/UzcvAj/2
-   */
-  protected extractUsingTags(
-    method: MethodTags,
-    fileContent: string,
-  ): ExtractionResult | ErrorResult {
-    // Check if the file contains the start and end tags
-    if (
-      !fileContent.includes(method.startTag) ||
-      !fileContent.includes(method.endTag)
-    ) {
-      return {
-        errorMessage: "Content not found between tags",
-        nonThrowing: true,
-      };
-    }
-
-    /**
-     * This regex matches any character, including whitespace, word characters, and non-word characters.
-     */
-    const inBetweenTagsPattern = [
-      "([", // start of group
-      "\\s", // whitespace
-      "\\w", // word characters
-      "\\W", // non-word characters
-      "\\d", // digits
-      ".]+?)", // any character (dot), non-greedy, end of group
-    ].join("");
-    /**
-     * g modifier: global. All matches (don't return after first match)
-     * m modifier: multi line. Causes ^ and $ to match the begin/end of each line (not only begin/end of string)
-     */
-    const flags = "gm";
-
-    // final regex to match the start and end tags and the content inside the tags
-    const startTagPattern = escapeRegExpString(method.startTag);
-    const endTagPattern = escapeRegExpString(method.endTag);
-    const finalRegex = new RegExp(
-      `${startTagPattern}(${inBetweenTagsPattern}*?)${endTagPattern}`,
-      flags,
-    );
-
-    // match the final regex
-    const matches = fileContent.match(finalRegex);
-
-    // Remove the start and end tags from each match
-    const matchesWithoutTags = matches?.map((match) =>
-      match?.replace(method.startTag, "").replace(method.endTag, ""),
-    );
-
-    return {
-      content: matchesWithoutTags ?? [],
-      ...method,
-    } as unknown as ExtractionResult;
-  }
 }
