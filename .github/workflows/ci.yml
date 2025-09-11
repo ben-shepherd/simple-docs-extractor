@@ -1,8 +1,8 @@
 name: pr-check
 
 on:
+  workflow_dispatch:
   push:
-    branches: [ $default-branch ]
   pull_request:
     branches: [ $default-branch ]
     types: [opened, synchronize]
@@ -11,8 +11,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v5
 
       - name: Setup Node
         uses: actions/setup-node@v5
@@ -26,8 +25,7 @@ jobs:
     needs: lint
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v5
 
       - name: Setup Node
         uses: actions/setup-node@v5
@@ -44,8 +42,7 @@ jobs:
     needs: [lint, format]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v5
 
       - name: Setup Node
         uses: actions/setup-node@v5
