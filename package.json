@@ -19,7 +19,7 @@
     "prepare": "npm run build",
     "test": "jest --passWithNoTests --runInBand",
     "test:watch": "jest --watch --passWithNoTests --runInBand",
-    "test:coverage": "jest --coverage --passWithNoTests",
+    "test:coverage": "jest --coverage --passWithNoTests --runInBand",
     "build": "tsc --skipLibCheck && npx tsc-alias && npm run copy-templates",
     "copy-templates": "copyfiles -f src/templates/*.md dist/templates",
     "build:watch": "tsc --watch --skipLibCheck",
