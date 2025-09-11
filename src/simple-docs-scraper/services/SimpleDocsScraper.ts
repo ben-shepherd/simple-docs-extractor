@@ -23,9 +23,6 @@ export type Target = {
 export interface SimpleDocsScraperConfig {
   baseDir: string;
   extraction: DocumentContentExtractorConfig;
-  searchAndReplace: {
-    replace: string;
-  };
   generators?: {
     index?: {
       template: string;
@@ -87,18 +84,22 @@ export class SimpleDocsScraper {
   ) {}
 
   /**
+   * <method>
    * Returns the current configuration.
    *
    * @returns The current SimpleDocsScraper configuration
+   * </method>
    */
   getConfig(): SimpleDocsScraperConfig {
     return this.config;
   }
 
   /**
+   * <method>
    * Starts the documentation generation process for all configured targets.
    *
    * @returns Promise resolving to result object with success count, total count, and logs
+   * </method>
    */
   async start(): Promise<SimpleDocsScraperResult> {
     for (const target of this.config.targets) {
@@ -115,10 +116,12 @@ export class SimpleDocsScraper {
   }
 
   /**
+   * <method>
    * Processes a single target directory by scanning files and generating documentation.
    *
    * @param target - The target configuration to process
    * @param targetIndex - The index of the target for logging purposes
+   * </method>
    */
   async handleTarget(target: Target, targetIndex: number) {
     const fileProcessor = new FileProcessor(this.config);
@@ -151,6 +154,7 @@ export class SimpleDocsScraper {
   }
 
   /**
+   * <method>
    * Processes a single file by extracting documentation and generating output.
    *
    * @param file - The file path to process
@@ -158,6 +162,7 @@ export class SimpleDocsScraper {
    * @param targetIndex - The index of the target for logging
    * @param preProcessedFiles - Array to collect processed file results
    * @param fileProcessor - The file processor instance to use
+   * </method>
    */
   private async processSingleFile(
     file: string,
@@ -189,9 +194,11 @@ export class SimpleDocsScraper {
   }
 
   /**
+   * <method>
    * Creates an index file recursively for the target if configured to do so.
    *
    * @param target - The target configuration
+   * </method>
    */
   private async handleRecursivelyCreateIndexFiles(target: Target) {
     if (!target.createIndexFile) {
@@ -204,10 +211,12 @@ export class SimpleDocsScraper {
   }
 
   /**
+   * <method>
    * Gets the files for the target using the configured file scanner.
    *
    * @param target - The target configuration containing glob options
    * @returns Promise resolving to array of matching file paths
+   * </method>
    */
   private async getFiles(target: Target) {
     const fileScanner = new FileScanner({

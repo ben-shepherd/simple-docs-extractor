@@ -34,7 +34,7 @@ export type IndexStructurePreProcessorEntry = {
  * </docs>
  */
 export class IndexStructurePreProcessor {
-  constructor(private config: IndexStructurePreProcessorConfig = {}) { }
+  constructor(private config: IndexStructurePreProcessorConfig = {}) {}
 
   /**
    * Retrieves directory entries filtered for markdown files and directories.
@@ -50,6 +50,7 @@ export class IndexStructurePreProcessor {
     if (!fs.existsSync(baseDir)) {
       return [];
     }
+
     return fs
       .readdirSync(baseDir)
       .filter((entry) => {

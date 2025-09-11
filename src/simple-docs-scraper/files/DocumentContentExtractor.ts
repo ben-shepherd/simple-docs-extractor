@@ -1,4 +1,5 @@
 import fs from "fs";
+import { escapeRegExpString } from "../utils/escapeRegexString.js";
 
 // Configuration for extracting documentation using start and end tags
 export type MethodTags = {
@@ -18,23 +19,26 @@ export type MethodCallback = {
   extractMethod: "callback";
   callback: (
     fileContent: string,
-  ) => Promise<string | undefined> | (string | undefined);
+  ) => Promise<string | string[] | undefined> | (string | string[] | undefined);
 };
 
 // Union type for all possible extraction methods
-export type DocumentContentExtractorConfig =
-  | MethodTags
-  | MethodRegex
-  | MethodCallback;
-
-// Result object returned by the documentation extraction process
-export type DocumentContentExtractorResult = {
-  docs: string;
-  file: string;
-  sucess?: boolean;
-  errorType?: "fileNotFound" | "noStartOrEndTags" | "noDocs" | "misconfigured";
-  errorMessage?: string;
+export type ExtractionMethod = (MethodTags | MethodRegex | MethodCallback) & {
+  searchAndReplace: string;
 };
+
+export type ExtractionResult = {
+  content: string[];
+} & ExtractionMethod;
+
+export type ErrorResult = {
+  errorMessage: string;
+  nonThrowing?: boolean; // if true, the error will not be thrown
+};
+
+export type DocumentContentExtractorConfig =
+  | ExtractionMethod
+  | ExtractionMethod[];
 
 /**
  * <docs>
@@ -65,10 +69,7 @@ export type DocumentContentExtractorResult = {
  * </docs>
  */
 export class DocumentContentExtractor {
-  constructor(
-    private file: string,
-    private config: DocumentContentExtractorConfig,
-  ) {}
+  constructor(private config: DocumentContentExtractorConfig) {}
 
   /**
    * Extracts documentation from the configured file using the specified method.
@@ -76,49 +77,93 @@ export class DocumentContentExtractor {
    * @returns Promise resolving to extraction result with documentation content or error details
    * @throws {Error} When an invalid extraction method is configured
    */
-  async extract(): Promise<DocumentContentExtractorResult> {
-    // Check if the file exists
-    if (!fs.existsSync(this.file)) {
-      return {
-        sucess: false,
-        docs: "",
-        file: this.file,
-        errorType: "fileNotFound",
+  async extractFromFile(file: string): Promise<ExtractionResult[]> {
+    if (!fs.existsSync(file)) {
+      throw new Error("File not found");
+    }
+
+    const fileContent = fs.readFileSync(file, "utf8");
+
+    return this.extractFromString(fileContent);
+  }
+
+  /**
+   * Extracts documentation from a string using the specified method.
+   *
+   * @param contents - The content of the file to extract from
+   * @returns Promise resolving to extraction result with documentation content or error details
+   */
+  async extractFromString(contents: string): Promise<ExtractionResult[]> {
+    const extractionMethodsArray = Array.isArray(this.config)
+      ? this.config
+      : [this.config];
+    let results: ExtractionResult[] = [];
+
+    for (const i in extractionMethodsArray) {
+      const method = extractionMethodsArray[i];
+      await this.handleExtractionMethod(method, contents, i, results);
+    }
+
+    return results;
+  }
+
+  /**
+   * Handles the extraction method based on the method type.
+   *
+   * @param method - The extraction method to handle
+   * @param fileContent - The content of the file to extract from
+   * @param i - The index of the method
+   * @param results - The results array
+   */
+  private async handleExtractionMethod(
+    method: ExtractionMethod,
+    fileContent: string,
+    i: string,
+    results: ExtractionResult[],
+  ) {
+    let result: ExtractionResult | ErrorResult = {
+      searchAndReplace: method.searchAndReplace,
+    } as ExtractionResult | ErrorResult;
+
+    if (method.extractMethod === "tags" && method.startTag && method.endTag) {
+      result = this.extractUsingTags(method, fileContent);
+    } else if (method.extractMethod === "regex" && method.pattern) {
+      result = this.extractUsingRegex(method, fileContent);
+    } else if (
+      method.extractMethod === "callback" &&
+      typeof method.callback === "function"
+    ) {
+      result = await this.extractUsingCallback(method, fileContent);
+    } else {
+      result = {
+        errorMessage: `Error in extraction method ${i}: Invalid extraction method`,
       };
     }
 
-    const fileContent = fs.readFileSync(this.file, "utf8");
-    let result: DocumentContentExtractorResult;
-
-    if (
-      this.config.extractMethod === "tags" &&
-      this.config.startTag &&
-      this.config.endTag
-    ) {
-      result = this.extractUsingTags(fileContent);
-    } else if (this.config.extractMethod === "regex" && this.config.pattern) {
-      result = this.extractUsingRegex(fileContent);
-    } else if (
-      this.config.extractMethod === "callback" &&
-      typeof this.config.callback === "function"
-    ) {
-      result = await this.extractUsingCallback(fileContent);
-    } else {
-      throw new Error("You must provide a valid extract method");
+    // if the result is an error, throw an error
+    if ("errorMessage" in result) {
+      if (true === result.nonThrowing) {
+        return;
+      }
+      throw new Error(result.errorMessage);
     }
 
-    if (!result.sucess) {
-      return result;
+    // Ensure the content is an array to avoid unexpected behavior
+    if (!Array.isArray(result.content)) {
+      result.content = [result.content];
     }
 
     // trim spaces and empty lines
-    result.docs = result.docs.trim().replace(/\n\s*\n/g, "\n");
+    this.trimContent(result);
 
-    return {
-      sucess: true,
-      docs: result.docs,
-      file: this.file,
-    };
+    // add the result to the results array
+    results.push(result as ExtractionResult);
+  }
+
+  private trimContent(result: ExtractionResult) {
+    const trimCallback = (content: string) =>
+      content.trim().replace(/\n\s*\n/g, "\n");
+    result.content = result.content.map((content) => trimCallback(content));
   }
 
   /**
@@ -128,30 +173,25 @@ export class DocumentContentExtractor {
    * @returns Extraction result with matched documentation or error details
    */
   protected extractUsingRegex(
+    method: MethodRegex,
     fileContent: string,
-  ): DocumentContentExtractorResult {
-    const config = this.config as MethodRegex;
+  ): ExtractionResult | ErrorResult {
+    const regex = new RegExp(method.pattern);
+    const matches = fileContent.match(regex);
 
-    const regex = new RegExp(config.pattern);
-
-    const match = fileContent.match(regex);
-
-    if (!match) {
+    if (!matches) {
       return {
-        sucess: false,
-        docs: "",
-        file: this.file,
-        errorType: "noDocs",
+        errorMessage: "No content found in the file",
+        nonThrowing: true,
       };
     }
 
-    const docs = match[1];
+    const match = matches[1];
 
     return {
-      sucess: true,
-      docs: docs,
-      file: this.file,
-    };
+      content: match,
+      ...method,
+    } as unknown as ExtractionResult;
   }
 
   /**
@@ -161,26 +201,22 @@ export class DocumentContentExtractor {
    * @returns Promise resolving to extraction result with callback-generated documentation or error details
    */
   protected async extractUsingCallback(
+    method: MethodCallback,
     fileContent: string,
-  ): Promise<DocumentContentExtractorResult> {
-    const config = this.config as MethodCallback;
+  ): Promise<ExtractionResult | ErrorResult> {
+    const content = await method.callback(fileContent);
 
-    const docs = await config.callback(fileContent);
-
-    if (!docs) {
+    if (!content) {
       return {
-        sucess: false,
-        docs: "",
-        file: this.file,
-        errorType: "noDocs",
+        errorMessage: "Callback function returned no content",
+        nonThrowing: false,
       };
     }
 
     return {
-      sucess: true,
-      docs: docs,
-      file: this.file,
-    };
+      content: Array.isArray(content) ? content : [content],
+      ...method,
+    } as unknown as ExtractionResult;
   }
 
   /**
@@ -188,37 +224,61 @@ export class DocumentContentExtractor {
    *
    * @param fileContent - The content of the file to extract from
    * @returns Extraction result with content between tags or error details
+   *
+   * For regex101 example:
+   * @see https://regex101.com/r/UzcvAj/2
    */
   protected extractUsingTags(
+    method: MethodTags,
     fileContent: string,
-  ): DocumentContentExtractorResult {
-    const config = this.config as MethodTags;
-
+  ): ExtractionResult | ErrorResult {
     // Check if the file contains the start and end tags
     if (
-      !fileContent.includes(config.startTag) ||
-      !fileContent.includes(config.endTag)
+      !fileContent.includes(method.startTag) ||
+      !fileContent.includes(method.endTag)
     ) {
       return {
-        sucess: false,
-        docs: "",
-        file: this.file,
-        errorType: "noStartOrEndTags",
+        errorMessage: "Content not found between tags",
+        nonThrowing: true,
       };
     }
 
-    const startIndex = fileContent.indexOf(config.startTag);
-    const endIndex = fileContent.indexOf(config.endTag);
-    let docs = fileContent.substring(startIndex, endIndex);
+    /**
+     * This regex matches any character, including whitespace, word characters, and non-word characters.
+     */
+    const inBetweenTagsPattern = [
+      "([", // start of group
+      "\\s", // whitespace
+      "\\w", // word characters
+      "\\W", // non-word characters
+      "\\d", // digits
+      ".]+?)", // any character (dot), non-greedy, end of group
+    ].join("");
+    /**
+     * g modifier: global. All matches (don't return after first match)
+     * m modifier: multi line. Causes ^ and $ to match the begin/end of each line (not only begin/end of string)
+     */
+    const flags = "gm";
 
-    // strip the start and end tags
-    docs = docs.replace(config.startTag, "");
-    docs = docs.replace(config.endTag, "");
+    // final regex to match the start and end tags and the content inside the tags
+    const startTagPattern = escapeRegExpString(method.startTag);
+    const endTagPattern = escapeRegExpString(method.endTag);
+    const finalRegex = new RegExp(
+      `${startTagPattern}(${inBetweenTagsPattern}*?)${endTagPattern}`,
+      flags,
+    );
+
+    // match the final regex
+    const matches = fileContent.match(finalRegex);
+
+    // Remove the start and end tags from each match
+    const matchesWithoutTags = matches?.map((match) =>
+      match?.replace(method.startTag, "").replace(method.endTag, ""),
+    );
 
     return {
-      sucess: true,
-      docs: docs,
-      file: this.file,
-    };
+      content: matchesWithoutTags ?? [],
+      ...method,
+    } as unknown as ExtractionResult;
   }
 }

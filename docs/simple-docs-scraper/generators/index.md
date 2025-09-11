@@ -7,9 +7,9 @@ This is the index file for the generated documentation. Below you will find the 
 
 ## Files
 
-- [DocFileGenerator.ts.md](DocFileGenerator.ts.md) - Generates documentation files by injecting content into templates.
+- [DocFileGenerator.ts.md](DocFileGenerator.ts.md) - This file is auto generated.
+- [IndexFileGenerator.ts.md](IndexFileGenerator.ts.md) - This file is auto generated.
 - [index.md](index.md) - This is the index file for the generated documentation.
-- [IndexFileGenerator.ts.md](IndexFileGenerator.ts.md) - Generates index files from processed directory entries with configurable te.
 
 
 

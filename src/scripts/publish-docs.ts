@@ -7,14 +7,14 @@ import path from "path";
 
 export const DEFAULT_CONFIG: SimpleDocsScraperConfig = {
   baseDir: process.cwd(),
-  extraction: {
-    extractMethod: "tags",
-    startTag: "<docs>",
-    endTag: "</docs>",
-  },
-  searchAndReplace: {
-    replace: "%content%",
-  },
+  extraction: [
+    {
+      extractMethod: "tags",
+      startTag: "<docs>",
+      endTag: "</docs>",
+      searchAndReplace: "%content%",
+    },
+  ],
   generators: {
     index: {
       template: path.join(process.cwd(), "src/templates/index.template.md"),
@@ -22,7 +22,7 @@ export const DEFAULT_CONFIG: SimpleDocsScraperConfig = {
       filesHeading: "\n## Files\n",
       directoryHeading: "\n## Folders\n",
       excerpt: {
-        length: 100,
+        length: 75,
         addEllipsis: false,
         firstSentenceOnly: true,
       },

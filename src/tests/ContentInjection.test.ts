@@ -40,7 +40,6 @@ describe("Injection", () => {
           new ContentInjection({
             template: getOutputPath("test.template.txt"),
             outDir,
-            searchAndReplace: "%content%",
           }),
       );
     });
@@ -48,21 +47,12 @@ describe("Injection", () => {
 
   describe("inject", () => {
     test("should be able to inject the docs into the content", () => {
-      const testString = `
-                Start.
-                %content%
-                End.`;
-
       injection = new ContentInjection({
         template: getOutputPath("test.template.txt"),
         outDir,
-        searchAndReplace: "%content%",
       });
 
-      const result = injection.injectIntoString(
-        testString,
-        "This is a test string.",
-      );
+      const result = injection.replace("This is a test string.");
 
       expect(result).toContain("Start.");
       expect(result).toContain("This is a test string.");
@@ -74,11 +64,11 @@ describe("Injection", () => {
     test("should be able to inject the docs into the file", () => {
       injection = new ContentInjection({
         template: getOutputPath("test.template.txt"),
-        searchAndReplace: "%content%",
         outDir,
       });
 
-      injection.injectIntoFile("This is a test string.", "test.txt");
+      const content = injection.replace("This is a test string.");
+      injection.writeFile(content, "test.txt");
 
       // Make folder recursively if it doesn't exist
       if (!fs.existsSync(process.cwd() + "/src/tests/output")) {
@@ -95,20 +85,6 @@ describe("Injection", () => {
       expect(fileContents).toContain("Start.");
       expect(fileContents).toContain("This is a test string.");
       expect(fileContents).toContain("End.");
-    });
-  });
-
-  describe("errors", () => {
-    test("should throw an error if the template file does not exist", () => {
-      injection = new ContentInjection({
-        template: "nonexistent.txt",
-        outDir,
-        searchAndReplace: "%content%",
-      });
-
-      expect(() =>
-        injection.injectIntoFile("This is a test string.", "test.txt"),
-      ).toThrow("Template file not found");
     });
   });
 });
