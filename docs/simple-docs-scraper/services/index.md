@@ -7,10 +7,9 @@ This is the index file for the generated documentation. Below you will find the 
 
 ## Files
 
-- [FileProcessor.ts.md](FileProcessor.ts.md) - Processes individual files to extract documentation and generate output fil.
-- [index.md](index.md) - This is the index file for the generated documentation.
-- [IndexProcessor.ts.md](IndexProcessor.ts.md) - Processes directories recursively to generate index files for documentation.
-- [SimpleDocsScraper.ts.md](SimpleDocsScraper.ts.md) - Main orchestrator class for extracting and generating documentation from so.
+- [FileProcessor.ts.md](FileProcessor.ts.md) - This file is auto generated.
+- [IndexProcessor.ts.md](IndexProcessor.ts.md) - This file is auto generated.
+- [SimpleDocsScraper.ts.md](SimpleDocsScraper.ts.md) - This file is auto generated.
 
 
 

@@ -7,9 +7,8 @@ This is the index file for the generated documentation. Below you will find the 
 
 ## Files
 
-- [DocumentContentExtractor.ts.md](DocumentContentExtractor.ts.md) - Extracts documentation from source files using various methods.
-- [FileScanner.ts.md](FileScanner.ts.md) - Scans directories for files matching specified extensions using glob patter.
-- [index.md](index.md) - This is the index file for the generated documentation.
+- [DocumentContentExtractor.ts.md](DocumentContentExtractor.ts.md) - This file is auto generated.
+- [FileScanner.ts.md](FileScanner.ts.md) - This file is auto generated.
 
 
 

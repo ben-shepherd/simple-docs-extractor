@@ -7,8 +7,7 @@ This is the index file for the generated documentation. Below you will find the 
 
 ## Files
 
-- [index.md](index.md) - This is the index file for the generated documentation.
-- [IndexStructurePreProcessor.ts.md](IndexStructurePreProcessor.ts.md) - Prepares a array of entries for index file generation.
+- [IndexStructurePreProcessor.ts.md](IndexStructurePreProcessor.ts.md) - This file is auto generated.
 
 
 
