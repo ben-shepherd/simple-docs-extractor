@@ -1,7 +1,7 @@
 {
   "name": "@benjamins94/simple-docs-extractor",
   "type": "module",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "A simple docs extractor",
   "repository": {
     "type": "git",
