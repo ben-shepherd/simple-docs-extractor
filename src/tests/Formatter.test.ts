@@ -1,3 +1,4 @@
+import { TagExtractorPlugin } from "@/simple-docs-scraper/extractors/TagExtractorPlugin.js";
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import path from "path";
@@ -9,12 +10,12 @@ import { getOutputPath } from "./helpers/getOutputPath.js";
 
 const defaultConfig: SimpleDocExtractorConfig = {
   baseDir: process.cwd(),
-  extraction: {
-    extractMethod: "tags",
-    startTag: "<docs>",
-    endTag: "</docs>",
-    searchAndReplace: "%content%",
-  },
+  extraction: [
+    new TagExtractorPlugin({
+      searchAndReplace: "%content%",
+      tag: "<docs>",
+    }),
+  ],
   targets: [
     {
       globOptions: {

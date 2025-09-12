@@ -1,6 +1,9 @@
+import { CallbackExtractor } from "@/simple-docs-scraper/extractors/CallbackExtractorPlugin.js";
+import { RegexExtractorPlugin } from "@/simple-docs-scraper/extractors/RegexExtractorPlugin.js";
+import { TagExtractorPlugin } from "@/simple-docs-scraper/extractors/TagExtractorPlugin.js";
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
-import { DocumentContentExtractor } from "../simple-docs-scraper/files/DocumentContentExtractor.js";
+import { DocumentContentExtractor } from "../simple-docs-scraper/extractors/DocumentContentExtractor.js";
 import { MultiLineCommentClear } from "../simple-docs-scraper/formatters/MultiLineCommentClear.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";
@@ -11,6 +14,15 @@ describe("Docs Extractor", () => {
     process.cwd() + "/src/tests/files/js-files/exampleFunc.js";
   const fileWithoutDocs =
     process.cwd() + "/src/tests/files/js-files/exampleFuncNoDocs.js";
+
+  const docsTagsExtractor = new TagExtractorPlugin({
+    tag: "docs",
+    searchAndReplace: "%content%",
+  });
+  const methodTagsExtractor = new TagExtractorPlugin({
+    tag: "method",
+    searchAndReplace: "%methods%",
+  });
 
   beforeEach(() => {
     deleteOutputFiles();
@@ -29,12 +41,7 @@ describe("Docs Extractor", () => {
     });
 
     test("should accept a valid extract tags method", async () => {
-      docsExtractor = new DocumentContentExtractor({
-        extractMethod: "tags",
-        startTag: "<docs>",
-        endTag: "</docs>",
-        searchAndReplace: "%content%",
-      });
+      docsExtractor = new DocumentContentExtractor([docsTagsExtractor]);
 
       await expect(
         docsExtractor.extractFromFile(fileWithDocs),
@@ -42,11 +49,12 @@ describe("Docs Extractor", () => {
     });
 
     test("should accept regex extract method", async () => {
-      docsExtractor = new DocumentContentExtractor({
-        extractMethod: "regex",
-        pattern: new RegExp("/<docs>(.*?)<\/docs>/s"),
-        searchAndReplace: "%content%",
-      });
+      docsExtractor = new DocumentContentExtractor([
+        new RegexExtractorPlugin({
+          pattern: new RegExp("/<docs>(.*?)<\/docs>/s"),
+          searchAndReplace: "%content%",
+        }),
+      ]);
 
       await expect(
         docsExtractor.extractFromFile(fileWithDocs),
@@ -54,13 +62,14 @@ describe("Docs Extractor", () => {
     });
 
     test("should accept callback extract method", async () => {
-      docsExtractor = new DocumentContentExtractor({
-        extractMethod: "callback",
-        callback: async (fileContent) => {
-          return fileContent.match(/<docs>(.*?)<\/docs>/s)?.[1];
-        },
-        searchAndReplace: "%content%",
-      });
+      docsExtractor = new DocumentContentExtractor([
+        new CallbackExtractor({
+          callback: async (fileContent) => {
+            return fileContent.match(/<docs>(.*?)<\/docs>/s)?.[1];
+          },
+          searchAndReplace: "%content%",
+        }),
+      ]);
 
       await expect(
         docsExtractor.extractFromFile(fileWithDocs),
@@ -70,25 +79,15 @@ describe("Docs Extractor", () => {
 
   describe("extract using tags", () => {
     test("should perform expected behavior", async () => {
-      docsExtractor = new DocumentContentExtractor({
-        extractMethod: "tags",
-        startTag: "<docs>",
-        endTag: "</docs>",
-        searchAndReplace: "%content%",
-      });
+      docsExtractor = new DocumentContentExtractor([docsTagsExtractor]);
 
       const result = await docsExtractor.extractFromFile(fileWithDocs);
 
-      expect(result[0].content[0]).toContain("#exampleFunc.js");
+      expect(result[0].content).toContain("#exampleFunc.js");
     });
 
     test("should not throw an error if the file does not contain the start and end tags", async () => {
-      docsExtractor = new DocumentContentExtractor({
-        extractMethod: "tags",
-        startTag: "<docs>",
-        endTag: "</docs>",
-        searchAndReplace: "%content%",
-      });
+      docsExtractor = new DocumentContentExtractor([docsTagsExtractor]);
 
       await expect(
         docsExtractor.extractFromFile(fileWithoutDocs),
@@ -96,72 +95,11 @@ describe("Docs Extractor", () => {
     });
 
     test("should throw an error if the file does not exist", async () => {
-      docsExtractor = new DocumentContentExtractor({
-        extractMethod: "tags",
-        startTag: "<docs>",
-        endTag: "</docs>",
-        searchAndReplace: "%content%",
-      });
+      docsExtractor = new DocumentContentExtractor([docsTagsExtractor]);
 
       await expect(() =>
         docsExtractor.extractFromFile("path-to-nonexistent-file.js"),
       ).rejects.toThrow("File not found");
-    });
-  });
-
-  describe("extract using regex", () => {
-    test("should extract the content using the regex", async () => {
-      docsExtractor = new DocumentContentExtractor({
-        extractMethod: "regex",
-        pattern: new RegExp(/<docs>(.*?)<\/docs>/s),
-        searchAndReplace: "%content%",
-      });
-
-      const result = await docsExtractor.extractFromFile(fileWithDocs);
-
-      expect(result[0].content[0]).toContain("#exampleFunc.js");
-    });
-
-    test("should not throw an error if the file does not contain the regex", async () => {
-      docsExtractor = new DocumentContentExtractor({
-        extractMethod: "regex",
-        pattern: new RegExp("/<docs>(.*?)<\/docs>/s"),
-        searchAndReplace: "%content%",
-      });
-
-      await expect(
-        docsExtractor.extractFromFile(fileWithoutDocs),
-      ).resolves.not.toThrow();
-    });
-  });
-
-  describe("extract using callback", () => {
-    test("should perform expected behavior", async () => {
-      docsExtractor = new DocumentContentExtractor({
-        extractMethod: "callback",
-        callback: async (fileContent) => {
-          return new RegExp(/<docs>(.*?)<\/docs>/s).exec(fileContent)?.[1];
-        },
-        searchAndReplace: "%content%",
-      });
-
-      const result = await docsExtractor.extractFromFile(fileWithDocs);
-
-      expect(result[0].content[0]).toContain("#exampleFunc.js");
-    });
-
-    test("should return an error if the file does not contain the callback", async () => {
-      docsExtractor = new DocumentContentExtractor({
-        extractMethod: "callback",
-        callback: async () => {
-          return undefined;
-        },
-        searchAndReplace: "%content%",
-      });
-
-      await expect(
-        docsExtractor.extractFromFile(fileWithoutDocs),
-      ).rejects.toThrow("Callback function returned no content");
     });
   });
 
@@ -185,22 +123,19 @@ const example = () => null;`;
         sourceCode,
       );
 
-      docsExtractor = new DocumentContentExtractor({
-        extractMethod: "tags",
-        startTag: "<docs>",
-        endTag: "</docs>",
-        searchAndReplace: "%content%",
-      });
+      docsExtractor = new DocumentContentExtractor([docsTagsExtractor]);
       const result = await docsExtractor.extractFromFile(
         getOutputPath("code-block-check/example.js"),
       );
       const extractedContent = MultiLineCommentClear({
         filePath: "",
         outFile: "",
-        content: result[0].content[0],
+        content: result[0].content,
       });
 
-      expect(extractedContent.endsWith("```\n")).toBe(true);
+      expect(extractedContent).toContain(
+        "console.log('code block example')\n ```\n",
+      );
     });
   });
 
@@ -209,18 +144,8 @@ const example = () => null;`;
       expect(
         () =>
           new DocumentContentExtractor([
-            {
-              extractMethod: "tags",
-              startTag: "<docs>",
-              endTag: "</docs>",
-              searchAndReplace: "%content%",
-            },
-            {
-              extractMethod: "tags",
-              startTag: "<method>",
-              endTag: "</method>",
-              searchAndReplace: "%methods%",
-            },
+            docsTagsExtractor,
+            methodTagsExtractor,
           ]),
       ).not.toThrow();
     });
@@ -252,38 +177,19 @@ class Example {
 
 }`;
       docsExtractor = new DocumentContentExtractor([
-        {
-          extractMethod: "tags",
-          startTag: "<docs>",
-          endTag: "</docs>",
-          searchAndReplace: "%content%",
-        },
-        {
-          extractMethod: "tags",
-          startTag: "<method>",
-          endTag: "</method>",
-          searchAndReplace: "%methods%",
-        },
+        docsTagsExtractor,
+        methodTagsExtractor,
       ]);
 
       const results = await docsExtractor.extractFromString(sourceCode);
 
-      const docTags = results.find(
-        (result) =>
-          result.extractMethod === "tags" && result.startTag === "<docs>",
-      );
-      const methodTags = results.find(
-        (result) =>
-          result.extractMethod === "tags" && result.startTag === "<method>",
-      );
-
-      expect(docTags?.content[0]).toContain("Some description here");
-      expect(methodTags?.content[0]).toContain("This is a method");
+      expect(results[0].content).toContain("Some description here");
+      expect(results[1].content).toContain("This is a method");
     });
   });
 
   describe("array content", () => {
-    test("should allow for multiple matches for tag extraction methods", async () => {
+    test("should match multiple method extraction methods", async () => {
       const sourceCode: string = `class Example {
 
     /**
@@ -311,27 +217,12 @@ class Example {
     }
 
 }`;
-      docsExtractor = new DocumentContentExtractor([
-        {
-          extractMethod: "tags",
-          startTag: "<method>",
-          endTag: "</method>",
-          searchAndReplace: "%methods%",
-        },
-      ]);
+      docsExtractor = new DocumentContentExtractor([methodTagsExtractor]);
 
       const results = await docsExtractor.extractFromString(sourceCode);
-      expect(results).toHaveLength(1);
-
-      const methodResult = results.find(
-        (result) =>
-          result.extractMethod === "tags" && result.startTag === "<method>",
-      );
-      const methodResultContentArray = methodResult?.content;
-
-      expect(methodResultContentArray).toHaveLength(2);
-      expect(methodResultContentArray?.[0]).toContain("This is a method #1");
-      expect(methodResultContentArray?.[1]).toContain("This is a method #2");
+      expect(results).toHaveLength(2);
+      expect(results[0].content).toContain("This is a method #1");
+      expect(results[1].content).toContain("This is a method #2");
     });
 
     test("should work with multiple extraction methods", async () => {
@@ -368,41 +259,16 @@ class Example {
 
 }`;
       docsExtractor = new DocumentContentExtractor([
-        {
-          extractMethod: "tags",
-          startTag: "<docs>",
-          endTag: "</docs>",
-          searchAndReplace: "%content%",
-        },
-        {
-          extractMethod: "tags",
-          startTag: "<method>",
-          endTag: "</method>",
-          searchAndReplace: "%methods%",
-        },
+        docsTagsExtractor,
+        methodTagsExtractor,
       ]);
 
       const results = await docsExtractor.extractFromString(sourceCode);
-      expect(results).toHaveLength(2);
+      expect(results).toHaveLength(3);
 
-      const docResult = results.find(
-        (result) =>
-          result.extractMethod === "tags" && result.startTag === "<docs>",
-      );
-      const docResultContentArray = docResult?.content;
-
-      expect(docResultContentArray).toHaveLength(1);
-      expect(docResultContentArray?.[0]).toContain("Some description here");
-
-      const methodResult = results.find(
-        (result) =>
-          result.extractMethod === "tags" && result.startTag === "<method>",
-      );
-      const methodResultContentArray = methodResult?.content;
-
-      expect(methodResultContentArray).toHaveLength(2);
-      expect(methodResultContentArray?.[0]).toContain("This is a method #1");
-      expect(methodResultContentArray?.[1]).toContain("This is a method #2");
+      expect(results[0].content).toContain("Some description here");
+      expect(results[1].content).toContain("This is a method #1");
+      expect(results[2].content).toContain("This is a method #2");
     });
   });
 });

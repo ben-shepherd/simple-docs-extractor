@@ -1,3 +1,4 @@
+import { TagExtractorPlugin } from "@/simple-docs-scraper/extractors/TagExtractorPlugin.js";
 import {
   MultiLineCommentClear,
   SimpleDocExtractor,
@@ -8,12 +9,10 @@ import path from "path";
 export const DEFAULT_CONFIG: SimpleDocExtractorConfig = {
   baseDir: process.cwd(),
   extraction: [
-    {
-      extractMethod: "tags",
-      startTag: "<docs>",
-      endTag: "</docs>",
+    new TagExtractorPlugin({
+      tag: "docs",
       searchAndReplace: "%content%",
-    },
+    }),
   ],
   generators: {
     index: {
