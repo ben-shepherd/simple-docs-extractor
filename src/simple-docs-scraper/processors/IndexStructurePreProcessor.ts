@@ -56,6 +56,10 @@ export class IndexStructurePreProcessor {
       .filter((entry) => {
         const isDir = fs.statSync(path.join(baseDir, entry)).isDirectory();
 
+        if (false === isDir && path.basename(entry) === "index.md") {
+          return false;
+        }
+
         if (false === isDir) {
           return entry.endsWith(".md");
         }

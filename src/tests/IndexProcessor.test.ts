@@ -95,6 +95,27 @@ describe("Example Test Suite", () => {
 
       const indexFileContents = fs.readFileSync(
         path.join(docsPath, "index.md"),
+        "utf8",
+      );
+      expect(indexFileContents).not.toContain("- index.md");
+      expect(indexFileContents).not.toContain("- [index.md](index.md)");
+    });
+
+    test("should not create an index.md of itself after reprocessing", async () => {
+      await indexProcessor.handle(docsPath);
+      await indexProcessor.handle(docsPath);
+
+      expect(fs.existsSync(path.join(docsPath, "index.md"))).toBe(true);
+      expect(fs.existsSync(path.join(docsPath, "sub-folder/index.md"))).toBe(
+        true,
+      );
+      expect(
+        fs.existsSync(path.join(docsPath, "sub-folder/sub-folder2/index.md")),
+      ).toBe(true);
+
+      const indexFileContents = fs.readFileSync(
+        path.join(docsPath, "index.md"),
+        "utf8",
       );
       expect(indexFileContents).not.toContain("- index.md");
       expect(indexFileContents).not.toContain("- [index.md](index.md)");
