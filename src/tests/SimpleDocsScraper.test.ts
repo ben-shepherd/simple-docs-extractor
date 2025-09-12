@@ -114,6 +114,52 @@ describe("Example Test Suite", () => {
       expect(documentationContent).toContain("Begin.");
       expect(documentationContent).toContain("Finish.");
     });
+
+    test("should be able to configure target with it's own extraction methods", async () => {
+
+      // Create a new code file with different tags
+      fs.mkdirSync(getOutputPath("js-files"));
+      fs.writeFileSync(
+        getOutputPath("js-files/exampleFunc2.js"),
+        `/**
+         * <method>
+         * This is a test block wrapped in method tags
+         * </method>
+         * <docs>
+         * This block should be ignored
+         * </docs>
+         */
+        `,
+      );
+
+      scraper = new SimpleDocExtractor({
+        ...defaultConfig,
+        targets: [
+          {
+            ...jsFilesTarget,
+            globOptions: {
+              cwd: getOutputPath("js-files"),
+              extensions: "**/*.{js,ts}",
+            },
+            extraction: [
+              new TagExtractorPlugin({
+                searchAndReplace: "%content%",
+                tag: "method",
+              }),
+            ]
+          },
+        ],
+      });
+      await scraper.start();
+
+      const documentationContent = fs.readFileSync(
+        getOutputPath("js-files/exampleFunc2.js.md"),
+        "utf8",
+      );
+
+      expect(documentationContent).toContain("This is a test block wrapped in method tags");
+      expect(documentationContent).not.toContain("This block should be ignored");
+    });
   });
 
   describe("start", () => {
