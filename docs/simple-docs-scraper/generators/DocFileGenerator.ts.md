@@ -1,5 +1,6 @@
 ## File Name
 
+
  Generates documentation files by injecting content into templates.
 
  This class handles the creation of markdown documentation files by taking
@@ -7,7 +8,7 @@
  content to files with proper markdown extensions and directory structure.
 
  @param {DocFileGeneratorConfig} config - Configuration object containing template path, output directory, and search/replace pattern
-
+ 
 
 ---
 

@@ -7,6 +7,7 @@ This is the index file for the generated documentation. Below you will find the 
 
 ## Folders
 
+- [extractors/](extractors/index.md)
 - [files/](files/index.md)
 - [formatters/](formatters/index.md)
 - [generators/](generators/index.md)

@@ -1,5 +1,6 @@
 ## File Name
 
+
  Scans directories for files matching specified extensions using glob patterns.
 
  This class provides file discovery capabilities by scanning directories
@@ -16,7 +17,7 @@
  const files = await scanner.collect();
  // Returns array of matching file paths
  ```
-
+ 
 
 ---
 

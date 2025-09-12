@@ -1,5 +1,6 @@
 ## File Name
 
+
  Handles content injection into templates and files.
 
  This class provides functionality to inject content into templates by replacing
@@ -21,7 +22,7 @@
  // Inject into file
  injection.injectIntoFile('Documentation content: {{CONTENT}}', 'output.md');
  ```
-
+ 
 
 ---
 

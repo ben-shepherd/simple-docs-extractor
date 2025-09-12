@@ -1,5 +1,6 @@
 ## File Name
 
+
  Prepares a array of entries for index file generation.
 
  This class scans directories and processes file and directory entries to create
@@ -16,7 +17,7 @@
  const entries = await processor.process('./docs');
  // Returns array of processed entries with formatted names and links
  ```
-
+ 
 
 ---
 

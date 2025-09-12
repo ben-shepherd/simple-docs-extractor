@@ -1,5 +1,6 @@
 ## File Name
 
+
  Main orchestrator class for extracting and generating documentation from source files.
 
  This class coordinates the entire documentation generation process by scanning files,
@@ -29,7 +30,7 @@
 
  const result = await scraper.start();
  ```
-
+ 
 
 ---
 

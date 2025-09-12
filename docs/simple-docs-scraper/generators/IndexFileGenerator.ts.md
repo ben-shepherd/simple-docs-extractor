@@ -1,5 +1,6 @@
 ## File Name
 
+
  Generates index files from processed directory entries with configurable templates and formatting.
 
  This class creates markdown index files that list files and directories in a structured format.
@@ -20,7 +21,7 @@
  generator.saveIndexFile(processedEntries);
  // Creates index.md with formatted file listings
  ```
-
+ 
 
 ---
 

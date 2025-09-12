@@ -1,5 +1,6 @@
 ## File Name
 
+
  Utility class for replacing file extensions.
 
  This class provides static methods to manipulate file paths by replacing
@@ -21,7 +22,7 @@
  // Returns 'readme.md'
  ```
 
-
+ 
 
 ---
 

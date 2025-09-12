@@ -1,5 +1,6 @@
 ## File Name
 
+
  MultiLineCommentClear formatter removes leading asterisks and whitespace from multi-line comments.
 
  This formatter is designed to clean up JSDoc-style multi-line comments by removing
@@ -17,7 +18,7 @@
  @param {Object} config - Configuration object containing the content to format
  @param {string} config.content - The text content to be formatted
  @returns {string} The formatted content with asterisks and leading whitespace removed
-
+ 
 
 ---
 

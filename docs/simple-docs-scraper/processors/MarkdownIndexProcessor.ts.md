@@ -1,5 +1,6 @@
 ## File Name
 
+
  Processes directories recursively to generate index files for documentation.
 
  This class traverses directory structures and creates index files (typically index.md)
@@ -17,7 +18,7 @@
  await processor.handle();
  // Creates index.md files in all subdirectories of ./docs
  ```
-
+ 
 
 ---
 

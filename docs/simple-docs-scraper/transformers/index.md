@@ -7,9 +7,9 @@ This is the index file for the generated documentation. Below you will find the 
 
 ## Files
 
-- [ContentInjection.ts.md](ContentInjection.ts.md) - This file is auto generated.
-- [ExcerptExtractor.ts.md](ExcerptExtractor.ts.md) - This file is auto generated.
-- [ExtensionReplacer.ts.md](ExtensionReplacer.ts.md) - This file is auto generated.
+- [ContentInjection.ts.md](ContentInjection.ts.md) - Handles content injection into templates and files.
+- [ExcerptExtractor.ts.md](ExcerptExtractor.ts.md) - Extracts and formats text excerpts from content with configurable length an
+- [ExtensionReplacer.ts.md](ExtensionReplacer.ts.md) - Utility class for replacing file extensions.
 
 
 
