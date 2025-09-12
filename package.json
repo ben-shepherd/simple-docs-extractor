@@ -1,19 +1,18 @@
 {
-  "name": "@ben-shepherd/simple-docs-scraper",
+  "name": "@benjamins94/simple-docs-extractor",
   "type": "module",
-  "version": "1.0.0",
-  "description": "A simple docs scraper",
+  "version": "1.0.7",
+  "description": "A simple docs extractor",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ben-shepherd/simple-docs-scraper"
+    "url": "git+https://github.com/ben-shepherd/simple-docs-extractor"
   },
   "license": "ISC",
   "author": "ben.shepherd@gmx.com",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "publishConfig": {
-    "access": "public",
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   },
   "scripts": {
     "prepare": "npm run build",
