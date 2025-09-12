@@ -5,10 +5,6 @@ This is the index file for the generated documentation. Below you will find the 
 ---
 
 
-## Files
-
-- [index.md](index.md) - This is the index file for the generated documentation.
-
 ## Folders
 
 - [files/](files/index.md)

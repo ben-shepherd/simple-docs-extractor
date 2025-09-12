@@ -6,7 +6,7 @@
  content and injecting it into a template file. It can save the generated
  content to files with proper markdown extensions and directory structure.
 
- @param {DocGeneratorConfig} config - Configuration object containing template path, output directory, and search/replace pattern
+ @param {DocFileGeneratorConfig} config - Configuration object containing template path, output directory, and search/replace pattern
 
 
 ---
