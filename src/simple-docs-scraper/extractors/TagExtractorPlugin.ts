@@ -1,9 +1,4 @@
-import {
-  ErrorResult,
-  ExtractedContent,
-  ExtractionMethod,
-  ExtractionResultLegacy,
-} from "../index.js";
+import { ErrorResult, ExtractedContent } from "../index.js";
 import { BaseExtractorConfig, ExtractorPlugin } from "../types/extractor.t.js";
 
 export type TagExtractorPluginConfig = BaseExtractorConfig & {
@@ -13,11 +8,7 @@ export type TagExtractorPluginConfig = BaseExtractorConfig & {
 export class TagExtractorPlugin
   implements ExtractorPlugin<TagExtractorPluginConfig>
 {
-  constructor(private config: TagExtractorPluginConfig) {
-    if (config) {
-      this.setConfig(config);
-    }
-  }
+  constructor(private config: TagExtractorPluginConfig) {}
 
   setConfig(config: TagExtractorPluginConfig): this {
     this.config = config;
@@ -47,7 +38,7 @@ export class TagExtractorPlugin
     if (Array.isArray(result) && result.length === 0) {
       return {
         errorMessage: "Content not found between tags",
-        nonThrowing: true,
+        throwable: false,
       };
     }
 
@@ -62,26 +53,6 @@ export class TagExtractorPlugin
         searchAndReplace: this.config.searchAndReplace,
       };
     }) as ExtractedContent[];
-  }
-
-  /**
-   * @deprecated Use extractFromString instead
-   */
-  async legacy(
-    str: string,
-    method: ExtractionMethod,
-  ): Promise<ExtractionResultLegacy> {
-    const result = await this.extractFromString(str);
-
-    if ("errorMessage" in result) {
-      return result as unknown as ExtractionResultLegacy;
-    }
-
-    return {
-      content: result.map((item) => item.content),
-      attributes: undefined,
-      ...method,
-    };
   }
 
   composeRegExp(rawTag: string): RegExp {

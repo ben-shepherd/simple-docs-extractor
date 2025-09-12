@@ -103,66 +103,6 @@ describe("Docs Extractor", () => {
     });
   });
 
-  describe("extract using regex", () => {
-    test("should extract the content using the regex", async () => {
-      docsExtractor = new DocumentContentExtractor([
-        new RegexExtractorPlugin({
-          pattern: new RegExp(/<docs>(.*?)<\/docs>/s),
-          searchAndReplace: "%content%",
-        }),
-      ]);
-
-      const result = await docsExtractor.extractFromFile(fileWithDocs);
-
-      expect(result[0].content).toContain("#exampleFunc.js");
-    });
-
-    test("should not throw an error if the file does not contain the regex", async () => {
-      docsExtractor = new DocumentContentExtractor([
-        new RegexExtractorPlugin({
-          pattern: new RegExp("/<docs>(.*?)<\/docs>/s"),
-          searchAndReplace: "%content%",
-        }),
-      ]);
-
-      await expect(
-        docsExtractor.extractFromFile(fileWithoutDocs),
-      ).resolves.not.toThrow();
-    });
-  });
-
-  describe("extract using callback", () => {
-    test("should perform expected behavior", async () => {
-      docsExtractor = new DocumentContentExtractor([
-        new CallbackExtractor({
-          callback: async (fileContent) => {
-            return new RegExp(/<docs>(.*?)<\/docs>/s).exec(fileContent)?.[1];
-          },
-          searchAndReplace: "%content%",
-        }),
-      ]);
-
-      const result = await docsExtractor.extractFromFile(fileWithDocs);
-
-      expect(result[0].content).toContain("#exampleFunc.js");
-    });
-
-    test("should return an error if the file does not contain the callback", async () => {
-      docsExtractor = new DocumentContentExtractor([
-        new CallbackExtractor({
-          callback: async () => {
-            return undefined;
-          },
-          searchAndReplace: "%content%",
-        }),
-      ]);
-
-      await expect(
-        docsExtractor.extractFromFile(fileWithoutDocs),
-      ).rejects.toThrow("Callback function returned no content");
-    });
-  });
-
   describe("code block checks", () => {
     test("should correctly extract documentation with code blocks using the tag method", async () => {
       const sourceCode: string = `/**

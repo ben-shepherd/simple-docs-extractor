@@ -8,11 +8,7 @@ export type RegexExtractorPluginConfig = BaseExtractorConfig & {
 export class RegexExtractorPlugin
   implements ExtractorPlugin<RegexExtractorPluginConfig>
 {
-  constructor(private config: RegexExtractorPluginConfig) {
-    if (config) {
-      this.setConfig(config);
-    }
-  }
+  constructor(private config: RegexExtractorPluginConfig) {}
 
   setConfig(config: RegexExtractorPluginConfig): this {
     this.config = config;
@@ -32,7 +28,7 @@ export class RegexExtractorPlugin
     if (!matches || typeof matches[1] !== "string") {
       return {
         errorMessage: "No content found in the file",
-        nonThrowing: true,
+        throwable: false,
       };
     }
 

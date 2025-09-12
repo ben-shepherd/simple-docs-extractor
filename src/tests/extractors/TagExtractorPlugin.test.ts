@@ -55,6 +55,34 @@ This is the second block
     });
   });
 
+  describe("config", () => {
+    test("constructor should set config", () => {
+      expect(
+        () =>
+          new TagExtractorPlugin({
+            tag: "docs",
+            searchAndReplace: "%content%",
+          }),
+      ).not.toThrow();
+    });
+
+    test("should set config", () => {
+      expect(() =>
+        tagExtractor.setConfig({
+          tag: "docs",
+          searchAndReplace: "%content%",
+        }),
+      ).not.toThrow();
+    });
+
+    test("should get config", () => {
+      expect(tagExtractor.getConfig()).toEqual({
+        tag: "docs",
+        searchAndReplace: "%content%",
+      });
+    });
+  });
+
   describe("methods", () => {
     test("should extract raw tags", () => {
       expect(tagExtractor.getRawTag("docs")).toBe("docs");

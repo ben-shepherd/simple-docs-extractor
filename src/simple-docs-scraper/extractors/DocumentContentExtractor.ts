@@ -40,7 +40,7 @@ export type ExtractedContent = {
 
 export type ErrorResult = {
   errorMessage: string;
-  nonThrowing?: boolean; // if true, the error will not be thrown
+  throwable?: boolean; // if true, the error will not be thrown
 };
 
 export type DocumentContentExtractorConfig = ExtractorPlugin[];
@@ -144,7 +144,7 @@ export class DocumentContentExtractor {
 
     // if the result is an error, throw an error
     if ("errorMessage" in extractedContentArray) {
-      if (extractedContentArray.nonThrowing) {
+      if (false === extractedContentArray.throwable) {
         return results;
       }
       throw new Error(extractedContentArray.errorMessage);
