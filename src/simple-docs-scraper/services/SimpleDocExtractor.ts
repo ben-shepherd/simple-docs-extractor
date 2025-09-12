@@ -1,5 +1,6 @@
 import fs from "fs";
 import { GlobOptions } from "glob";
+import { DocumentContentExtractorConfig } from "../extractors/DocumentContentExtractor.js";
 import { FileScanner } from "../files/FileScanner.js";
 import {
   CodeFileProcessor,
@@ -22,6 +23,7 @@ export type Target = {
     index?: IndexGeneratorConfig;
     documentation?: DocumentationGeneratorConfig;
   };
+  extraction?: DocumentContentExtractorConfig;
 };
 
 // Result object returned after processing all targets

@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { DocumentContentExtractor } from "../extractors/DocumentContentExtractor.js";
+import { DocumentContentExtractor, DocumentContentExtractorConfig } from "../extractors/DocumentContentExtractor.js";
 import { DocFileGenerator } from "../generators/DocFileGenerator.js";
 import { Target } from "../services/SimpleDocExtractor.js";
 import { ContentInjection } from "../transformers/ContentInjection.js";
@@ -71,7 +71,7 @@ export class CodeFileProcessor {
     let injectedContent = "";
 
     const extractionResults = await new DocumentContentExtractor(
-      this.config.extraction,
+      this.getDocumentContentExtractorConfig(target),
     ).extractFromFile(file);
 
     if (!extractionResults.length) {
@@ -161,5 +161,12 @@ export class CodeFileProcessor {
       return {} as DocumentationGeneratorConfig;
     }
     return this.config.generators?.documentation;
+  }
+
+  getDocumentContentExtractorConfig(target: Target): DocumentContentExtractorConfig {
+    if (target.extraction) {
+      return target.extraction;
+    }
+    return this.config.extraction;
   }
 }
