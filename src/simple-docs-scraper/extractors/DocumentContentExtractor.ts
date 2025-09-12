@@ -132,7 +132,7 @@ export class DocumentContentExtractor {
     } as ExtractionResultLegacy | ErrorResult;
 
     if (method.extractMethod === "tags" && method.startTag && method.endTag) {
-      result = new TagExtractor({ tag: method.startTag }).extractFromString(fileContent) as ExtractionResultLegacy | ErrorResult ;
+      result = new TagExtractor({ tag: method.startTag }).legacy(fileContent, method)
     } else if (method.extractMethod === "regex" && method.pattern) {
       result = this.extractUsingRegex(method, fileContent);
     } else if (

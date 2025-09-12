@@ -1,4 +1,4 @@
-import { ErrorResult, ExtractedContent } from "../index.js";
+import { ErrorResult, ExtractedContent, ExtractionMethod, ExtractionResultLegacy } from "../index.js";
 
 export type TagExtractorConfig = {
     tag: string;
@@ -22,7 +22,7 @@ export class TagExtractor {
         const regExp = this.composeRegExp(rawTag)
         const result = [...(str.matchAll(regExp) ?? [])]
 
-        if(null === result) {
+        if(Array.isArray(result) && result.length === 0) {
             return {
                 errorMessage: "Content not found between tags",
                 nonThrowing: true,
@@ -60,6 +60,20 @@ export class TagExtractor {
             startTag, 
             endTag,
         };
+    }
+
+    legacy(str: string, method: ExtractionMethod): ExtractionResultLegacy {
+        const result = this.extractFromString(str)
+
+        if("errorMessage" in result) {
+            return result as unknown as ExtractionResultLegacy;
+        }
+
+        return {
+            content: result.map(item => item.content),
+            attributes: undefined,
+            ...method,
+        }
     }
 
     composeRegExp(rawTag: string): RegExp {

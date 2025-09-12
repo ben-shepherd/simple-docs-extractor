@@ -1,5 +1,5 @@
 import { TagExtractor } from "@/simple-docs-scraper/extractors/TagExtractor.js";
-import { ExtractedContent } from "@/simple-docs-scraper/index.js";
+import { ErrorResult, ExtractedContent } from "@/simple-docs-scraper/index.js";
 import { beforeEach, describe, expect, test } from "@jest/globals";
 
 describe("Tag Extractor", () => {
@@ -238,4 +238,33 @@ This is the third line`;
             expect(result[1].attributes).toBeUndefined();
         })
     });
+
+    describe("pre DocumentContentExtractor refactor", () => {
+        test("should convert ExtractedContent[] to ExtractionResultLegacy", () => {
+            const result = tagExtractor.extractFromString(sampleText) as unknown as ExtractedContent[] | ErrorResult
+            const legacyResult = tagExtractor.legacy(sampleText, {
+                extractMethod: "tags",
+                startTag: "<docs>",
+                endTag: "</docs>",
+                searchAndReplace: "%content%",
+            });
+
+            expect(result).not.toHaveProperty("errorMessage");
+            expect(legacyResult.content.length).toBe(1);
+            expect(legacyResult.content[0]).toBe("This is a test");
+            expect(legacyResult.attributes).toBeUndefined();
+        })
+
+        test("should convert ErrorResult to ExtractionResultLegacy", () => {
+            const legacyResult = tagExtractor.legacy('text with no tags should return an error', {
+                extractMethod: "tags",
+                startTag: "<docs>",
+                endTag: "</docs>",
+                searchAndReplace: "%content%",
+            });
+
+            expect(legacyResult).toHaveProperty("errorMessage");
+            expect((legacyResult as unknown as ErrorResult).errorMessage).toBe("Content not found between tags");
+        })
+    })
 });
