@@ -21,12 +21,14 @@ import { TFormatter } from "../types/formatter.t.js";
  * @returns {string} The formatted content with asterisks and leading whitespace removed
  * </docs>
  */
-export const MultiLineCommentClear: TFormatter = (config) => {
+export const RemoveMultiLineCommentAsterisks: TFormatter = (config) => {
+
   const lines = config.content.split("\n");
   const unwantedPrefixes = ["*", " *", " * "];
 
   return lines
     .map((line) => {
+      line = line.trimStart();
       for (const prefix of unwantedPrefixes) {
         if (line.startsWith(prefix)) {
           return line.replace(prefix, "");
@@ -36,3 +38,4 @@ export const MultiLineCommentClear: TFormatter = (config) => {
     })
     .join("\n");
 };
+
