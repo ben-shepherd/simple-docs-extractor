@@ -27,10 +27,15 @@ export type ExtractionMethod = (MethodTags | MethodRegex | MethodCallback) & {
   searchAndReplace: string;
 };
 
-export type ExtractionResult = {
+export type ExtractionResultLegacy = {
   content: string[];
   attributes?: Record<string, string>;
 } & ExtractionMethod;
+
+export type ExtractedContent = {
+  content: string
+  attributes: Record<string, string>
+}
 
 export type ErrorResult = {
   errorMessage: string;
@@ -78,7 +83,7 @@ export class DocumentContentExtractor {
    * @returns Promise resolving to extraction result with documentation content or error details
    * @throws {Error} When an invalid extraction method is configured
    */
-  async extractFromFile(file: string): Promise<ExtractionResult[]> {
+  async extractFromFile(file: string): Promise<ExtractionResultLegacy[]> {
     if (!fs.existsSync(file)) {
       throw new Error("File not found");
     }
@@ -94,11 +99,11 @@ export class DocumentContentExtractor {
    * @param contents - The content of the file to extract from
    * @returns Promise resolving to extraction result with documentation content or error details
    */
-  async extractFromString(contents: string): Promise<ExtractionResult[]> {
+  async extractFromString(contents: string): Promise<ExtractionResultLegacy[]> {
     const extractionMethodsArray = Array.isArray(this.config)
       ? this.config
       : [this.config];
-    const results: ExtractionResult[] = [];
+    const results: ExtractionResultLegacy[] = [];
 
     for (const i in extractionMethodsArray) {
       const method = extractionMethodsArray[i];
@@ -120,14 +125,14 @@ export class DocumentContentExtractor {
     method: ExtractionMethod,
     fileContent: string,
     i: string,
-    results: ExtractionResult[],
+    results: ExtractionResultLegacy[],
   ) {
-    let result: ExtractionResult | ErrorResult = {
+    let result: ExtractionResultLegacy | ErrorResult = {
       searchAndReplace: method.searchAndReplace,
-    } as ExtractionResult | ErrorResult;
+    } as ExtractionResultLegacy | ErrorResult;
 
     if (method.extractMethod === "tags" && method.startTag && method.endTag) {
-      result = TagExtractor.extractUsingTags(method, fileContent);
+      result = new TagExtractor({ tag: method.startTag }).extractFromString(fileContent) as ExtractionResultLegacy | ErrorResult ;
     } else if (method.extractMethod === "regex" && method.pattern) {
       result = this.extractUsingRegex(method, fileContent);
     } else if (
@@ -158,10 +163,10 @@ export class DocumentContentExtractor {
     this.trimContent(result);
 
     // add the result to the results array
-    results.push(result as ExtractionResult);
+    results.push(result as ExtractionResultLegacy);
   }
 
-  private trimContent(result: ExtractionResult) {
+  private trimContent(result: ExtractionResultLegacy) {
     const trimCallback = (content: string) =>
       content.trim().replace(/\n\s*\n/g, "\n");
     result.content = result.content.map((content) => trimCallback(content));
@@ -176,7 +181,7 @@ export class DocumentContentExtractor {
   protected extractUsingRegex(
     method: MethodRegex,
     fileContent: string,
-  ): ExtractionResult | ErrorResult {
+  ): ExtractionResultLegacy | ErrorResult {
     const regex = new RegExp(method.pattern);
     const matches = fileContent.match(regex);
 
@@ -192,7 +197,7 @@ export class DocumentContentExtractor {
     return {
       content: match,
       ...method,
-    } as unknown as ExtractionResult;
+    } as unknown as ExtractionResultLegacy;
   }
 
   /**
@@ -204,7 +209,7 @@ export class DocumentContentExtractor {
   protected async extractUsingCallback(
     method: MethodCallback,
     fileContent: string,
-  ): Promise<ExtractionResult | ErrorResult> {
+  ): Promise<ExtractionResultLegacy | ErrorResult> {
     const content = await method.callback(fileContent);
 
     if (!content) {
@@ -217,7 +222,7 @@ export class DocumentContentExtractor {
     return {
       content: Array.isArray(content) ? content : [content],
       ...method,
-    } as unknown as ExtractionResult;
+    } as unknown as ExtractionResultLegacy;
   }
 
 }
