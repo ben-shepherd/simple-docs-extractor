@@ -105,7 +105,7 @@ export class TagExtractor {
     *  Example: name="nameValue" other="otherValue" with_underscore="with_underscoreValue"
      */
     static getAttributesPattern() {
-        return `((?:([\w_]+)="([^"]+)")\s?)+?`
+        return '(?:([\\w_]+)="([^"]+)")'
     }
 
     static getInsideTagPattern() {
