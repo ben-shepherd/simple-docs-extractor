@@ -13,24 +13,24 @@ export const DEFAULT_CONFIG: ExcerptExtractorConfig = {
 /**
  * <docs>
  * Extracts and formats text excerpts from content with configurable length and formatting options.
- * 
- * This utility class provides static methods for creating clean, readable excerpts from longer text content. 
- * It automatically removes markdown headings, handles word boundaries, adds ellipsis for truncated content, 
+ *
+ * This utility class provides static methods for creating clean, readable excerpts from longer text content.
+ * It automatically removes markdown headings, handles word boundaries, adds ellipsis for truncated content,
  * and ensures excerpts end with complete words and proper punctuation.
- * 
+ *
  * @example
  * ```typescript
  * // Basic usage with default settings
  * const content = `## Heading 1
  * This is a readable English sentence for testing purposes.
- * 
+ *
  * ## Heading 2
  * It is intended to verify that the excerpt extraction works correctly.`;
- * 
+ *
  * const excerpt = ExcerptExtractor.determineExcerpt(content);
  * // Result: "This is a readable English sentence for testing purposes..."
  * ```
- * 
+ *
  * @example
  * ```typescript
  * // Custom length with ellipsis
@@ -44,19 +44,17 @@ export const DEFAULT_CONFIG: ExcerptExtractorConfig = {
  * </docs>
  */
 export class ExcerptExtractor {
-
   static determineExcerpt(
     content: string,
     config: ExcerptExtractorConfig = DEFAULT_CONFIG,
   ): string | undefined {
-
     // Remove headings
     content = ExcerptExtractor.removeHeadings(content);
 
     // Extract all non-empty lines from content
     let excerpt = ExcerptExtractor.getSentencesAsString(content);
 
-    // Remove new lines 
+    // Remove new lines
     excerpt = excerpt.replace(/\n/g, " ");
 
     // If the first sentence only option is enabled, extract the first sentence
@@ -81,7 +79,6 @@ export class ExcerptExtractor {
     // Ensure excerpt ends with complete words
     excerpt = this.removeSingleLetterAtEndOfSentence(excerpt);
 
-
     // Always add ellipsis if the config is set
     if (config.addEllipsis) {
       excerpt = this.addEllipsis(excerpt);
@@ -91,36 +88,40 @@ export class ExcerptExtractor {
   }
 
   private static ensureSpacingAfterSentencePeriod(excerpt: string) {
-    return this.splitIntoSentences(excerpt).map(sentence => {
-      const unwantedSpacesOrTabs = [" ", "\t"];
-      while (unwantedSpacesOrTabs.some(space => sentence.endsWith(space))) {
-        sentence = sentence.slice(0, -1);
-      }
-      while (unwantedSpacesOrTabs.some(space => sentence.startsWith(space))) {
-        sentence = sentence.slice(1);
-      }
-      return sentence;
-    }).join(" ");
+    return this.splitIntoSentences(excerpt)
+      .map((sentence) => {
+        const unwantedSpacesOrTabs = [" ", "\t"];
+        while (unwantedSpacesOrTabs.some((space) => sentence.endsWith(space))) {
+          sentence = sentence.slice(0, -1);
+        }
+        while (
+          unwantedSpacesOrTabs.some((space) => sentence.startsWith(space))
+        ) {
+          sentence = sentence.slice(1);
+        }
+        return sentence;
+      })
+      .join(" ");
   }
 
   private static removeHeadings(content: string) {
-    const regex = /^([\#]+[\s\w]+\n)/gm
+    const regex = /^([\#]+[\s\w]+\n)/gm;
     const regExp = new RegExp(regex, "gm");
     return content.replace(regExp, "");
   }
 
   private static splitIntoSentences(content: string) {
-    const regex = /\n?([\w,'"-\s]+\.?)/gm
+    const regex = /\n?([\w,'"-\s]+\.?)/gm;
     const regExp = new RegExp(regex, "gm");
     let matches: string[] = content.match(regExp) ?? [];
 
     // Trim new lines at the start
-    matches = matches.map(m => {
+    matches = matches.map((m) => {
       while (m.startsWith("\n")) {
         m = m.slice(1);
       }
       return m;
-    })
+    });
     return matches;
   }
 
@@ -140,7 +141,7 @@ export class ExcerptExtractor {
     }
 
     const sentences = this.splitIntoSentences(excerpt);
-    return sentences[0]
+    return sentences[0];
   }
 
   static removeSingleLetterAtEndOfSentence(excerpt: string) {

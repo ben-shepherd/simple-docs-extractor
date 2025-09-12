@@ -72,17 +72,15 @@ This additional text helps simulate a more realistic documentation scenario.`;
       addEllipsis: true,
     });
     expect(excerpt2).toBe("This...");
-    
   });
 
   test("should allow basic grammatical symbols in the first sentence", async () => {
-    const text = 
-`## Heading
+    const text = `## Heading
 
 Prevents multiple clicks on elements by adding a 'clicked' class after the first click.
 Works in conjunction with confirm-click-controller to provide enhanced click protection.
 ## HTML Example
-Basic usage of ClickOnceController for preventing multiple clicks`
+Basic usage of ClickOnceController for preventing multiple clicks`;
 
     const excerpt1 = ExcerptExtractor.determineExcerpt(text, {
       length: 100,
@@ -92,32 +90,31 @@ Basic usage of ClickOnceController for preventing multiple clicks`
       "Prevents multiple clicks on elements by adding a 'clicked' class after the first click.",
     );
 
+    const text2 = `Automatically enhances links by adding appropriate icons for supported document types
+and ensuring they open in new tabs.`;
 
-    const text2 = 
-`Automatically enhances links by adding appropriate icons for supported document types
-and ensuring they open in new tabs.`
-    
-        const excerpt2 = ExcerptExtractor.determineExcerpt(text2, {
-          length: 100,
-          firstSentenceOnly: true,
-          addEllipsis: true,
-        });
-        expect(excerpt2).toBe(
-          "Automatically enhances links by adding appropriate icons for supported document types and ensuring...",
-        );
+    const excerpt2 = ExcerptExtractor.determineExcerpt(text2, {
+      length: 100,
+      firstSentenceOnly: true,
+      addEllipsis: true,
+    });
+    expect(excerpt2).toBe(
+      "Automatically enhances links by adding appropriate icons for supported document types and ensuring...",
+    );
 
-      const text3 =
-`Automatically scrolls the page to bring the controller's element into view when connected.
+    const text3 = `Automatically scrolls the page to bring the controller's element into view when connected.
 Provides smooth scrolling with configurable offset and behavior options.
 @example
 ## HTML Example
-Element that triggers automatic scrolling when connected`
+Element that triggers automatic scrolling when connected`;
 
     const excerpt3 = ExcerptExtractor.determineExcerpt(text3, {
       length: 100,
       firstSentenceOnly: true,
       addEllipsis: true,
     });
-    expect(excerpt3).toBe("Automatically scrolls the page to bring the controller's element into view when connected...");
+    expect(excerpt3).toBe(
+      "Automatically scrolls the page to bring the controller's element into view when connected...",
+    );
   });
 });
