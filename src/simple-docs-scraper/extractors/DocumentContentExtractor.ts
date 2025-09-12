@@ -100,16 +100,16 @@ export class DocumentContentExtractor {
     const extractionMethodsArray = Array.isArray(this.config)
       ? this.config
       : [this.config];
-    let results: ExtractedContent[] = [];
+
+    const results: ExtractedContent[] = [];
 
     for (const i in extractionMethodsArray) {
       const method = extractionMethodsArray[i];
-      const extractedContentArray = await this.handleExtractionMethod(method, contents, results);
+      const extractedContentArray = await this.handleExtractionMethod(method, contents, results, parseInt(i));
 
-      results = [
-        ...results,
-        ...extractedContentArray
-      ];
+      for(const extractedContent of extractedContentArray) {
+        results.push(extractedContent);
+      }
     }
 
     return results;
@@ -127,25 +127,27 @@ export class DocumentContentExtractor {
     plugin: ExtractorPlugin,
     str: string,
     results: ExtractedContent[],
+    i: number,
   ) {
+
+    if(typeof plugin?.extractFromString !== "function") {
+      throw new Error("Error in extraction method " + i + ": Invalid extraction method");
+    }
 
     const extractedContentArray = await plugin.extractFromString(str);
 
     // if the result is an error, throw an error
     if ("errorMessage" in extractedContentArray) {
+      if(extractedContentArray.nonThrowing) {
+        return results;
+      }
       throw new Error(extractedContentArray.errorMessage);
     }
 
     // trim spaces and empty lines
     this.trimContent(extractedContentArray);
 
-    // add the result to the results array
-    results = [
-      ...results,
-      ...extractedContentArray
-    ];
-
-    return results;
+    return extractedContentArray;
   }
 
   private trimContent(result: ExtractedContent[]) {

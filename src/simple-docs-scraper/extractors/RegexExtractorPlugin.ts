@@ -6,7 +6,11 @@ export type RegexExtractorPluginConfig = BaseExtractorConfig & {
 }
 
 export class RegexExtractorPlugin implements ExtractorPlugin<RegexExtractorPluginConfig> {
-    private config!: RegexExtractorPluginConfig;
+    constructor(private config: RegexExtractorPluginConfig) {
+        if(config) {
+            this.setConfig(config);
+        }
+    }
 
     setConfig(config: RegexExtractorPluginConfig): this {
         this.config = config;
@@ -33,6 +37,7 @@ export class RegexExtractorPlugin implements ExtractorPlugin<RegexExtractorPlugi
         return [{
             content: content,
             attributes: {},
+            searchAndReplace: this.config.searchAndReplace,
         }]
     }
 }

@@ -6,7 +6,11 @@ export type TagExtractorPluginConfig = BaseExtractorConfig & {
 }
 
 export class TagExtractorPlugin implements ExtractorPlugin<TagExtractorPluginConfig> {
-    private config!: TagExtractorPluginConfig;
+    constructor(private config: TagExtractorPluginConfig) {
+        if(config) {
+            this.setConfig(config);
+        }
+    }
 
     setConfig(config: TagExtractorPluginConfig): this {
         this.config = config;

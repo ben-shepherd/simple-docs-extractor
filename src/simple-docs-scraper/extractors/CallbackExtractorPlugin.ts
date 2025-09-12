@@ -8,7 +8,11 @@ export type CallbackExtractorConfig = BaseExtractorConfig & {
 }
 
 export class CallbackExtractor implements ExtractorPlugin<CallbackExtractorConfig> {
-    private config!: CallbackExtractorConfig;
+    constructor(private config: CallbackExtractorConfig) {
+        if(config) {
+            this.setConfig(config);
+        }
+    }
 
     setConfig(config: CallbackExtractorConfig): this {
         this.config = config;
@@ -25,13 +29,14 @@ export class CallbackExtractor implements ExtractorPlugin<CallbackExtractorConfi
         if(!content) {
             return {
                 errorMessage: "Callback function returned no content",
-                nonThrowing: true,
+                nonThrowing: false,
             };
         }
 
         return (Array.isArray(content) ? content : [content]).map(item => ({
             content: item,
             attributes: {},
+            searchAndReplace: this.config.searchAndReplace,
         }))
     }
 }
