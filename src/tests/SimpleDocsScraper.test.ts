@@ -35,7 +35,7 @@ const twigFilesTarget = {
 const defaultConfig: SimpleDocExtractorConfig = {
   baseDir: path.join(process.cwd(), "src/tests/files"),
   extraction: [
-    new TagExtractorPlugin().setConfig({
+    new TagExtractorPlugin({
       searchAndReplace: "%content%",
       tag: "<docs>",
     }),

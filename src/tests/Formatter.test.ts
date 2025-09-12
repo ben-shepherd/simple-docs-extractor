@@ -11,7 +11,7 @@ import { getOutputPath } from "./helpers/getOutputPath.js";
 const defaultConfig: SimpleDocExtractorConfig = {
   baseDir: process.cwd(),
   extraction: [
-    new TagExtractorPlugin().setConfig({
+    new TagExtractorPlugin({
       searchAndReplace: "%content%",
       tag: "<docs>",
     }),

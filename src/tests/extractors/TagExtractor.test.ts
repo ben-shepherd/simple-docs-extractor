@@ -55,8 +55,7 @@ This is the second block
     let tagExtractor!: TagExtractorPlugin;
 
     beforeEach(() => {
-        tagExtractor = new TagExtractorPlugin();
-        tagExtractor.setConfig({
+        tagExtractor = new TagExtractorPlugin({
             tag: "docs",
             searchAndReplace: "%content%",
         });
@@ -162,8 +161,8 @@ This is the third line`;
     })
 
     describe("main extractUsingTags logic", () => {
-        test("should extract content from main method as expected from sampleText", () => {
-            const result = tagExtractor.extractFromString(sampleText) as unknown as ExtractedContent[];
+        test("should extract content from main method as expected from sampleText", async () => {
+            const result = await tagExtractor.extractFromString(sampleText) as unknown as ExtractedContent[];
 
             expect(result).not.toHaveProperty("errorMessage");
             expect(result.length).toBe(1);
@@ -173,9 +172,9 @@ This is the third line`;
 
         })
 
-        test("should extract content from main method as expected from sampleTextRealLifeComment", () => {
+        test("should extract content from main method as expected from sampleTextRealLifeComment", async () => {
 
-            const result = tagExtractor.extractFromString(sampleTextRealLifeComment) as unknown as ExtractedContent[];
+            const result = await tagExtractor.extractFromString(sampleTextRealLifeComment) as unknown as ExtractedContent[];
 
             expect(result).not.toHaveProperty("errorMessage");
             expect(result.length).toBe(1);
@@ -187,9 +186,9 @@ This is the third line`;
 
         })
 
-        test("should be able to extract multiple tag contents from a single string", () => {
+        test("should be able to extract multiple tag contents from a single string", async () => {
 
-            const result = tagExtractor.extractFromString(sampleTextMultipleTags) as unknown as ExtractedContent[];
+            const result = await tagExtractor.extractFromString(sampleTextMultipleTags) as unknown as ExtractedContent[];
 
             expect(result).not.toHaveProperty("errorMessage");
             expect(result.length).toBe(2);
@@ -206,9 +205,9 @@ This is the third line`;
 
         })
 
-        test("should be able to extract attributes from tags", () => {
+        test("should be able to extract attributes from tags", async () => {
 
-            const result = tagExtractor.extractFromString(sampleTextWithAttributes) as unknown as ExtractedContent[];
+            const result = await tagExtractor.extractFromString(sampleTextWithAttributes) as unknown as ExtractedContent[];
 
             expect(result).not.toHaveProperty("errorMessage");
             expect(result.length).toBe(1);
@@ -221,9 +220,9 @@ This is the third line`;
             expect(result[0].attributes?.other).toBe("otherValue");
         })
 
-        test("should be able to extract multiple tags, both with and without attributes", () => {
+        test("should be able to extract multiple tags, both with and without attributes", async () => {
 
-            const result = tagExtractor.extractFromString(sampleTextWithAttributesMultipleTags) as unknown as ExtractedContent[];
+            const result = await tagExtractor.extractFromString(sampleTextWithAttributesMultipleTags) as unknown as ExtractedContent[];
 
             expect(result).not.toHaveProperty("errorMessage");
             expect(result.length).toBe(2);
