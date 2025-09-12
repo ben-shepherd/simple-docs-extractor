@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { ExtractionResultLegacy } from "../extractors/DocumentContentExtractor.js";
+import { ExtractedContent } from "../extractors/DocumentContentExtractor.js";
 
 // Configuration for content injection operations
 export type InjectionConfig = {
@@ -54,14 +54,15 @@ export class ContentInjection {
    * @returns The content string with injected content
    */
   mergeExtractionResultsIntoTemplateString(
-    extractionResults: ExtractionResultLegacy[],
+    extractionResults: ExtractedContent[],
   ): string {
+
     const defaultSearchAndReplace =
       extractionResults?.[0].searchAndReplace ?? "%content%";
     let templateContent = this.getTemplateContent(defaultSearchAndReplace);
 
     for (const extractionResult of extractionResults) {
-      const extractedContentOnNewLines = extractionResult.content.join("\n");
+      const extractedContentOnNewLines = extractionResult.content;
       templateContent = templateContent.replace(
         extractionResult.searchAndReplace,
         extractedContentOnNewLines,

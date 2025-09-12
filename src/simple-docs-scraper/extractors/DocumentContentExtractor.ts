@@ -1,5 +1,5 @@
 import fs from "fs";
-import { TagExtractor } from "./TagExtractor.js";
+import { ExtractorPlugin } from "../types/extractor.t.js";
 
 // Configuration for extracting documentation using start and end tags
 export type MethodTags = {
@@ -35,6 +35,7 @@ export type ExtractionResultLegacy = {
 export type ExtractedContent = {
   content: string
   attributes: Record<string, string>
+  searchAndReplace: string;
 }
 
 export type ErrorResult = {
@@ -42,9 +43,7 @@ export type ErrorResult = {
   nonThrowing?: boolean; // if true, the error will not be thrown
 };
 
-export type DocumentContentExtractorConfig =
-  | ExtractionMethod
-  | ExtractionMethod[];
+export type DocumentContentExtractorConfig = ExtractorPlugin[]
 
 /**
  * <docs>
@@ -83,13 +82,11 @@ export class DocumentContentExtractor {
    * @returns Promise resolving to extraction result with documentation content or error details
    * @throws {Error} When an invalid extraction method is configured
    */
-  async extractFromFile(file: string): Promise<ExtractionResultLegacy[]> {
+  async extractFromFile(file: string): Promise<ExtractedContent[]> {
     if (!fs.existsSync(file)) {
       throw new Error("File not found");
     }
-
     const fileContent = fs.readFileSync(file, "utf8");
-
     return this.extractFromString(fileContent);
   }
 
@@ -99,15 +96,20 @@ export class DocumentContentExtractor {
    * @param contents - The content of the file to extract from
    * @returns Promise resolving to extraction result with documentation content or error details
    */
-  async extractFromString(contents: string): Promise<ExtractionResultLegacy[]> {
+  async extractFromString(contents: string): Promise<ExtractedContent[]> {
     const extractionMethodsArray = Array.isArray(this.config)
       ? this.config
       : [this.config];
-    const results: ExtractionResultLegacy[] = [];
+    let results: ExtractedContent[] = [];
 
     for (const i in extractionMethodsArray) {
       const method = extractionMethodsArray[i];
-      await this.handleExtractionMethod(method, contents, i, results);
+      const extractedContentArray = await this.handleExtractionMethod(method, contents, results);
+
+      results = [
+        ...results,
+        ...extractedContentArray
+      ];
     }
 
     return results;
@@ -117,112 +119,39 @@ export class DocumentContentExtractor {
    * Handles the extraction method based on the method type.
    *
    * @param method - The extraction method to handle
-   * @param fileContent - The content of the file to extract from
+   * @param str - The content of the file to extract from
    * @param i - The index of the method
    * @param results - The results array
    */
   private async handleExtractionMethod(
-    method: ExtractionMethod,
-    fileContent: string,
-    i: string,
-    results: ExtractionResultLegacy[],
+    plugin: ExtractorPlugin,
+    str: string,
+    results: ExtractedContent[],
   ) {
-    let result: ExtractionResultLegacy | ErrorResult = {
-      searchAndReplace: method.searchAndReplace,
-    } as ExtractionResultLegacy | ErrorResult;
 
-    if (method.extractMethod === "tags" && method.startTag && method.endTag) {
-      result = new TagExtractor({ tag: method.startTag }).legacy(fileContent, method)
-    } else if (method.extractMethod === "regex" && method.pattern) {
-      result = this.extractUsingRegex(method, fileContent);
-    } else if (
-      method.extractMethod === "callback" &&
-      typeof method.callback === "function"
-    ) {
-      result = await this.extractUsingCallback(method, fileContent);
-    } else {
-      result = {
-        errorMessage: `Error in extraction method ${i}: Invalid extraction method`,
-      };
-    }
+    const extractedContentArray = await plugin.extractFromString(str);
 
     // if the result is an error, throw an error
-    if ("errorMessage" in result) {
-      if (true === result.nonThrowing) {
-        return;
-      }
-      throw new Error(result.errorMessage);
-    }
-
-    // Ensure the content is an array to avoid unexpected behavior
-    if (!Array.isArray(result.content)) {
-      result.content = [result.content];
+    if ("errorMessage" in extractedContentArray) {
+      throw new Error(extractedContentArray.errorMessage);
     }
 
     // trim spaces and empty lines
-    this.trimContent(result);
+    this.trimContent(extractedContentArray);
 
     // add the result to the results array
-    results.push(result as ExtractionResultLegacy);
+    results = [
+      ...results,
+      ...extractedContentArray
+    ];
+
+    return results;
   }
 
-  private trimContent(result: ExtractionResultLegacy) {
+  private trimContent(result: ExtractedContent[]) {
     const trimCallback = (content: string) =>
       content.trim().replace(/\n\s*\n/g, "\n");
-    result.content = result.content.map((content) => trimCallback(content));
-  }
-
-  /**
-   * Extracts documentation using a regular expression pattern.
-   *
-   * @param fileContent - The content of the file to extract from
-   * @returns Extraction result with matched documentation or error details
-   */
-  protected extractUsingRegex(
-    method: MethodRegex,
-    fileContent: string,
-  ): ExtractionResultLegacy | ErrorResult {
-    const regex = new RegExp(method.pattern);
-    const matches = fileContent.match(regex);
-
-    if (!matches) {
-      return {
-        errorMessage: "No content found in the file",
-        nonThrowing: true,
-      };
-    }
-
-    const match = matches[1];
-
-    return {
-      content: match,
-      ...method,
-    } as unknown as ExtractionResultLegacy;
-  }
-
-  /**
-   * Extracts documentation using a custom callback function.
-   *
-   * @param fileContent - The content of the file to extract from
-   * @returns Promise resolving to extraction result with callback-generated documentation or error details
-   */
-  protected async extractUsingCallback(
-    method: MethodCallback,
-    fileContent: string,
-  ): Promise<ExtractionResultLegacy | ErrorResult> {
-    const content = await method.callback(fileContent);
-
-    if (!content) {
-      return {
-        errorMessage: "Callback function returned no content",
-        nonThrowing: false,
-      };
-    }
-
-    return {
-      content: Array.isArray(content) ? content : [content],
-      ...method,
-    } as unknown as ExtractionResultLegacy;
+      result.forEach((content) => trimCallback(content.content));
   }
 
 }

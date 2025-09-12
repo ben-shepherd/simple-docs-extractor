@@ -1,3 +1,4 @@
+import { TagExtractorPlugin } from "@/simple-docs-scraper/extractors/TagExtractorPlugin.js";
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import path from "path";
@@ -33,12 +34,12 @@ const twigFilesTarget = {
 
 const defaultConfig: SimpleDocExtractorConfig = {
   baseDir: path.join(process.cwd(), "src/tests/files"),
-  extraction: {
-    extractMethod: "tags",
-    startTag: "<docs>",
-    endTag: "</docs>",
-    searchAndReplace: "%content%",
-  },
+  extraction: [
+    new TagExtractorPlugin().setConfig({
+      searchAndReplace: "%content%",
+      tag: "<docs>",
+    }),
+  ],
   generators: {
     index: {
       template: getOutputPath("index.template.md"),

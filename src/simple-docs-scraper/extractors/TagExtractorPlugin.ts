@@ -1,12 +1,22 @@
 import { ErrorResult, ExtractedContent, ExtractionMethod, ExtractionResultLegacy } from "../index.js";
+import { BaseExtractorConfig, ExtractorPlugin } from "../types/extractor.t.js";
 
-export type TagExtractorConfig = {
+export type TagExtractorPluginConfig = BaseExtractorConfig & {
     tag: string;
 }
 
-export class TagExtractor {
-    constructor(private config: TagExtractorConfig) {}
-    
+export class TagExtractorPlugin implements ExtractorPlugin<TagExtractorPluginConfig> {
+    private config!: TagExtractorPluginConfig;
+
+    setConfig(config: TagExtractorPluginConfig): this {
+        this.config = config;
+        return this
+    }
+
+    getConfig(): TagExtractorPluginConfig {
+        return this.config;
+    }
+
     /**
      * Extracts documentation using start and end tags.
      *
@@ -16,7 +26,7 @@ export class TagExtractor {
      * For regex101 example:
      * @see https://regex101.com/r/UzcvAj/2
      */
-    extractFromString(str: string): ExtractedContent[] | ErrorResult {
+    async extractFromString(str: string): Promise<ExtractedContent[] | ErrorResult> {
 
         const rawTag = this.getRawTag(this.config.tag);
         const regExp = this.composeRegExp(rawTag)
@@ -29,7 +39,7 @@ export class TagExtractor {
             };
         }
 
-        return result.map(item => {
+        return result.map((item) => {
             const startTag = item[1]
             const content = item[2]
             const attributes = this.getAttributesOrUndefined(startTag)
@@ -37,33 +47,16 @@ export class TagExtractor {
             return {
                 content,
                 attributes,
+                searchAndReplace: this.config.searchAndReplace,
             }
         }) as ExtractedContent[]
     }
 
-    static applyTagSymbols(startTag: string, endTag: string): { startTag: string; endTag: string } {
-        if(!startTag.startsWith("<")) {
-            startTag = `<${startTag}`;
-        }
-        if(!startTag.endsWith(">")) {
-            startTag = `${startTag}>`;
-        }
-
-        if(!endTag.startsWith("</")) {
-            endTag = `</${endTag}`;
-        }
-        if(!endTag.endsWith(">")) {
-            endTag = `${endTag}>`;
-        }
-
-        return {
-            startTag, 
-            endTag,
-        };
-    }
-
-    legacy(str: string, method: ExtractionMethod): ExtractionResultLegacy {
-        const result = this.extractFromString(str)
+    /**
+     * @deprecated Use extractFromString instead
+     */
+    async legacy(str: string, method: ExtractionMethod): Promise<ExtractionResultLegacy> {
+        const result = await this.extractFromString(str)
 
         if("errorMessage" in result) {
             return result as unknown as ExtractionResultLegacy;
@@ -96,8 +89,8 @@ export class TagExtractor {
         return result
     }
 
-    getStartTagPattern(tag: string) {
-        return `(<${tag}[^\>]*?>)`
+    getStartTagPattern(rawTag: string) {
+        return `(<${rawTag}[^\>]*?>)`
     }
 
     getAttributesPattern() {
@@ -108,8 +101,8 @@ export class TagExtractor {
         return '([.\\n\\s\\w\\W\\d]*?)'
     }
 
-    getEndTagPattern(endTag: string) {
-        return `(<\/${endTag}>)`;
+    getEndTagPattern(rawTag: string) {
+        return `(<\/${rawTag}>)`;
     }
 
     getRawTag(startTag: string) {
