@@ -4,3 +4,4 @@ export * from "./generators/index.js";
 export * from "./services/index.js";
 export * from "./transformers/index.js";
 export * from "./types/index.js";
+export * from "./processors/index.js";
