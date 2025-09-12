@@ -79,9 +79,7 @@ describe("Docs Extractor", () => {
 
   describe("extract using tags", () => {
     test("should perform expected behavior", async () => {
-      docsExtractor = new DocumentContentExtractor([
-        docsTagsExtractor,
-      ]);
+      docsExtractor = new DocumentContentExtractor([docsTagsExtractor]);
 
       const result = await docsExtractor.extractFromFile(fileWithDocs);
 
@@ -89,9 +87,7 @@ describe("Docs Extractor", () => {
     });
 
     test("should not throw an error if the file does not contain the start and end tags", async () => {
-      docsExtractor = new DocumentContentExtractor([
-        docsTagsExtractor,
-      ]);
+      docsExtractor = new DocumentContentExtractor([docsTagsExtractor]);
 
       await expect(
         docsExtractor.extractFromFile(fileWithoutDocs),
@@ -99,9 +95,7 @@ describe("Docs Extractor", () => {
     });
 
     test("should throw an error if the file does not exist", async () => {
-      docsExtractor = new DocumentContentExtractor([
-        docsTagsExtractor,
-      ]);
+      docsExtractor = new DocumentContentExtractor([docsTagsExtractor]);
 
       await expect(() =>
         docsExtractor.extractFromFile("path-to-nonexistent-file.js"),
@@ -189,9 +183,7 @@ const example = () => null;`;
         sourceCode,
       );
 
-      docsExtractor = new DocumentContentExtractor([
-        docsTagsExtractor,
-      ]);
+      docsExtractor = new DocumentContentExtractor([docsTagsExtractor]);
       const result = await docsExtractor.extractFromFile(
         getOutputPath("code-block-check/example.js"),
       );
@@ -201,7 +193,9 @@ const example = () => null;`;
         content: result[0].content,
       });
 
-      expect(extractedContent).toContain("console.log('code block example')\n ```\n");
+      expect(extractedContent).toContain(
+        "console.log('code block example')\n ```\n",
+      );
     });
   });
 
@@ -283,9 +277,7 @@ class Example {
     }
 
 }`;
-      docsExtractor = new DocumentContentExtractor([
-        methodTagsExtractor,
-      ]);
+      docsExtractor = new DocumentContentExtractor([methodTagsExtractor]);
 
       const results = await docsExtractor.extractFromString(sourceCode);
       expect(results).toHaveLength(2);

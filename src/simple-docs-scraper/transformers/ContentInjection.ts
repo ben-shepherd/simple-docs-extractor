@@ -56,7 +56,6 @@ export class ContentInjection {
   mergeExtractionResultsIntoTemplateString(
     extractionResults: ExtractedContent[],
   ): string {
-
     const defaultSearchAndReplace =
       extractionResults?.[0].searchAndReplace ?? "%content%";
     let templateContent = this.getTemplateContent(defaultSearchAndReplace);

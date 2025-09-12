@@ -33,17 +33,17 @@ export type ExtractionResultLegacy = {
 } & ExtractionMethod;
 
 export type ExtractedContent = {
-  content: string
-  attributes: Record<string, string>
+  content: string;
+  attributes: Record<string, string>;
   searchAndReplace: string;
-}
+};
 
 export type ErrorResult = {
   errorMessage: string;
   nonThrowing?: boolean; // if true, the error will not be thrown
 };
 
-export type DocumentContentExtractorConfig = ExtractorPlugin[]
+export type DocumentContentExtractorConfig = ExtractorPlugin[];
 
 /**
  * <docs>
@@ -105,9 +105,14 @@ export class DocumentContentExtractor {
 
     for (const i in extractionMethodsArray) {
       const method = extractionMethodsArray[i];
-      const extractedContentArray = await this.handleExtractionMethod(method, contents, results, parseInt(i));
+      const extractedContentArray = await this.handleExtractionMethod(
+        method,
+        contents,
+        results,
+        parseInt(i),
+      );
 
-      for(const extractedContent of extractedContentArray) {
+      for (const extractedContent of extractedContentArray) {
         results.push(extractedContent);
       }
     }
@@ -129,16 +134,17 @@ export class DocumentContentExtractor {
     results: ExtractedContent[],
     i: number,
   ) {
-
-    if(typeof plugin?.extractFromString !== "function") {
-      throw new Error("Error in extraction method " + i + ": Invalid extraction method");
+    if (typeof plugin?.extractFromString !== "function") {
+      throw new Error(
+        "Error in extraction method " + i + ": Invalid extraction method",
+      );
     }
 
     const extractedContentArray = await plugin.extractFromString(str);
 
     // if the result is an error, throw an error
     if ("errorMessage" in extractedContentArray) {
-      if(extractedContentArray.nonThrowing) {
+      if (extractedContentArray.nonThrowing) {
         return results;
       }
       throw new Error(extractedContentArray.errorMessage);
@@ -153,7 +159,6 @@ export class DocumentContentExtractor {
   private trimContent(result: ExtractedContent[]) {
     const trimCallback = (content: string) =>
       content.trim().replace(/\n\s*\n/g, "\n");
-      result.forEach((content) => trimCallback(content.content));
+    result.forEach((content) => trimCallback(content.content));
   }
-
 }
