@@ -88,6 +88,7 @@ export const publishDocs = async (
   });
 
   if(missingDocumentationFiles.length > 0) {
+    console.log("These files files should be documented: ", missingDocumentationFiles.map((file) => path.basename(file)).join(", "));
     process.exit(1);
   }
 
