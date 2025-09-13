@@ -1,4 +1,3 @@
-import { DocumentContentExtractorConfig } from "../extractors/DocumentContentExtractor.js";
 import { DocFileGeneratorConfig } from "../generators/DocFileGenerator.js";
 import { IndexFileGeneratorConfig } from "../generators/IndexFileGenerator.js";
 import { Target } from "../services/SimpleDocExtractor.js";
@@ -14,7 +13,6 @@ export type DocumentationGeneratorConfig = {
 
 export interface SimpleDocExtractorConfig {
   baseDir: string;
-  extraction: DocumentContentExtractorConfig;
   generators?: {
     index?: IndexGeneratorConfig;
     documentation?: DocumentationGeneratorConfig;

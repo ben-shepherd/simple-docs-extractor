@@ -104,7 +104,7 @@ export class CodeFileProcessor {
     // Apply default text
     injectedContent = contentInjection.applyDefaultText(
       injectedContent,
-      this.config.extraction,
+      this.getDocumentContentExtractorConfig(target),
     );
 
     // Apply formatters
@@ -205,9 +205,6 @@ export class CodeFileProcessor {
   getDocumentContentExtractorConfig(
     target: Target,
   ): DocumentContentExtractorConfig {
-    if (target.extraction) {
-      return target.extraction;
-    }
-    return this.config.extraction;
+      return target.extraction ?? [];
   }
 }

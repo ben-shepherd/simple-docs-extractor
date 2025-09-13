@@ -15,6 +15,13 @@ const TEMPLATE_CONTENT2 = `Begin.
 %content%
 Finish.`;
 
+const extraction = [
+  new TagExtractorPlugin({
+    searchAndReplace: "%content%",
+    tag: "docs",
+  }),
+];
+
 const jsFilesTarget = {
   globOptions: {
     cwd: path.join(process.cwd(), "src/tests/files/js-files"),
@@ -22,6 +29,7 @@ const jsFilesTarget = {
   },
   outDir: getOutputPath("js-files"),
   createIndexFile: true,
+  extraction,
 };
 
 const twigFilesTarget = {
@@ -31,16 +39,11 @@ const twigFilesTarget = {
   },
   outDir: getOutputPath("twig-files"),
   createIndexFile: true,
+  extraction,
 };
 
 const defaultConfig: SimpleDocExtractorConfig = {
   baseDir: path.join(process.cwd(), "src/tests/files"),
-  extraction: [
-    new TagExtractorPlugin({
-      searchAndReplace: "%content%",
-      tag: "<docs>",
-    }),
-  ],
   generators: {
     index: {
       template: getOutputPath("index.template.md"),
@@ -206,6 +209,7 @@ describe("Example Test Suite", () => {
             },
             outDir: getOutputPath("output-files"),
             createIndexFile: true,
+            extraction,
           },
         ],
       });
@@ -229,6 +233,7 @@ describe("Example Test Suite", () => {
             },
             outDir: getOutputPath("output-files"),
             createIndexFile: true,
+            extraction,
           },
         ],
       });
