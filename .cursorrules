@@ -36,7 +36,8 @@ Rules:
 - Surround documentation with <docs> and </docs> tags, each on their own line. Only applicable to the top of the class comment.
 - Only document complex methods that are not obvious. Do not include <docs></docs> tags.
 - If a complex type needs a comment, write a normal JavaScript comment without <docs></docs> tags.
-Examples:
+- For documenting methods, wrap the comments in <method name="replace_with_name_of_method"> and </method> tags.
+Top Level Class Examples:
 - /**
   * <docs>
   * Description here.
@@ -47,4 +48,15 @@ Examples:
   * @param {number} age - The age of the example class
   * </docs>
   */
-}
+Method Example:
+- /**
+  * <method name="calculateTotal">
+  * Calculates the total price including tax.
+  * 
+  * @param {number} price - The base price
+  * @param {number} taxRate - The tax rate as a decimal
+  * @returns {number} The total price including tax
+  * </method>
+  */
+
+  

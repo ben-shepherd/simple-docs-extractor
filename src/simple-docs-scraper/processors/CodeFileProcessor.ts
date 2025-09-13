@@ -86,6 +86,9 @@ export class CodeFileProcessor {
         extractionResults,
       );
 
+    // Apply default text
+    injectedContent = contentInjection.applyDefaultText(injectedContent, this.config.extraction);
+
     // Apply formatters
     if (this.config.formatters) {
       for (const formatter of this.config.formatters) {
