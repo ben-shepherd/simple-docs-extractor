@@ -2,26 +2,23 @@ import fs from "fs";
 import path from "path";
 import { IndexStructurePreProcessorEntry } from "../processors/IndexStructurePreProcessor.js";
 import {
-    DEFAULT_CONFIG as DEFAULT_EXCERPT_CONFIG,
-    ExcerptExtractor,
-    ExcerptExtractorConfig,
+  DEFAULT_CONFIG as DEFAULT_EXCERPT_CONFIG,
+  ExcerptExtractor,
+  ExcerptExtractorConfig,
 } from "../transformers/ExcerptExtractor.js";
+import { FileNameCallback, LineCallback } from "../types/config.t.js";
 
 export type IndexFileGeneratorConfig = {
   outDir: string;
   searchAndReplace?: string;
   template?: string;
   baseDir?: string;
-  markdownLink?: boolean;
+  markdownLinks?: boolean;
   filesHeading?: string;
   directoryHeading?: string;
   excerpt?: ExcerptExtractorConfig;
-  lineCallback?: (
-    fileNameEntry: string,
-    lineNumber: number,
-    excerpt?: string,
-  ) => string;
-  fileNameCallback?: (filePath: string) => string;
+  lineCallback?: LineCallback;
+  fileNameCallback?: FileNameCallback
 };
 
 /**

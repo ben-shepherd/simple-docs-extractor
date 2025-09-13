@@ -18,11 +18,11 @@ describe("ConfigHelper Test Suite", () => {
     mockTarget = {
       globOptions: {
         cwd: process.cwd(),
-        extensions: "**/*.js",
+        patterns: "**/*.js",
       },
       outDir: process.cwd() + "/src/tests/output",
       createIndexFile: false,
-      extraction: [mockExtractorPlugin],
+      plugins: [mockExtractorPlugin],
     };
   });
 

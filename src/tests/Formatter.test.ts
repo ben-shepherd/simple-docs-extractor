@@ -19,20 +19,20 @@ const extraction = [
 
 const defaultConfig: SimpleDocExtractorConfig = {
   baseDir: process.cwd(),
-  generators: {
+  templates: {
     documentation: {
-      template: getOutputPath("documentation.template.md"),
+      templatePath: getOutputPath("documentation.template.md"),
     },
   },
   targets: [
     {
       globOptions: {
         cwd: path.join(process.cwd(), "src/tests/output"),
-        extensions: "**/exampleFunc.js",
+        patterns: "**/exampleFunc.js",
       },
       outDir: getOutputPath("js-files"),
       createIndexFile: false,
-      extraction,
+      plugins: extraction,
     },
   ],
 };

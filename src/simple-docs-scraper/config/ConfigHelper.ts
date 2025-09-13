@@ -26,7 +26,7 @@ export class ConfigHelper {
    * </method>
    */
   static getPluginBySearchAndReplace(target: Target, searchAndReplace: string) {
-    return target.extraction?.find(
+    return target.plugins?.find(
       (plugin) => plugin.getConfig().searchAndReplace === searchAndReplace,
     );
   }

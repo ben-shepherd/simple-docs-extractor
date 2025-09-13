@@ -1,4 +1,4 @@
-type FormatterConfig = {
+export type FormatterConfig = {
   filePath: string;
   outFile: string;
   content: string;

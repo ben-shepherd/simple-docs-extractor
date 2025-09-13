@@ -34,11 +34,11 @@ describe("Injection", () => {
     mockTarget = {
       globOptions: {
         cwd: process.cwd(),
-        extensions: "**/*.js",
+        patterns: "**/*.js",
       },
       outDir,
       createIndexFile: false,
-      extraction: [mockExtractorPlugin],
+      plugins: [mockExtractorPlugin],
     };
 
     // Create a mock template file

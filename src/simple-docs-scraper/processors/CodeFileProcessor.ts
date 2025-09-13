@@ -10,7 +10,7 @@ import { Locales, LocalesService } from "../services/LocalesService.js";
 import { Target } from "../services/SimpleDocExtractor.js";
 import { ContentInjection } from "../transformers/ContentInjection.js";
 import {
-  DocumentationGeneratorConfig,
+  DocumentationTemplateConfig,
   SimpleDocExtractorConfig,
 } from "../types/config.t.js";
 
@@ -75,7 +75,7 @@ export class CodeFileProcessor {
   async preProcess(file: string, target: Target): Promise<ProcessResult> {
     const contentInjection = new ContentInjection(
       {
-        template: this.getDocFileGeneratorConfig(target).template ?? "",
+        template: this.getDocFileGeneratorConfig(target).templatePath ?? "",
         outDir: target.outDir,
       },
       target,
@@ -128,7 +128,7 @@ export class CodeFileProcessor {
     // Generate the documentation file
     if (!this.config.dryRun) {
       new DocFileGenerator({
-        template: this.getDocFileGeneratorConfig(target).template,
+        template: this.getDocFileGeneratorConfig(target).templatePath,
         outDir: transformedOutDir,
       }).saveToMarkdownFile(injectedContent, file);
     }
@@ -198,24 +198,24 @@ export class CodeFileProcessor {
 
     // Generate the documentation file
     new DocFileGenerator({
-      template: this.getDocFileGeneratorConfig(target)?.template ?? undefined,
+      template: this.getDocFileGeneratorConfig(target)?.templatePath ?? undefined,
       outDir: processedResult.outDir,
     }).saveToMarkdownFile(processedResult.content, outFile);
   }
 
-  getDocFileGeneratorConfig(target: Target): DocumentationGeneratorConfig {
-    if (target.generators?.documentation) {
-      return target.generators.documentation;
+  getDocFileGeneratorConfig(target: Target): DocumentationTemplateConfig {
+    if (target.templates?.documentation) {
+      return target.templates.documentation;
     }
-    if (typeof this.config.generators?.documentation === "undefined") {
-      return {} as DocumentationGeneratorConfig;
+    if (typeof this.config.templates?.documentation === "undefined") {
+      return {} as DocumentationTemplateConfig;
     }
-    return this.config.generators?.documentation;
+    return this.config.templates?.documentation;
   }
 
   getDocumentContentExtractorConfig(
     target: Target,
   ): DocumentContentExtractorConfig {
-    return target.extraction ?? [];
+    return target.plugins ?? [];
   }
 }

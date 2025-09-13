@@ -24,10 +24,10 @@ import path from "path";
  */
 export const DEFAULT_CONFIG: SimpleDocExtractorConfig = {
   baseDir: process.cwd(),
-  generators: {
+  templates: {
     index: {
-      template: path.join(process.cwd(), "src/templates/index.template.md"),
-      markdownLink: true,
+      templatePath: path.join(process.cwd(), "src/templates/index.template.md"),
+      markdownLinks: true,
       filesHeading: "\n## Files\n",
       directoryHeading: "\n## Folders\n",
       excerpt: {
@@ -37,7 +37,7 @@ export const DEFAULT_CONFIG: SimpleDocExtractorConfig = {
       },
     },
     documentation: {
-      template: path.join(
+      templatePath: path.join(
         process.cwd(),
         "src/templates/documentation.template.md",
       ),
@@ -47,12 +47,12 @@ export const DEFAULT_CONFIG: SimpleDocExtractorConfig = {
     {
       globOptions: {
         cwd: path.join(process.cwd(), "src"),
-        extensions: "**/*.{js,ts}",
+        patterns: "**/*.{js,ts}",
         ignore: ["**/tests/**", "**/scripts/**"],
       },
       outDir: path.join(process.cwd(), "docs"),
       createIndexFile: true,
-      extraction: [
+      plugins: [
         new TagExtractorPlugin({
           tag: "docs",
           searchAndReplace: "%content%",
