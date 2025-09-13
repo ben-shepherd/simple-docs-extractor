@@ -10,13 +10,26 @@ import { getOutputPath } from "./helpers/getOutputPath.js";
 describe("Publish Docs", () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let exitSpy: any
+  let testConfig: SimpleDocExtractorConfig;
 
   beforeEach(() => {
+    // Overwrite the output directory for each target
+    testConfig = {
+      ...DEFAULT_CONFIG,
+      targets: DEFAULT_CONFIG.targets.map((target) => {
+        return {
+          ...target,
+          outDir: path.join(getOutputPath(), path.basename(target.outDir)),
+        };
+      }),
+    };
+
+    // Delete the output files
     deleteOutputFiles();
 
     // Mock console.log to suppress output during test
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-    console.log = (...args: any[]) => {};
+    console.log = (...args: any[]) => { };
 
     // Create a sample file with no documentation
     fs.writeFileSync(
@@ -26,19 +39,19 @@ describe("Publish Docs", () => {
       */`,
     );
 
-      // Spy on process.exit so we can check if it was called, but don't actually exit
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      exitSpy = jest.spyOn(process, "exit").mockImplementation((code?: string | number | null | undefined): never => {
-        return {} as never;
-      });
-          
+    // Spy on process.exit so we can check if it was called, but don't actually exit
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    exitSpy = jest.spyOn(process, "exit").mockImplementation((code?: string | number | null | undefined): never => {
+      return {} as never;
+    });
+
   });
 
   afterAll(() => {
-      // Delete the sample file
-      if(fs.existsSync(path.join(process.cwd(), "src/sample-missing-documentation.js"))) {
-        fs.unlinkSync(path.join(process.cwd(), "src/sample-missing-documentation.js"));
-      }
+    // Delete the sample file
+    if (fs.existsSync(path.join(process.cwd(), "src/sample-missing-documentation.js"))) {
+      fs.unlinkSync(path.join(process.cwd(), "src/sample-missing-documentation.js"));
+    }
   });
 
   describe("publishDocs", () => {
@@ -84,7 +97,7 @@ describe("Publish Docs", () => {
   describe("publishDocs with missing documentation", () => {
     test("should exit with code 1 if there is missing documentation", async () => {
       await publishDocs({
-        ...DEFAULT_CONFIG,
+        ...testConfig,
       });
 
       expect(exitSpy).toHaveBeenCalledWith(1);
