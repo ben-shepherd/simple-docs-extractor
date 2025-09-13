@@ -12,6 +12,7 @@ export type DocumentationGeneratorConfig = {
 } & Partial<DocFileGeneratorConfig>;
 
 export interface SimpleDocExtractorConfig {
+  dryRun?: boolean;
   baseDir: string;
   targets: Target[];
   generators?: {
