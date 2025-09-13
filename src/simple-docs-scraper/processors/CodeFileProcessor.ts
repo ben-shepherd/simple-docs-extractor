@@ -12,7 +12,7 @@ import { ContentInjection } from "../transformers/ContentInjection.js";
 import {
   DocumentationGeneratorConfig,
   SimpleDocExtractorConfig,
-} from "../types/config.js";
+} from "../types/config.t.js";
 
 export type ProcessResultSuccess = {
   content: string;
@@ -24,6 +24,7 @@ export type ProcessResultSuccess = {
 
 export type ProcessResultError = {
   error: string;
+  noDocumentationFound?: boolean;
 };
 
 export type ProcessResult = ProcessResultSuccess | ProcessResultError;
@@ -60,7 +61,7 @@ export type ProcessResult = ProcessResultSuccess | ProcessResultError;
  * </docs>
  */
 export class CodeFileProcessor {
-  constructor(private config: SimpleDocExtractorConfig) {}
+  constructor(private config: SimpleDocExtractorConfig) { }
 
   /**
    * <method name="preProcess">
@@ -89,6 +90,7 @@ export class CodeFileProcessor {
     if (!extractedContentArray.length) {
       return {
         error: `Error: No extraction results in file ${file}`,
+        noDocumentationFound: true,
       };
     }
 
@@ -124,10 +126,12 @@ export class CodeFileProcessor {
     const transformedOutDir = this.buildOutputPath(file, target);
 
     // Generate the documentation file
-    new DocFileGenerator({
-      template: this.getDocFileGeneratorConfig(target).template,
-      outDir: transformedOutDir,
-    }).saveToMarkdownFile(injectedContent, file);
+    if (!this.config.dryRun) {
+      new DocFileGenerator({
+        template: this.getDocFileGeneratorConfig(target).template,
+        outDir: transformedOutDir,
+      }).saveToMarkdownFile(injectedContent, file);
+    }
 
     return {
       content: injectedContent,
@@ -212,6 +216,6 @@ export class CodeFileProcessor {
   getDocumentContentExtractorConfig(
     target: Target,
   ): DocumentContentExtractorConfig {
-      return target.extraction ?? [];
+    return target.extraction ?? [];
   }
 }

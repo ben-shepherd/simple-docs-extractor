@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import path from "path";
 import { SimpleDocExtractor } from "../simple-docs-scraper/services/SimpleDocExtractor.js";
-import { SimpleDocExtractorConfig } from "../simple-docs-scraper/types/config.js";
+import { SimpleDocExtractorConfig } from "../simple-docs-scraper/types/config.t.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";
 
@@ -359,6 +359,58 @@ This is the second block
       expect(documentationContent).toContain("This is a test block");
       expect(documentationContent).toContain(locales.updatedAt);
       expect(documentationContent).toContain(locales.fileName);
+    });
+  });
+
+  describe("dry run", () => {
+    test("should be able to run the scraper in dry run mode", async () => {
+      scraper = new SimpleDocExtractor({
+        ...defaultConfig,
+        dryRun: true,
+      });
+
+      const result = await scraper.start();
+
+      const outputDirEntries = fs.readdirSync(getOutputPath());
+      const shouldNotHaveEntries = ["js-files", "twig-files"];
+      const missingDocumentationFiles = result.missingDocumentationFiles;
+
+      expect(outputDirEntries).not.toContain(shouldNotHaveEntries);
+      expect(missingDocumentationFiles.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe("missing documentation", () => {
+    test("should produce warnings for missing documentation", async () => {
+
+
+      fs.mkdirSync(getOutputPath("missing-documentation"));
+      fs.writeFileSync(
+        getOutputPath("missing-documentation/sample.js"),
+        `/**
+        * This is a test block
+        */`,
+      );
+
+      scraper = new SimpleDocExtractor({
+        ...defaultConfig,
+        dryRun: true,
+        targets: [
+          {
+            ...jsFilesTarget,
+            outDir: getOutputPath("missing-documentation"),
+            globOptions: {
+              cwd: getOutputPath("missing-documentation"),
+              extensions: "**/*.{js,ts}",
+            },
+          }
+        ],
+      });
+
+      const results = await scraper.start();
+
+      expect(results.missingDocumentationCount).toBeGreaterThan(0);
+      expect(results.logs.some((log) => log.includes("Found 1 file(s) with no documentation"))).toBe(true);
     });
   });
 });

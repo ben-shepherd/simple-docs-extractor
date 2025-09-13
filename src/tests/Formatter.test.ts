@@ -5,7 +5,7 @@ import fs from "fs";
 import path from "path";
 import { RemoveMultiLineCommentAsterisks } from "../simple-docs-scraper/formatters/RemoveMultiLineCommentAsterisks.js";
 import { SimpleDocExtractor } from "../simple-docs-scraper/index.js";
-import { SimpleDocExtractorConfig } from "../simple-docs-scraper/types/config.js";
+import { SimpleDocExtractorConfig } from "../simple-docs-scraper/types/config.t.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";
 
