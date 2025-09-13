@@ -103,7 +103,6 @@ export class ContentInjection {
     return injectedContent;
   }
 
-
   /**
    * Injects content into a template file and writes the result to an output file.
    *
