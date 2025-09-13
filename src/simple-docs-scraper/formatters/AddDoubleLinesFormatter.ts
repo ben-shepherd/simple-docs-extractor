@@ -26,16 +26,16 @@ import { TFormatter } from "../types/formatter.t.js";
  */
 
 export const AddDoubleLinesFormatter: TFormatter = (config) => {
-  let lines = config.content.split("\n")
+  let lines = config.content.split("\n");
   let insideCodeBlock = false;
-  
+
   // Add a blank line between each line of the content, except inside code blocks
   lines = lines.map((line, index) => {
-    if(line.includes("```") || index === lines.length - 1) {
+    if (line.includes("```") || index === lines.length - 1) {
       insideCodeBlock = !insideCodeBlock;
-      return line
+      return line;
     }
-    if( !insideCodeBlock) {
+    if (!insideCodeBlock) {
       line = `${line}\n`;
     }
     return line;

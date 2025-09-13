@@ -205,6 +205,6 @@ export class CodeFileProcessor {
   getDocumentContentExtractorConfig(
     target: Target,
   ): DocumentContentExtractorConfig {
-      return target.extraction ?? [];
+    return target.extraction ?? [];
   }
 }
