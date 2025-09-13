@@ -97,9 +97,10 @@ class TemplateContentExtractionContentMerger {
      * - Return the content block
      */
     private buildAttributesContent(extractedContent: ExtractedContent, contentBlock: string[]) {
-        const attributeFormat = ConfigHelper.getAttributeFormatBySearchAndReplace(this.config.target, extractedContent.searchAndReplace) ?? "*{key}*: {value}\n";
+        const attributes = extractedContent?.attributes ?? {};
+        const attributeFormat = ConfigHelper.getAttributeFormatBySearchAndReplace(this.config.target, extractedContent.searchAndReplace) ?? "### *{key}*: {value}\n";
 
-        for (const [key, value] of Object.entries(extractedContent?.attributes ?? {})) {
+        for (const [key, value] of Object.entries(attributes)) {
             contentBlock.push(attributeFormat.replace("{key}", key).replace("{value}", value));
         }
 
@@ -126,7 +127,7 @@ class TemplateContentExtractionContentMerger {
    * @returns The divide by for the extraction result
    */
     getDivideBy(extractedContent: ExtractedContent): string {
-        return extractedContent?.divideBy ?? "\n\n";
+        return extractedContent?.divideBy ?? "\n\n---\n\n";
     }
 
 }
