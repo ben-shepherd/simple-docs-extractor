@@ -45,7 +45,7 @@ export type DocumentContentExtractorConfig = ExtractorPlugin[];
  * </docs>
  */
 export class DocumentContentExtractor {
-  constructor(private config: DocumentContentExtractorConfig) { }
+  constructor(private config: DocumentContentExtractorConfig) {}
 
   /**
    * Extracts documentation from the configured file using the specified method.

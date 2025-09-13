@@ -9,12 +9,12 @@ import path from "path";
 /**
  * <docs>
  * Publish documentation by running the SimpleDocExtractor with the provided configuration.
- * 
+ *
  * This function sets up the extractor to process JavaScript and TypeScript files
  * in the src directory, excluding tests and scripts folders. It uses the TagExtractorPlugin
  * to extract content marked with "docs" tags and generates documentation files using
  * custom templates. It then publishes the documentation to the docs directory.
- * 
+ *
  * @example
  * ```typescript
  * const extractor = new SimpleDocExtractor(DEFAULT_CONFIG);
@@ -31,7 +31,7 @@ export const DEFAULT_CONFIG: SimpleDocExtractorConfig = {
     }),
     new TagExtractorPlugin({
       tag: "method",
-      searchAndReplace: "%methods%"
+      searchAndReplace: "%methods%",
     }),
   ],
   generators: {

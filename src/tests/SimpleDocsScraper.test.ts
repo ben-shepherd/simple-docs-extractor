@@ -116,7 +116,6 @@ describe("Example Test Suite", () => {
     });
 
     test("should be able to configure target with it's own extraction methods", async () => {
-
       // Create a new code file with different tags
       fs.mkdirSync(getOutputPath("js-files"));
       fs.writeFileSync(
@@ -146,7 +145,7 @@ describe("Example Test Suite", () => {
                 searchAndReplace: "%content%",
                 tag: "method",
               }),
-            ]
+            ],
           },
         ],
       });
@@ -157,8 +156,12 @@ describe("Example Test Suite", () => {
         "utf8",
       );
 
-      expect(documentationContent).toContain("This is a test block wrapped in method tags");
-      expect(documentationContent).not.toContain("This block should be ignored");
+      expect(documentationContent).toContain(
+        "This is a test block wrapped in method tags",
+      );
+      expect(documentationContent).not.toContain(
+        "This block should be ignored",
+      );
     });
   });
 
@@ -239,15 +242,12 @@ describe("Example Test Suite", () => {
   });
 
   describe("content generation", () => {
-
     test("should generate multiple content for extraction methods that exist multiple times", async () => {
-
-
       // Create a new code file with different tags
       fs.mkdirSync(getOutputPath("js-files"));
       fs.writeFileSync(
         getOutputPath("js-files/methodsTest.js"),
-`<method>
+        `<method>
 This is the first block
 </method>
 <method>
@@ -256,39 +256,40 @@ This is the second block
 `,
       );
 
-
       // Create a template file with the correct tags
       fs.writeFileSync(
         getOutputPath("documentation.template.md"),
-  `Start.
+        `Start.
   %methods%
   End.`,
       );
 
       scraper = new SimpleDocExtractor({
         ...defaultConfig,
-        targets: [{
-          globOptions: {
-            cwd: getOutputPath("js-files"),
-            extensions: "**/*.{js,ts}",
-          },
-          outDir: getOutputPath("js-files"),
-          createIndexFile: true,
-          generators: {
-            documentation: {
-              template: getOutputPath("documentation.template.md"),
+        targets: [
+          {
+            globOptions: {
+              cwd: getOutputPath("js-files"),
+              extensions: "**/*.{js,ts}",
             },
+            outDir: getOutputPath("js-files"),
+            createIndexFile: true,
+            generators: {
+              documentation: {
+                template: getOutputPath("documentation.template.md"),
+              },
+            },
+            extraction: [
+              new TagExtractorPlugin({
+                searchAndReplace: "%methods%",
+                tag: "method",
+                divideBy: "---",
+              }),
+            ],
           },
-          extraction: [
-            new TagExtractorPlugin({
-              searchAndReplace: "%methods%",
-              tag: "method",
-              divideBy: "---",
-            }),
-          ]
-        }],
+        ],
       });
-      
+
       await scraper.start();
 
       const documentationContent = fs.readFileSync(
@@ -298,6 +299,6 @@ This is the second block
 
       expect(documentationContent).toContain("This is the first block");
       expect(documentationContent).toContain("This is the second block");
-    })
-  })
+    });
+  });
 });
