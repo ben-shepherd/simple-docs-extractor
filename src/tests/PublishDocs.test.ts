@@ -50,7 +50,7 @@ describe("Publish Docs", () => {
       expect(outputFiles.length).toBeGreaterThanOrEqual(1);
       expect(outputFiles.some((file) => file.includes("index.md"))).toBe(true);
 
-      const pathToSimpleDocsScraper = path.join(
+      const pathToSimpleDocExtractor = path.join(
         getOutputPath(),
         "docs/simple-docs-scraper/services/SimpleDocExtractor.ts.md",
       );
@@ -59,7 +59,7 @@ describe("Publish Docs", () => {
         "docs/simple-docs-scraper/generators/DocFileGenerator.ts.md",
       );
 
-      expect(fs.existsSync(pathToSimpleDocsScraper)).toBe(true);
+      expect(fs.existsSync(pathToSimpleDocExtractor)).toBe(true);
       expect(fs.existsSync(pathToDocFileGenerator)).toBe(true);
     });
   });

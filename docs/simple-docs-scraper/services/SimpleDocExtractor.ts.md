@@ -9,7 +9,7 @@
 
  @example
  ```typescript
- const scraper = new SimpleDocsScraper({
+ const scraper = new SimpleDocExtractor({
    baseDir: './src',
    extraction: {
      extractMethod: 'tags',
@@ -40,7 +40,7 @@
 
  Returns the current configuration.
 
- @returns The current SimpleDocsScraper configuration
+ @returns The current SimpleDocExtractor configuration
  
 
 ---

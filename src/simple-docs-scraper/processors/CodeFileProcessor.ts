@@ -3,8 +3,10 @@ import path from "path";
 import {
   DocumentContentExtractor,
   DocumentContentExtractorConfig,
+  ExtractedContent,
 } from "../extractors/DocumentContentExtractor.js";
 import { DocFileGenerator } from "../generators/DocFileGenerator.js";
+import { Locales, LocalesService } from "../services/LocalesService.js";
 import { Target } from "../services/SimpleDocExtractor.js";
 import { ContentInjection } from "../transformers/ContentInjection.js";
 import {
@@ -17,6 +19,7 @@ export type ProcessResultSuccess = {
   outDir: string;
   fileName: string;
   loggableFileName: string;
+  locales: Locales
 };
 
 export type ProcessResultError = {
@@ -77,20 +80,23 @@ export class CodeFileProcessor {
 
     let injectedContent = "";
 
-    const extractionResults = await new DocumentContentExtractor(
+    const extractedContentArray = await new DocumentContentExtractor(
       this.getDocumentContentExtractorConfig(target),
     ).extractFromFile(file);
 
-    if (!extractionResults.length) {
+    if (!extractedContentArray.length) {
       return {
         error: `Error: No extraction results in file ${file}`,
       };
     }
 
+    // Get the locales (variables that can be used in the template)
+    const locales = this.addLocalesToExtractedContent(file, extractedContentArray);
+
     // Merge the extraction results into the template string
     injectedContent =
       contentInjection.mergeExtractedContentsIntoTemplateString(
-        extractionResults,
+        extractedContentArray,
       );
 
     // Apply default text
@@ -112,6 +118,7 @@ export class CodeFileProcessor {
 
     // Build the output directory
     const transformedOutDir = this.buildOutputPath(file, target);
+  
 
     // Generate the documentation file
     new DocFileGenerator({
@@ -124,7 +131,21 @@ export class CodeFileProcessor {
       fileName: path.basename(file),
       outDir: transformedOutDir,
       loggableFileName: file.replace(this.config.baseDir, ""),
+      locales,
     };
+  }
+
+  /**
+   * Adds the locales to the extracted content
+   * @param file - The file path
+   * @param extractionResults - The extracted content
+   * @returns The locales
+   */
+  private addLocalesToExtractedContent(file: string, extractionResults: ExtractedContent[]) {
+    const locales = new LocalesService(file).getLocales();
+    const localesAsExtractedContents = LocalesService.toExtractedContents(locales);
+    extractionResults.push(...localesAsExtractedContents);
+    return locales;
   }
 
   /**
