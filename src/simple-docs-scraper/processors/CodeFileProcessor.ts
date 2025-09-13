@@ -67,7 +67,8 @@ export class CodeFileProcessor {
     const contentInjection = new ContentInjection({
       template: this.getDocFileGeneratorConfig(target).template ?? "",
       outDir: target.outDir,
-    });
+    }, target);
+
     let injectedContent = "";
 
     const extractionResults = await new DocumentContentExtractor(

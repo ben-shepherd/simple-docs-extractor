@@ -1,3 +1,4 @@
+import { Target } from "@/simple-docs-scraper/index.js";
 import { ExtractorPlugin } from "@/simple-docs-scraper/types/extractor.t.js";
 import {
   afterAll,
@@ -15,9 +16,32 @@ import { getOutputPath } from "./helpers/getOutputPath.js";
 describe("Injection", () => {
   let injection!: ContentInjection;
   const outDir = process.cwd() + "/src/tests/output";
+  
+  let mockTarget: Target;
+  let mockExtractorPlugin: ExtractorPlugin;
 
   beforeEach(() => {
     deleteOutputFiles();
+
+    // Create a mock target
+    mockExtractorPlugin = {
+      getConfig: () => ({
+        searchAndReplace: "%content%",
+        attributeFormat: "*{key}*: {value}",
+      }),
+    } as ExtractorPlugin;
+
+    mockTarget = {
+      globOptions: {
+        cwd: process.cwd(),
+        extensions: "**/*.js",
+      },
+      outDir,
+      createIndexFile: false,
+      extraction: [
+        mockExtractorPlugin,
+      ],
+    };
 
     // Create a mock template file
     fs.writeFileSync(
@@ -41,7 +65,7 @@ describe("Injection", () => {
           new ContentInjection({
             template: getOutputPath("test.template.txt"),
             outDir,
-          }),
+          }, mockTarget),
       );
     });
   });
@@ -51,7 +75,7 @@ describe("Injection", () => {
       injection = new ContentInjection({
         template: getOutputPath("test.template.txt"),
         outDir,
-      });
+      }, mockTarget);
 
       const result = injection.getTemplateContentWithReplaceString("This is a test string.", "%content%");
 
@@ -66,7 +90,7 @@ describe("Injection", () => {
       injection = new ContentInjection({
         template: getOutputPath("test.template.txt"),
         outDir,
-      });
+      }, mockTarget);
 
       const content = injection.getTemplateContentWithReplaceString("This is a test string.", "%content%");
       injection.writeFile(content, "test.txt");
@@ -101,7 +125,7 @@ describe("Injection", () => {
       injection = new ContentInjection({
         template: getOutputPath("test.template.txt"),
         outDir,
-      });
+      }, mockTarget);
 
       const result = injection.mergeExtractionResultsIntoTemplateString([
         {
@@ -120,8 +144,8 @@ describe("Injection", () => {
       injection = new ContentInjection({
         template: getOutputPath("test.template.txt"),
         outDir,
-      });
-      
+      }, mockTarget);
+
       const result = injection.mergeExtractionResultsIntoTemplateString([
         {
           content: "This is a test string.",
@@ -145,8 +169,8 @@ describe("Injection", () => {
       injection = new ContentInjection({
         template: getOutputPath("test.template.txt"),
         outDir,
-      });
-      
+      }, mockTarget);
+
       const result = injection.mergeExtractionResultsIntoTemplateString([
         {
           content: "This is a test string.",
@@ -170,7 +194,7 @@ describe("Injection", () => {
       // Create a mock template file
       fs.writeFileSync(
         getOutputPath("test.template.txt"),
-`StartDocs
+        `StartDocs
 %content%
 EndDocs
 StartMethods
@@ -181,8 +205,8 @@ EndMethods`
       injection = new ContentInjection({
         template: getOutputPath("test.template.txt"),
         outDir,
-      });
-      
+      }, mockTarget);
+
       const result = injection.mergeExtractionResultsIntoTemplateString([
         {
           content: "This a content block",
@@ -204,7 +228,7 @@ EndMethods`
       // Create a mock template file
       fs.writeFileSync(
         getOutputPath("test.template.txt"),
-`StartDocs
+        `StartDocs
 %content%
 EndDocs`
       );
@@ -212,7 +236,7 @@ EndDocs`
       injection = new ContentInjection({
         template: getOutputPath("test.template.txt"),
         outDir,
-      });
+      }, mockTarget);
 
       // Create a mock extractor plugin
       const mockExtractorPlugin = {
@@ -221,13 +245,46 @@ EndDocs`
           defaultText: "No content found.",
         }),
       } as ExtractorPlugin;
-      
+
       // This should just return the template content, with no other changes
       let result = injection.mergeExtractionResultsIntoTemplateString([]);
       // We can then apply the default text
       result = injection.applyDefaultText(result, [mockExtractorPlugin]);
 
       expect(result).toContain('StartDocs\nNo content found.\nEndDocs')
+    });
+
+  });
+
+  describe("content attributes", () => {
+    test("should be able to format the attributes", () => {
+
+      // Create a mock template file
+      fs.writeFileSync(
+        getOutputPath("test.template.txt"),
+        `StartDocs
+%content%
+EndDocs`
+      );
+
+      // Note: The format of the attributes is defined in the mock target
+      injection = new ContentInjection({
+        template: getOutputPath("test.template.txt"),
+        outDir,
+      }, mockTarget);
+
+      // This should just return the template content, with no other changes
+      const result = injection.mergeExtractionResultsIntoTemplateString([
+        {
+          content: "This a content block",
+          searchAndReplace: "%content%",
+          attributes: {
+            name: "John Doe",
+            age: "30",
+          },
+        }
+      ]);
+      expect(result).toContain('StartDocs\n*name*: John Doe*age*: 30This a content block\nEndDocs')
     });
   });
 });
