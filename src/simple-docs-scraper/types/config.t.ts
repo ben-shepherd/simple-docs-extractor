@@ -3,21 +3,27 @@ import { IndexFileGeneratorConfig } from "../generators/IndexFileGenerator.js";
 import { Target } from "../services/SimpleDocExtractor.js";
 import { TFormatter } from "./formatter.t.js";
 
-export type IndexGeneratorConfig = {
-  template: string;
-} & Partial<IndexFileGeneratorConfig>;
+export type LineCallback = (fileNameEntry: string, lineNumber: number, excerpt?: string) => string;
 
-export type DocumentationGeneratorConfig = {
-  template?: string;
-} & Partial<DocFileGeneratorConfig>;
+export type FileNameCallback = (filePath: string) => string;
+
+export type TemplatePathConfig = {
+  templatePath?: string;
+}
+
+export type IndexTemplateConfig = TemplatePathConfig & Partial<IndexFileGeneratorConfig>;
+
+export type DocumentationTemplateConfig = TemplatePathConfig & Partial<DocFileGeneratorConfig>;
+
+export type Templates = {
+  index?: IndexTemplateConfig;
+  documentation?: DocumentationTemplateConfig;
+};
 
 export interface SimpleDocExtractorConfig {
   dryRun?: boolean;
   baseDir: string;
   targets: Target[];
-  generators?: {
-    index?: IndexGeneratorConfig;
-    documentation?: DocumentationGeneratorConfig;
-  };
+  templates?: Templates;
   formatters?: TFormatter[];
 }

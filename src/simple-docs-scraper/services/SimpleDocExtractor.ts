@@ -1,6 +1,6 @@
 import fs from "fs";
 import { GlobOptions } from "glob";
-import { DocumentContentExtractorConfig } from "../extractors/DocumentContentExtractor.js";
+import { Builder } from "../builder/Builder.js";
 import { FileScanner } from "../files/FileScanner.js";
 import {
   CodeFileProcessor,
@@ -9,21 +9,22 @@ import {
 } from "../processors/CodeFileProcessor.js";
 import { MarkdownIndexProcessor } from "../processors/MarkdownIndexProcessor.js";
 import {
-  DocumentationGeneratorConfig,
-  IndexGeneratorConfig,
+  DocumentationTemplateConfig,
+  IndexTemplateConfig,
   SimpleDocExtractorConfig,
 } from "../types/config.t.js";
+import { ExtractorPlugin } from "../types/extractor.t.js";
 
 // Configuration for a single target directory to process
 export type Target = {
-  globOptions: GlobOptions & { cwd: string; extensions: string | string[] };
+  globOptions: GlobOptions & { cwd: string; patterns: string | string[] };
   outDir: string;
   createIndexFile: boolean;
-  generators?: {
-    index?: IndexGeneratorConfig;
-    documentation?: DocumentationGeneratorConfig;
+  templates?: {
+    index?: IndexTemplateConfig;
+    documentation?: DocumentationTemplateConfig;
   };
-  extraction?: DocumentContentExtractorConfig;
+  plugins?: ExtractorPlugin[];
 };
 
 // Result object returned after processing all targets
@@ -78,6 +79,18 @@ export class SimpleDocExtractor {
     protected missingDocumentationFiles: string[] = [],
   ) {}
 
+  /**
+   * <method name="create">
+   * Creates a new config object using the Builder.
+   *
+   * @param baseDir - The base directory for the config
+   * @returns The config instance
+   * </method>
+   */
+  static create(baseDir: string): Builder {
+    return new Builder(baseDir);
+  }
+  
   /**
    * <method name="getConfig">
    * Returns the current configuration.
@@ -230,13 +243,13 @@ export class SimpleDocExtractor {
    * </method>
    */
   getIndexProcessorConfig(target: Target) {
-    if (target.generators?.index) {
-      return target.generators.index;
+    if (target.templates?.index) {
+      return target.templates.index;
     }
-    if (typeof this.config.generators?.index === "undefined") {
+    if (typeof this.config.templates?.index === "undefined") {
       return {};
     }
-    return this.config.generators.index;
+    return this.config.templates.index;
   }
 
   /**
@@ -250,7 +263,7 @@ export class SimpleDocExtractor {
   private async getFiles(target: Target) {
     const fileScanner = new FileScanner({
       cwd: target.globOptions.cwd,
-      extensions: target.globOptions.extensions,
+      extensions: target.globOptions.patterns,
     });
 
     return await fileScanner.collect(target.globOptions);

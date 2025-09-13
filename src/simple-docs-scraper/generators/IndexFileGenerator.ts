@@ -2,26 +2,22 @@ import fs from "fs";
 import path from "path";
 import { IndexStructurePreProcessorEntry } from "../processors/IndexStructurePreProcessor.js";
 import {
-    DEFAULT_CONFIG as DEFAULT_EXCERPT_CONFIG,
-    ExcerptExtractor,
-    ExcerptExtractorConfig,
+  DEFAULT_CONFIG as DEFAULT_EXCERPT_CONFIG,
+  ExcerptExtractor,
+  ExcerptExtractorConfig,
 } from "../transformers/ExcerptExtractor.js";
+import { FileNameCallback, LineCallback, TemplatePathConfig } from "../types/config.t.js";
 
-export type IndexFileGeneratorConfig = {
+export type IndexFileGeneratorConfig = TemplatePathConfig & {
   outDir: string;
   searchAndReplace?: string;
-  template?: string;
   baseDir?: string;
-  markdownLink?: boolean;
+  markdownLinks?: boolean;
   filesHeading?: string;
   directoryHeading?: string;
   excerpt?: ExcerptExtractorConfig;
-  lineCallback?: (
-    fileNameEntry: string,
-    lineNumber: number,
-    excerpt?: string,
-  ) => string;
-  fileNameCallback?: (filePath: string) => string;
+  lineCallback?: LineCallback;
+  fileNameCallback?: FileNameCallback
 };
 
 /**
@@ -181,16 +177,16 @@ export class IndexFileGenerator {
   }
 
   private getTemplateContent(): string {
-    if (!this.config.template) {
+    if (!this.config.templatePath) {
       return this.getSearchAndReplace();
     }
 
     // Check if the template file exists
-    if (!fs.existsSync(this.config.template)) {
+    if (!fs.existsSync(this.config.templatePath)) {
       throw new Error("Template file not found");
     }
 
-    return fs.readFileSync(this.config.template, "utf8");
+    return fs.readFileSync(this.config.templatePath, "utf8");
   }
 
   /**

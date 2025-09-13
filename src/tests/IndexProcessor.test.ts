@@ -235,8 +235,8 @@ describe("Example Test Suite", () => {
 
     test("should generate the index files with a custom template", async () => {
       const indexProcessor = new MarkdownIndexProcessor({
-        markdownLink: true,
-        template: getOutputPath("templates/index.template.md"),
+        markdownLinks: true,
+        templatePath: getOutputPath("templates/index.template.md"),
       });
 
       await indexProcessor.handle(docsPath);
@@ -265,7 +265,7 @@ describe("Example Test Suite", () => {
       fs.writeFileSync(getOutputPath("docs-list-dirs/sub-folder/c.md"), "");
 
       const indexProcessor = new MarkdownIndexProcessor({
-        markdownLink: true,
+        markdownLinks: true,
       });
       await indexProcessor.handle(docsListDirs);
 
@@ -292,7 +292,7 @@ describe("Example Test Suite", () => {
       fs.writeFileSync(getOutputPath("docs-list-dirs/sub-folder/c.md"), "");
 
       const indexProcessor = new MarkdownIndexProcessor({
-        markdownLink: true,
+        markdownLinks: true,
       });
 
       await indexProcessor.handle(docsListDirs);
@@ -321,7 +321,7 @@ describe("Example Test Suite", () => {
       fs.writeFileSync(getOutputPath("docs-list-dirs/sub-folder/c.md"), "");
 
       const indexProcessor = new MarkdownIndexProcessor({
-        markdownLink: true,
+        markdownLinks: true,
       });
 
       await indexProcessor.handle(docsListDirs);

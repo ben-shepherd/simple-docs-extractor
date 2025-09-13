@@ -14,6 +14,9 @@ export type ErrorResult = {
   throwable?: boolean; // if true, the error will not be thrown
 };
 
+/**
+ * @deprecated Use ExtractorPlugin[] instead
+ */
 export type DocumentContentExtractorConfig = ExtractorPlugin[];
 
 /**

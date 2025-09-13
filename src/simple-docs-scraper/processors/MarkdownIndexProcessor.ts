@@ -52,7 +52,7 @@ export class MarkdownIndexProcessor {
   async handleDirectoryRecusrively(directory: string) {
     // Process files and folders
     let processedEntries = await new IndexStructurePreProcessor({
-      markdownLink: this.config?.markdownLink,
+      markdownLink: this.config?.markdownLinks,
     }).process(directory);
 
     // Handle directories recursively
@@ -63,7 +63,7 @@ export class MarkdownIndexProcessor {
 
     // Re-process entries
     processedEntries = await new IndexStructurePreProcessor({
-      markdownLink: this.config?.markdownLink,
+      markdownLink: this.config?.markdownLinks,
     }).process(directory);
 
     // Save the index.md file

@@ -147,18 +147,48 @@ export class TagExtractorPlugin
     return result;
   }
 
+  /**
+   * <method name="getStartTagPattern">
+   * Returns the pattern for the start tag.
+   * 
+   * @param {string} rawTag - The raw tag name
+   * @returns {string} The pattern for the start tag
+   * </method>
+   */
   getStartTagPattern(rawTag: string) {
     return `(<${rawTag}[^\>]*?>)`;
   }
 
+  /**
+   * <method name="getAttributesPattern">
+   * Returns the pattern for the attributes.
+   * 
+   * @returns {string} The pattern for the attributes
+   * </method>
+   */
   getAttributesPattern() {
     return '(?:([\\w_]+)="([^"]+)")';
   }
 
+  /**
+   * <method name="getInsideTagPattern">
+   * Returns the pattern for the inside tag.
+   * 
+   * @returns {string} The pattern for the inside tag
+   * </method>
+   */
   getInsideTagPattern() {
     return "([.\\n\\s\\w\\W\\d]*?)";
   }
 
+  /**
+   * <method name="getEndTagPattern">
+   * Returns the pattern for the end tag.
+   * 
+   * @param {string} rawTag - The raw tag name
+   * @returns {string} The pattern for the end tag
+   * </method>
+   */
   getEndTagPattern(rawTag: string) {
     return `(<\/${rawTag}>)`;
   }

@@ -3,7 +3,7 @@ import { LocalesService } from "@/simple-docs-scraper/services/LocalesService.js
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import path from "path";
-import { SimpleDocExtractor } from "../simple-docs-scraper/services/SimpleDocExtractor.js";
+import { SimpleDocExtractor, Target } from "../simple-docs-scraper/services/SimpleDocExtractor.js";
 import { SimpleDocExtractorConfig } from "../simple-docs-scraper/types/config.t.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";
@@ -15,41 +15,41 @@ const TEMPLATE_CONTENT2 = `Begin.
 %content%
 Finish.`;
 
-const extraction = [
+const plugins = [
   new TagExtractorPlugin({
     searchAndReplace: "%content%",
     tag: "docs",
   }),
 ];
 
-const jsFilesTarget = {
+const jsFilesTarget: Target = {
   globOptions: {
     cwd: path.join(process.cwd(), "src/tests/files/js-files"),
-    extensions: "**/*.{js,ts}",
+    patterns: "**/*.{js,ts}",
   },
   outDir: getOutputPath("js-files"),
   createIndexFile: true,
-  extraction,
+  plugins,
 };
 
-const twigFilesTarget = {
+const twigFilesTarget: Target = {
   globOptions: {
     cwd: path.join(process.cwd(), "src/tests/files/twig-files"),
-    extensions: "**/*.html.twig",
+    patterns: "**/*.html.twig",
   },
   outDir: getOutputPath("twig-files"),
   createIndexFile: true,
-  extraction,
+  plugins,
 };
 
-const defaultConfig: SimpleDocExtractorConfig = {
+export const defaultConfig: SimpleDocExtractorConfig = {
   baseDir: path.join(process.cwd(), "src/tests/files"),
-  generators: {
+  templates: {
     index: {
-      template: getOutputPath("index.template.md"),
+      templatePath: getOutputPath("index.template.md"),
     },
     documentation: {
-      template: getOutputPath("documentation.template.md"),
+      templatePath: getOutputPath("documentation.template.md"),
     },
   },
   targets: [jsFilesTarget, twigFilesTarget],
@@ -91,12 +91,12 @@ describe("Example Test Suite", () => {
         targets: [
           {
             ...jsFilesTarget,
-            generators: {
+            templates: {
               documentation: {
-                template: getOutputPath("documentation2.template.md"),
+                templatePath: getOutputPath("documentation2.template.md"),
               },
               index: {
-                template: getOutputPath("index2.template.md"),
+                templatePath: getOutputPath("index2.template.md"),
               },
             },
           },
@@ -142,9 +142,9 @@ describe("Example Test Suite", () => {
             ...jsFilesTarget,
             globOptions: {
               cwd: getOutputPath("js-files"),
-              extensions: "**/*.{js,ts}",
+              patterns: "**/*.{js,ts}",
             },
-            extraction: [
+            plugins: [
               new TagExtractorPlugin({
                 searchAndReplace: "%content%",
                 tag: "method",
@@ -170,19 +170,23 @@ describe("Example Test Suite", () => {
   });
 
   describe("start", () => {
-    test("should be able to run the scraper", async () => {
+    test("should be able to run the scraper with default config", async () => {
       const result = await scraper.start();
 
       const jsFiles = fs.readdirSync(getOutputPath("js-files"));
+      const jsFilesNested = fs.readdirSync(getOutputPath("js-files/nested-js-files"));
       const twigFiles = fs.readdirSync(getOutputPath("twig-files"));
 
-      const expectedJsFilesCount = 4; // 4 files, plus 1 folder
-      const expectedTwigFilesCount = 2; // 1 plus the index file
-
       expect(result.successCount).toBe(4);
-      expect(result.totalCount).toBe(5);
-      expect(jsFiles).toHaveLength(expectedJsFilesCount);
-      expect(twigFiles).toHaveLength(expectedTwigFilesCount);
+      expect(result.totalCount).toBe(5); // exampleFuncNoDocs.js should be ignored as there is no documentation
+
+      expect(jsFiles).toContain("exampleFunc.js.md");
+      expect(jsFiles).toContain("exampleTsFunc.ts.md");
+      expect(jsFiles).toContain("nested-js-files");
+      expect(jsFilesNested).toContain("index.md");
+      expect(jsFilesNested).toContain("nestedFunc.js.md");
+
+      expect(twigFiles).toContain("example.html.twig.md");
     });
 
     test("should generate logs", async () => {
@@ -209,7 +213,7 @@ describe("Example Test Suite", () => {
             },
             outDir: getOutputPath("output-files"),
             createIndexFile: true,
-            extraction,
+            plugins: plugins,
           },
         ],
       });
@@ -233,7 +237,7 @@ describe("Example Test Suite", () => {
             },
             outDir: getOutputPath("output-files"),
             createIndexFile: true,
-            extraction,
+            plugins: plugins,
           },
         ],
       });
@@ -276,16 +280,16 @@ This is the second block
           {
             globOptions: {
               cwd: getOutputPath("js-files"),
-              extensions: "**/*.{js,ts}",
+              patterns: "**/*.{js,ts}",
             },
             outDir: getOutputPath("js-files"),
             createIndexFile: true,
-            generators: {
+            templates: {
               documentation: {
-                template: getOutputPath("documentation.template.md"),
+                templatePath: getOutputPath("documentation.template.md"),
               },
             },
-            extraction: [
+            plugins: [
               new TagExtractorPlugin({
                 searchAndReplace: "%methods%",
                 tag: "method",
@@ -339,13 +343,13 @@ This is the second block
             outDir: getOutputPath("example"),
             globOptions: {
               cwd: getOutputPath("example"),
-              extensions: "**/*.{js,ts}",
+              patterns: "**/*.{js,ts}",
             },
           },
         ],
-        generators: {
+        templates: {
           documentation: {
-            template: getOutputPath("documentation.template.md"),
+            templatePath: getOutputPath("documentation.template.md"),
           },
         },
       });
@@ -401,7 +405,7 @@ This is the second block
             outDir: getOutputPath("missing-documentation"),
             globOptions: {
               cwd: getOutputPath("missing-documentation"),
-              extensions: "**/*.{js,ts}",
+              patterns: "**/*.{js,ts}",
             },
           }
         ],

@@ -1,9 +1,9 @@
 import fs from "fs";
 import path from "path";
 import { ExtensionReplacer } from "../transformers/ExtensionReplacer.js";
+import { TemplatePathConfig } from "../types/config.t.js";
 
-export type DocFileGeneratorConfig = {
-  template?: string;
+export type DocFileGeneratorConfig = TemplatePathConfig & {
   outDir: string;
 };
 
@@ -54,15 +54,15 @@ export class DocFileGenerator {
    * </method>
    */
   getTemplateContent(searchAndReplace: string = "%content%"): string {
-    if (!this.config.template) {
+    if (!this.config.templatePath) {
       return searchAndReplace;
     }
 
     // Check if the template file exists
-    if (!fs.existsSync(this.config.template)) {
+    if (!fs.existsSync(this.config.templatePath)) {
       throw new Error("Template file not found");
     }
 
-    return fs.readFileSync(this.config.template, "utf8");
+    return fs.readFileSync(this.config.templatePath, "utf8");
   }
 }

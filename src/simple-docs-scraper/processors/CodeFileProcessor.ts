@@ -2,15 +2,14 @@ import fs from "fs";
 import path from "path";
 import {
   DocumentContentExtractor,
-  DocumentContentExtractorConfig,
-  ExtractedContent,
+  ExtractedContent
 } from "../extractors/DocumentContentExtractor.js";
 import { DocFileGenerator } from "../generators/DocFileGenerator.js";
 import { Locales, LocalesService } from "../services/LocalesService.js";
 import { Target } from "../services/SimpleDocExtractor.js";
 import { ContentInjection } from "../transformers/ContentInjection.js";
 import {
-  DocumentationGeneratorConfig,
+  DocumentationTemplateConfig,
   SimpleDocExtractorConfig,
 } from "../types/config.t.js";
 
@@ -75,7 +74,7 @@ export class CodeFileProcessor {
   async preProcess(file: string, target: Target): Promise<ProcessResult> {
     const contentInjection = new ContentInjection(
       {
-        template: this.getDocFileGeneratorConfig(target).template ?? "",
+        template: this.getDocFileGeneratorConfig(target).templatePath ?? "",
         outDir: target.outDir,
       },
       target,
@@ -84,7 +83,7 @@ export class CodeFileProcessor {
     let injectedContent = "";
 
     const extractedContentArray = await new DocumentContentExtractor(
-      this.getDocumentContentExtractorConfig(target),
+      target.plugins ?? [],
     ).extractFromFile(file);
 
     if (!extractedContentArray.length) {
@@ -108,7 +107,7 @@ export class CodeFileProcessor {
     // Apply default text
     injectedContent = contentInjection.applyDefaultText(
       injectedContent,
-      this.getDocumentContentExtractorConfig(target),
+      target.plugins ?? [],
     );
 
     // Apply formatters
@@ -128,7 +127,7 @@ export class CodeFileProcessor {
     // Generate the documentation file
     if (!this.config.dryRun) {
       new DocFileGenerator({
-        template: this.getDocFileGeneratorConfig(target).template,
+        templatePath: this.getDocFileGeneratorConfig(target).templatePath,
         outDir: transformedOutDir,
       }).saveToMarkdownFile(injectedContent, file);
     }
@@ -198,24 +197,26 @@ export class CodeFileProcessor {
 
     // Generate the documentation file
     new DocFileGenerator({
-      template: this.getDocFileGeneratorConfig(target)?.template ?? undefined,
+      templatePath: this.getDocFileGeneratorConfig(target)?.templatePath ?? undefined,
       outDir: processedResult.outDir,
     }).saveToMarkdownFile(processedResult.content, outFile);
   }
 
-  getDocFileGeneratorConfig(target: Target): DocumentationGeneratorConfig {
-    if (target.generators?.documentation) {
-      return target.generators.documentation;
+  /**
+   * <method name="getDocFileGeneratorConfig">
+   * Gets the documentation template config for the target
+   * 
+   * @param target - The target configuration
+   * @returns The documentation template config
+   * </method>
+   */
+  getDocFileGeneratorConfig(target: Target): DocumentationTemplateConfig {
+    if (target.templates?.documentation) {
+      return target.templates.documentation;
     }
-    if (typeof this.config.generators?.documentation === "undefined") {
-      return {} as DocumentationGeneratorConfig;
+    if (typeof this.config.templates?.documentation === "undefined") {
+      return {} as DocumentationTemplateConfig;
     }
-    return this.config.generators?.documentation;
-  }
-
-  getDocumentContentExtractorConfig(
-    target: Target,
-  ): DocumentContentExtractorConfig {
-    return target.extraction ?? [];
+    return this.config.templates?.documentation;
   }
 }
