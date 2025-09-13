@@ -3,7 +3,7 @@ import { RecommendedFormatters } from "@/simple-docs-scraper/formatters/Recommen
 import {
   SimpleDocExtractor
 } from "@/simple-docs-scraper/index.js";
-import { SimpleDocExtractorConfig } from "@/simple-docs-scraper/types/config.js";
+import { SimpleDocExtractorConfig } from "@/simple-docs-scraper/types/config.t.js";
 import path from "path";
 
 /**
@@ -79,6 +79,17 @@ export const publishDocs = async (
   result.logs.forEach((log) => {
     console.log(log);
   });
+
+  // Remove types and index.files from the missing documentation files
+  const missingDocumentationFiles = result.missingDocumentationFiles.filter((file) => {
+    return !file.includes("t.ts")
+      && !file.endsWith("index.ts")
+      && !file.endsWith("index.js")
+  });
+
+  if(missingDocumentationFiles.length > 0) {
+    process.exit(1);
+  }
 
   return result;
 };

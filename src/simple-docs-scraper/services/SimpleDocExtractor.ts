@@ -12,7 +12,7 @@ import {
   DocumentationGeneratorConfig,
   IndexGeneratorConfig,
   SimpleDocExtractorConfig,
-} from "../types/config.js";
+} from "../types/config.t.js";
 
 // Configuration for a single target directory to process
 export type Target = {
@@ -30,6 +30,8 @@ export type Target = {
 export type SimpleDocExtractorResult = {
   successCount: number;
   totalCount: number;
+  missingDocumentationCount: number;
+  missingDocumentationFiles: string[];
   logs: string[];
 };
 
@@ -72,6 +74,8 @@ export class SimpleDocExtractor {
     protected logs: string[] = [],
     protected success: number = 0,
     protected total: number = 0,
+    protected missingDocumentationCount: number = 0,
+    protected missingDocumentationFiles: string[] = [],
   ) {}
 
   /**
@@ -99,9 +103,15 @@ export class SimpleDocExtractor {
 
     this.logs.push(`Finished. Success: ${this.success} / Total: ${this.total}`);
 
+    if(this.missingDocumentationCount > 0) {
+      this.logs.push(`Found ${this.missingDocumentationCount} file(s) with no documentation`);
+    }
+
     return {
       successCount: this.success,
       totalCount: this.total,
+      missingDocumentationCount: this.missingDocumentationCount,
+      missingDocumentationFiles: this.missingDocumentationFiles,
       logs: this.logs,
     };
   }
@@ -167,6 +177,10 @@ export class SimpleDocExtractor {
 
     // If there is an error, log it and return
     if ("error" in processedResult) {
+      if (processedResult.noDocumentationFound) {
+        this.missingDocumentationCount++;
+        this.missingDocumentationFiles.push(file);
+      }
       this.logs.push(
         `Error: ${(processedResult as unknown as ProcessResultError).error}`,
       );
@@ -175,7 +189,10 @@ export class SimpleDocExtractor {
 
     // Process the file
     preProcessedFiles.push(processedResult);
-    await fileProcessor.processFile(processedResult, target);
+
+    if(!this.config.dryRun) {
+      await fileProcessor.processFile(processedResult, target);
+    }
 
     // Log the success
     this.logs.push(
@@ -192,7 +209,7 @@ export class SimpleDocExtractor {
    * </method>
    */
   private async handleRecursivelyCreateIndexFiles(target: Target) {
-    if (!target.createIndexFile) {
+    if (!target.createIndexFile || this.config.dryRun) {
       return;
     }
 
