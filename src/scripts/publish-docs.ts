@@ -1,5 +1,4 @@
 import { TagExtractorPlugin } from "@/simple-docs-scraper/extractors/TagExtractorPlugin.js";
-import { RecommendedFormatters } from "@/simple-docs-scraper/formatters/RecommendedFormatters.js";
 import {
   SimpleDocExtractor
 } from "@/simple-docs-scraper/index.js";
@@ -22,51 +21,35 @@ import path from "path";
  * ```
  * </docs>
  */
-export const DEFAULT_CONFIG: SimpleDocExtractorConfig = {
-  baseDir: process.cwd(),
-  templates: {
-    index: {
-      templatePath: path.join(process.cwd(), "src/templates/index.template.md"),
-      markdownLinks: true,
-      filesHeading: "\n## Files\n",
-      directoryHeading: "\n## Folders\n",
-      excerpt: {
-        length: 120,
-        addEllipsis: false,
-        firstSentenceOnly: true,
-      },
-    },
-    documentation: {
-      templatePath: path.join(
-        process.cwd(),
-        "src/templates/documentation.template.md",
-      ),
-    },
-  },
-  targets: [
-    {
-      globOptions: {
-        cwd: path.join(process.cwd(), "src"),
-        patterns: "**/*.{js,ts}",
-        ignore: ["**/tests/**", "**/scripts/**"],
-      },
-      outDir: path.join(process.cwd(), "docs"),
-      createIndexFile: true,
-      plugins: [
-        new TagExtractorPlugin({
-          tag: "docs",
-          searchAndReplace: "%content%",
-        }),
-        new TagExtractorPlugin({
-          tag: "method",
-          searchAndReplace: "%methods%",
-          attributeFormat: "### **{value}**",
-        }),
-      ],
-    },
-  ],
-  formatters: RecommendedFormatters.recommended(),
-};
+export const DEFAULT_CONFIG = SimpleDocExtractor
+  .create(process.cwd())
+    .indexTemplate((template) => {
+      template.useFile(path.join(process.cwd(), "src/templates/index.template.md"));
+      template.useMarkdownLinks();
+    })
+    .documentationTemplate((template) => {
+      template.useFile(path.join(process.cwd(), "src/templates/documentation.template.md"));
+    })
+  .target((target) => {
+    target.cwd(path.join(process.cwd(), 'src'))
+    target.patterns("**/*.{js,ts}")
+    target.ignores(["**/tests/**", "**/scripts/**"])
+    target.outDir(path.join(process.cwd(), "docs"))
+    target.createIndexFiles()
+    target.plugins([
+      new TagExtractorPlugin({
+        tag: "docs",
+        searchAndReplace: "%content%",
+      }),
+      new TagExtractorPlugin({
+        tag: "method",
+        searchAndReplace: "%methods%",
+        attributeFormat: "### **{value}**",
+      }),
+    ])
+  })
+  .addRecommendedFormatters()
+  .buildConfig();
 
 export const publishDocs = async (
   config: SimpleDocExtractorConfig = DEFAULT_CONFIG,
