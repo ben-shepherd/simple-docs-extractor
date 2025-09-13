@@ -3,9 +3,10 @@ name: Publish Docs
 on:
   workflow_dispatch:
   push:
+    branches: [ main ]
   pull_request:
-    branches: [ $default-branch ]
-    types: [opened, synchronize]
+    branches: [ main ]
+    types: [closed]
 
 jobs:
   checks:
@@ -44,7 +45,10 @@ jobs:
   publish-docs:
     needs: [checks, test]
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'docs:')"
+    if: |
+      github.event_name == 'workflow_dispatch' || 
+      (github.event_name == 'push') ||
+      (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
 
     permissions:
       # Give the default GITHUB_TOKEN write permission to commit and push the
