@@ -1,8 +1,7 @@
-name: Checks
+name: Pull Request Checks
 
 on:
   workflow_dispatch:
-  push:
   pull_request:
     branches: [ $default-branch, develop ]
     types: [opened, synchronize]
