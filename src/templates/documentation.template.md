@@ -1,4 +1,4 @@
-## File Name
+## %locales.fileName%
 
 %content%
 
@@ -9,6 +9,8 @@
 %methods%
 
 ---
+
+Last updated: %locales.updatedAt%
 
 *This file is auto generated. Do not edit manually.*
 

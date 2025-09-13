@@ -1,4 +1,5 @@
 import { TagExtractorPlugin } from "@/simple-docs-scraper/extractors/TagExtractorPlugin.js";
+import { AddDoubleLinesFormatter } from "@/simple-docs-scraper/formatters/AddDoubleLinesFormatter.js";
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import path from "path";
@@ -102,4 +103,38 @@ const exampleFunc = () => {
       expect(docsFileContent).toContain("@returns {string} 'exampleFunc'");
     });
   });
+
+  describe("AddDoubleLinesFormatter", () => {
+    test("should add double lines formatter", async () => {
+      const sourceCode = 
+`This is the first line
+This is the second line`
+
+      const formattedCode = AddDoubleLinesFormatter({
+        filePath: "",
+        outFile: "",
+        content: sourceCode,
+      });
+
+      expect(formattedCode).toBe("This is the first line\n\nThis is the second line");
+    });
+
+    test("should add double lines and ignore code blocks", async () => {
+      const sourceCode = 
+`This is the first line
+\`\`\`
+This is the second line
+This is the third line
+\`\`\``
+
+      const formattedCode = AddDoubleLinesFormatter({
+        filePath: "",
+        outFile: "",
+        content: sourceCode,
+      });
+
+      expect(formattedCode).toBe("This is the first line\n\n```\nThis is the second line\nThis is the third line\n```");
+    });
+  });
 });
+  
