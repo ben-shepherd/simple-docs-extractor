@@ -25,7 +25,6 @@ import path from "path";
  */
 export const DEFAULT_CONFIG: SimpleDocExtractorConfig = {
   baseDir: process.cwd(),
-  extraction: [],
   generators: {
     index: {
       template: path.join(process.cwd(), "src/templates/index.template.md"),

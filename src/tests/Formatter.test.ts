@@ -9,14 +9,16 @@ import { SimpleDocExtractorConfig } from "../simple-docs-scraper/types/config.js
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";
 
+
+const extraction = [
+  new TagExtractorPlugin({
+    searchAndReplace: "%content%",
+    tag: "<docs>",
+  }),
+];
+
 const defaultConfig: SimpleDocExtractorConfig = {
   baseDir: process.cwd(),
-  extraction: [
-    new TagExtractorPlugin({
-      searchAndReplace: "%content%",
-      tag: "<docs>",
-    }),
-  ],
   generators: {
     documentation: {
       template: getOutputPath("documentation.template.md"),
@@ -30,6 +32,7 @@ const defaultConfig: SimpleDocExtractorConfig = {
       },
       outDir: getOutputPath("js-files"),
       createIndexFile: false,
+      extraction,
     },
   ],
 };
