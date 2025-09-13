@@ -1,7 +1,9 @@
 import fs from "fs";
 import path from "path";
 import { ExtractedContent } from "../extractors/DocumentContentExtractor.js";
+import { Target } from "../services/SimpleDocExtractor.js";
 import { ExtractorPlugin } from "../types/extractor.t.js";
+import TemplateContentExtractionContentMerger from "./TemplateContentExtractionContentMerger.js";
 
 // Configuration for content injection operations
 export type InjectionConfig = {
@@ -41,7 +43,9 @@ export type InjectionResult = {
  * </docs>
  */
 export class ContentInjection {
-  constructor(private config: InjectionConfig) {}
+  constructor(private config: InjectionConfig, private target: Target) {}
+
+
 
   /**
    * Gets the template content with the replace string replaced.
@@ -64,39 +68,12 @@ export class ContentInjection {
   mergeExtractionResultsIntoTemplateString(
     extractionResults: ExtractedContent[],
   ): string {
-    let templateContent = this.getTemplateContent();
+    const templateContent = this.getTemplateContent();
 
-    // Group the extraction results by search and replace
-    // e.g. { "%content%": [{content: "This is a test string.", searchAndReplace: "%content%"}, {content: "This is a test string 2.", searchAndReplace: "%content%"}] }
-    const extractionResultGroupedBySearchAndReplace = this.getExtractionResultGroupedBySearchAndReplace(extractionResults);
-    
-    // Iterate over the grouped extraction results
-    // and create a content block for each search and replace
-    // Finally, replace the default search and replace with the content block
-    for (const searchAndReplace in extractionResultGroupedBySearchAndReplace) {
-      const extractionResults = extractionResultGroupedBySearchAndReplace[searchAndReplace];
-      const contentBlock: string[] = [];
+    const templateContentMergedContent = new TemplateContentExtractionContentMerger({ target: this.target })
+      .handle(templateContent, extractionResults);
 
-      for(const [i, extractionResult] of extractionResults.entries()) {
-        const content = extractionResult.content;
-        const divideBy = this.getDivideBy(extractionResult);
-
-        // We don't want to add the divide by to the last block
-        if(i === extractionResults.length - 1) {
-          contentBlock.push(content);
-        } else {
-          contentBlock.push(content + divideBy);
-        }
-      }
-
-      // Replace the default search and replace with the content block
-      templateContent = templateContent.replace(
-        searchAndReplace,
-        contentBlock.join(""),
-      );
-    }
-
-    return templateContent;
+    return templateContentMergedContent;
   }
 
   /**
