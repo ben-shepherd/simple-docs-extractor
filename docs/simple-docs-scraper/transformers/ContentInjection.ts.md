@@ -1,13 +1,23 @@
-## File Name
+## ContentInjection.ts
+
+
+
 
 
  Handles content injection into templates and files.
 
+
+
  This class provides functionality to inject content into templates by replacing
+
  placeholder strings. It supports both string-based injection and file-based
+
  injection with template file reading and output file writing.
 
+
+
  @example
+
  ```typescript
  const injection = new ContentInjection({
    template: './templates/doc.md',
@@ -24,14 +34,30 @@
  ```
  
 
+
+
 ---
+
+
 
 ## Methods
 
-Not available.
+
+
+%methods%
+
+
 
 ---
 
+
+
+Last updated: 2025-09-13T14:55:16.600Z
+
+
+
 This file is auto generated. Do not edit manually.*
+
+
 
 [Back to Index](./index.md)

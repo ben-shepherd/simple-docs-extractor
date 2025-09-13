@@ -1,14 +1,25 @@
-## File Name
+## IndexStructurePreProcessor.ts
+
+
+
 
 
  Prepares a array of entries for index file generation.
 
+
+
  This class scans directories and processes file and directory entries to create
+
  structured data suitable for index file generation. It handles markdown file filtering,
+
  directory detection, entry name formatting, and markdown link generation with
+
  configurable options for link formatting.
 
+
+
  @example
+
  ```typescript
  const processor = new IndexStructurePreProcessor({
    markdownLink: true
@@ -19,14 +30,30 @@
  ```
  
 
+
+
 ---
+
+
 
 ## Methods
 
-Not available.
+
+
+%methods%
+
+
 
 ---
 
+
+
+Last updated: 2025-09-13T14:55:16.600Z
+
+
+
 This file is auto generated. Do not edit manually.*
+
+
 
 [Back to Index](./index.md)

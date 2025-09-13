@@ -1,13 +1,23 @@
-## File Name
+## MarkdownIndexProcessor.ts
+
+
+
 
 
  Processes directories recursively to generate index files for documentation.
 
+
+
  This class traverses directory structures and creates index files (typically index.md)
+
  that list all markdown files found in each directory. It supports custom templates
+
  and search-and-replace patterns for flexible index file generation.
 
+
+
  @example
+
  ```typescript
  const processor = new IndexProcessor({
    baseDir: './docs',
@@ -20,14 +30,30 @@
  ```
  
 
+
+
 ---
+
+
 
 ## Methods
 
-Not available.
+
+
+%methods%
+
+
 
 ---
 
+
+
+Last updated: 2025-09-13T14:55:16.600Z
+
+
+
 This file is auto generated. Do not edit manually.*
+
+
 
 [Back to Index](./index.md)
