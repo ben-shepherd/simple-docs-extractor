@@ -1,6 +1,9 @@
 import fs from "fs";
 import path from "path";
 import { ExtractedContent } from "../extractors/DocumentContentExtractor.js";
+import { Target } from "../services/SimpleDocExtractor.js";
+import { ExtractorPlugin } from "../types/extractor.t.js";
+import TemplateContentExtractionContentMerger from "./TemplateContentExtractionContentMerger.js";
 
 // Configuration for content injection operations
 export type InjectionConfig = {
@@ -40,10 +43,23 @@ export type InjectionResult = {
  * </docs>
  */
 export class ContentInjection {
-  constructor(private config: InjectionConfig) {}
+  constructor(
+    private config: InjectionConfig,
+    private target: Target,
+  ) {}
 
-  replace(replaceWith: string, searchAndReplace: string = "%content%"): string {
-    const templateContent = this.getTemplateContent(searchAndReplace);
+  /**
+   * Gets the template content with the replace string replaced.
+   *
+   * @param replaceWith - The string to replace the replace string with
+   * @param searchAndReplace - The search and replace string to replace
+   * @returns The template content with the replace string replaced
+   */
+  getTemplateContentWithReplaceString(
+    replaceWith: string,
+    searchAndReplace: string,
+  ): string {
+    const templateContent = this.getTemplateContent();
     return templateContent.replace(searchAndReplace, replaceWith);
   }
 
@@ -53,23 +69,40 @@ export class ContentInjection {
    * @param extractionResults - The extraction results to create the content from
    * @returns The content string with injected content
    */
-  mergeExtractionResultsIntoTemplateString(
+  mergeExtractedContentsIntoTemplateString(
     extractionResults: ExtractedContent[],
   ): string {
-    const defaultSearchAndReplace =
-      extractionResults?.[0].searchAndReplace ?? "%content%";
-    let templateContent = this.getTemplateContent(defaultSearchAndReplace);
+    const templateContent = this.getTemplateContent();
 
-    for (const extractionResult of extractionResults) {
-      const extractedContentOnNewLines = extractionResult.content;
-      templateContent = templateContent.replace(
-        extractionResult.searchAndReplace,
-        extractedContentOnNewLines,
+    const templateContentMergedContent =
+      new TemplateContentExtractionContentMerger({
+        target: this.target,
+      }).handle(templateContent, extractionResults);
+
+    return templateContentMergedContent;
+  }
+
+  /**
+   * Applies the default text to the template content.
+   *
+   * @param templateContent - The template content to apply the default text to
+   * @returns The template content with the default text applied
+   */
+  applyDefaultText(
+    injectedContent: string,
+    extractionPlugins: ExtractorPlugin[],
+  ): string {
+    for (const extractionPlugin of extractionPlugins) {
+      const defaultText =
+        extractionPlugin.getConfig().defaultText ?? "Not available.";
+      injectedContent = injectedContent.replace(
+        extractionPlugin.getConfig().searchAndReplace,
+        defaultText,
       );
     }
-
-    return templateContent;
+    return injectedContent;
   }
+
 
   /**
    * Injects content into a template file and writes the result to an output file.
@@ -93,16 +126,14 @@ export class ContentInjection {
    * @returns The template content as a string
    * @throws {Error} When the template file is not found
    */
-  protected getTemplateContent(searchAndReplace: string = "%content%"): string {
-    if (!this.config.template) {
-      return searchAndReplace;
-    }
-
+  protected getTemplateContent(): string {
     // Check if the template file exists
-    if (!fs.existsSync(this.config.template)) {
-      throw new Error("Template file not found");
+    if (!fs.existsSync(this.config?.template ?? "")) {
+      throw new Error(
+        "Documentation template file not found. Did you configure the template file?",
+      );
     }
 
-    return fs.readFileSync(this.config.template, "utf8");
+    return fs.readFileSync(this.config?.template ?? "", "utf8");
   }
 }

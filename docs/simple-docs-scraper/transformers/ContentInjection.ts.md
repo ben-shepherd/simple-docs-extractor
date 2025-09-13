@@ -26,4 +26,12 @@
 
 ---
 
+## Methods
+
+Not available.
+
+---
+
 This file is auto generated. Do not edit manually.*
+
+[Back to Index](./index.md)

@@ -6,6 +6,8 @@ export type ExtractorPluginConstructor = new (
 
 export type BaseExtractorConfig = Record<string, unknown> & {
   searchAndReplace: string;
+  defaultText?: string;
+  attributeFormat?: string;
 };
 
 export type ExtractorPlugin<

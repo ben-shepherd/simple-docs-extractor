@@ -1,17 +1,37 @@
 import { TagExtractorPlugin } from "@/simple-docs-scraper/extractors/TagExtractorPlugin.js";
 import {
-  MultiLineCommentClear,
+  RemoveMultiLineCommentAsterisks,
   SimpleDocExtractor,
 } from "@/simple-docs-scraper/index.js";
 import { SimpleDocExtractorConfig } from "@/simple-docs-scraper/types/config.js";
 import path from "path";
 
+/**
+ * <docs>
+ * Publish documentation by running the SimpleDocExtractor with the provided configuration.
+ *
+ * This function sets up the extractor to process JavaScript and TypeScript files
+ * in the src directory, excluding tests and scripts folders. It uses the TagExtractorPlugin
+ * to extract content marked with "docs" tags and generates documentation files using
+ * custom templates. It then publishes the documentation to the docs directory.
+ *
+ * @example
+ * ```typescript
+ * const extractor = new SimpleDocExtractor(DEFAULT_CONFIG);
+ * const result = await extractor.start();
+ * ```
+ * </docs>
+ */
 export const DEFAULT_CONFIG: SimpleDocExtractorConfig = {
   baseDir: process.cwd(),
   extraction: [
     new TagExtractorPlugin({
       tag: "docs",
       searchAndReplace: "%content%",
+    }),
+    new TagExtractorPlugin({
+      tag: "method",
+      searchAndReplace: "%methods%",
     }),
   ],
   generators: {
@@ -44,7 +64,7 @@ export const DEFAULT_CONFIG: SimpleDocExtractorConfig = {
       createIndexFile: true,
     },
   ],
-  formatters: [MultiLineCommentClear],
+  formatters: [RemoveMultiLineCommentAsterisks],
 };
 
 export const publishDocs = async (

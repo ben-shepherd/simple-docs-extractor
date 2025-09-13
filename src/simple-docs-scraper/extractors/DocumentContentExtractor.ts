@@ -1,41 +1,12 @@
 import fs from "fs";
 import { ExtractorPlugin } from "../types/extractor.t.js";
 
-// Configuration for extracting documentation using start and end tags
-export type MethodTags = {
-  extractMethod: "tags";
-  startTag: string;
-  endTag: string;
-};
-
-// Configuration for extracting documentation using regular expressions
-export type MethodRegex = {
-  extractMethod: "regex";
-  pattern: RegExp;
-};
-
-// Configuration for extracting documentation using a custom callback function
-export type MethodCallback = {
-  extractMethod: "callback";
-  callback: (
-    fileContent: string,
-  ) => Promise<string | string[] | undefined> | (string | string[] | undefined);
-};
-
-// Union type for all possible extraction methods
-export type ExtractionMethod = (MethodTags | MethodRegex | MethodCallback) & {
-  searchAndReplace: string;
-};
-
-export type ExtractionResultLegacy = {
-  content: string[];
-  attributes?: Record<string, string>;
-} & ExtractionMethod;
-
 export type ExtractedContent = {
   content: string;
   attributes: Record<string, string>;
   searchAndReplace: string;
+  divideBy?: string;
+  defaultText?: string;
 };
 
 export type ErrorResult = {
@@ -108,11 +79,10 @@ export class DocumentContentExtractor {
       const extractedContentArray = await this.handleExtractionMethod(
         method,
         contents,
-        results,
         parseInt(i),
       );
 
-      for (const extractedContent of extractedContentArray) {
+      for (const extractedContent of extractedContentArray ?? []) {
         results.push(extractedContent);
       }
     }
@@ -131,7 +101,6 @@ export class DocumentContentExtractor {
   private async handleExtractionMethod(
     plugin: ExtractorPlugin,
     str: string,
-    results: ExtractedContent[],
     i: number,
   ) {
     if (typeof plugin?.extractFromString !== "function") {
@@ -143,9 +112,10 @@ export class DocumentContentExtractor {
     const extractedContentArray = await plugin.extractFromString(str);
 
     // if the result is an error, throw an error
+    // otherwise, it is safe to continue
     if ("errorMessage" in extractedContentArray) {
       if (false === extractedContentArray.throwable) {
-        return results;
+        return undefined;
       }
       throw new Error(extractedContentArray.errorMessage);
     }

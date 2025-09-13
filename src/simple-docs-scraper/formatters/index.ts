@@ -1,1 +1,1 @@
-export * from "./MultiLineCommentClear.js";
+export * from "./RemoveMultiLineCommentAsterisks.js";

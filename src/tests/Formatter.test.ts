@@ -2,7 +2,7 @@ import { TagExtractorPlugin } from "@/simple-docs-scraper/extractors/TagExtracto
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import path from "path";
-import { MultiLineCommentClear } from "../simple-docs-scraper/formatters/MultiLineCommentClear.js";
+import { RemoveMultiLineCommentAsterisks } from "../simple-docs-scraper/formatters/RemoveMultiLineCommentAsterisks.js";
 import { SimpleDocExtractor } from "../simple-docs-scraper/index.js";
 import { SimpleDocExtractorConfig } from "../simple-docs-scraper/types/config.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
@@ -16,6 +16,11 @@ const defaultConfig: SimpleDocExtractorConfig = {
       tag: "<docs>",
     }),
   ],
+  generators: {
+    documentation: {
+      template: getOutputPath("documentation.template.md"),
+    },
+  },
   targets: [
     {
       globOptions: {
@@ -31,6 +36,9 @@ const defaultConfig: SimpleDocExtractorConfig = {
 describe("Formatter", () => {
   beforeEach(() => {
     deleteOutputFiles();
+
+    // Create a mock template file
+    fs.writeFileSync(getOutputPath("documentation.template.md"), "%content%");
 
     // Create a mock js file with a multi line comment
     fs.writeFileSync(
@@ -66,7 +74,7 @@ const exampleFunc = () => {
         () =>
           new SimpleDocExtractor({
             ...defaultConfig,
-            formatters: [MultiLineCommentClear],
+            formatters: [RemoveMultiLineCommentAsterisks],
           }),
       ).not.toThrow();
     });
@@ -74,7 +82,7 @@ const exampleFunc = () => {
     test("should apply multi line comment clear formatter", async () => {
       const scraper = new SimpleDocExtractor({
         ...defaultConfig,
-        formatters: [MultiLineCommentClear],
+        formatters: [RemoveMultiLineCommentAsterisks],
       });
 
       const result = await scraper.start();
