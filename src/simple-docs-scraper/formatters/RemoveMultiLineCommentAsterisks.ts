@@ -22,7 +22,6 @@ import { TFormatter } from "../types/formatter.t.js";
  * </docs>
  */
 export const RemoveMultiLineCommentAsterisks: TFormatter = (config) => {
-
   const lines = config.content.split("\n");
   const unwantedPrefixes = ["*", " *", " * "];
 
@@ -38,4 +37,3 @@ export const RemoveMultiLineCommentAsterisks: TFormatter = (config) => {
     })
     .join("\n");
 };
-

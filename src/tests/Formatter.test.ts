@@ -38,10 +38,7 @@ describe("Formatter", () => {
     deleteOutputFiles();
 
     // Create a mock template file
-    fs.writeFileSync(
-      getOutputPath("documentation.template.md"),
-      "%content%",
-    );
+    fs.writeFileSync(getOutputPath("documentation.template.md"), "%content%");
 
     // Create a mock js file with a multi line comment
     fs.writeFileSync(

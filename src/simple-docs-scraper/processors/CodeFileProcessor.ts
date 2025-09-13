@@ -1,6 +1,9 @@
 import fs from "fs";
 import path from "path";
-import { DocumentContentExtractor, DocumentContentExtractorConfig } from "../extractors/DocumentContentExtractor.js";
+import {
+  DocumentContentExtractor,
+  DocumentContentExtractorConfig,
+} from "../extractors/DocumentContentExtractor.js";
 import { DocFileGenerator } from "../generators/DocFileGenerator.js";
 import { Target } from "../services/SimpleDocExtractor.js";
 import { ContentInjection } from "../transformers/ContentInjection.js";
@@ -64,10 +67,13 @@ export class CodeFileProcessor {
    * @returns Promise resolving to processing result with content or error details
    */
   async preProcess(file: string, target: Target): Promise<ProcessResult> {
-    const contentInjection = new ContentInjection({
-      template: this.getDocFileGeneratorConfig(target).template ?? "",
-      outDir: target.outDir,
-    }, target);
+    const contentInjection = new ContentInjection(
+      {
+        template: this.getDocFileGeneratorConfig(target).template ?? "",
+        outDir: target.outDir,
+      },
+      target,
+    );
 
     let injectedContent = "";
 
@@ -83,12 +89,15 @@ export class CodeFileProcessor {
 
     // Merge the extraction results into the template string
     injectedContent =
-      contentInjection.mergeExtractionResultsIntoTemplateString(
+      contentInjection.mergeExtractedContentsIntoTemplateString(
         extractionResults,
       );
 
     // Apply default text
-    injectedContent = contentInjection.applyDefaultText(injectedContent, this.config.extraction);
+    injectedContent = contentInjection.applyDefaultText(
+      injectedContent,
+      this.config.extraction,
+    );
 
     // Apply formatters
     if (this.config.formatters) {
@@ -167,7 +176,9 @@ export class CodeFileProcessor {
     return this.config.generators?.documentation;
   }
 
-  getDocumentContentExtractorConfig(target: Target): DocumentContentExtractorConfig {
+  getDocumentContentExtractorConfig(
+    target: Target,
+  ): DocumentContentExtractorConfig {
     if (target.extraction) {
       return target.extraction;
     }

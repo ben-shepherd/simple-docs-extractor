@@ -43,9 +43,10 @@ export type InjectionResult = {
  * </docs>
  */
 export class ContentInjection {
-  constructor(private config: InjectionConfig, private target: Target) {}
-
-
+  constructor(
+    private config: InjectionConfig,
+    private target: Target,
+  ) {}
 
   /**
    * Gets the template content with the replace string replaced.
@@ -54,7 +55,10 @@ export class ContentInjection {
    * @param searchAndReplace - The search and replace string to replace
    * @returns The template content with the replace string replaced
    */
-  getTemplateContentWithReplaceString(replaceWith: string, searchAndReplace: string): string {
+  getTemplateContentWithReplaceString(
+    replaceWith: string,
+    searchAndReplace: string,
+  ): string {
     const templateContent = this.getTemplateContent();
     return templateContent.replace(searchAndReplace, replaceWith);
   }
@@ -65,13 +69,15 @@ export class ContentInjection {
    * @param extractionResults - The extraction results to create the content from
    * @returns The content string with injected content
    */
-  mergeExtractionResultsIntoTemplateString(
+  mergeExtractedContentsIntoTemplateString(
     extractionResults: ExtractedContent[],
   ): string {
     const templateContent = this.getTemplateContent();
 
-    const templateContentMergedContent = new TemplateContentExtractionContentMerger({ target: this.target })
-      .handle(templateContent, extractionResults);
+    const templateContentMergedContent =
+      new TemplateContentExtractionContentMerger({
+        target: this.target,
+      }).handle(templateContent, extractionResults);
 
     return templateContentMergedContent;
   }
@@ -82,36 +88,21 @@ export class ContentInjection {
    * @param templateContent - The template content to apply the default text to
    * @returns The template content with the default text applied
    */
-  applyDefaultText(injectedContent: string, extractionPlugins: ExtractorPlugin[]): string {
-    for(const extractionPlugin of extractionPlugins) {
-      const defaultText = extractionPlugin.getConfig().defaultText ?? "Not available.";
-      injectedContent = injectedContent.replace(extractionPlugin.getConfig().searchAndReplace, defaultText);
+  applyDefaultText(
+    injectedContent: string,
+    extractionPlugins: ExtractorPlugin[],
+  ): string {
+    for (const extractionPlugin of extractionPlugins) {
+      const defaultText =
+        extractionPlugin.getConfig().defaultText ?? "Not available.";
+      injectedContent = injectedContent.replace(
+        extractionPlugin.getConfig().searchAndReplace,
+        defaultText,
+      );
     }
     return injectedContent;
   }
 
-  /**
-   * Gets the extraction results grouped by search and replace.
-   *
-   * @param extractionResults - The extraction results to group by search and replace
-   * @returns The extraction results grouped by search and replace
-   */
-  getExtractionResultGroupedBySearchAndReplace(extractionResults: ExtractedContent[]): Record<string, ExtractedContent[]> {
-    return extractionResults.reduce((acc, extractionResult) => {
-      acc[extractionResult.searchAndReplace] = [...(acc[extractionResult.searchAndReplace] || []), extractionResult];
-      return acc;
-    }, {});
-  }
-
-  /**
-   * Gets the divide by for an extraction result.
-   *
-   * @param extractionResult - The extraction result to get the divide by for
-   * @returns The divide by for the extraction result
-   */
-  getDivideBy(extractionResult: ExtractedContent): string {
-    return extractionResult?.divideBy ?? "\n\n";
-  }
 
   /**
    * Injects content into a template file and writes the result to an output file.
@@ -138,7 +129,9 @@ export class ContentInjection {
   protected getTemplateContent(): string {
     // Check if the template file exists
     if (!fs.existsSync(this.config?.template ?? "")) {
-      throw new Error("Documentation template file not found. Did you configure the template file?");
+      throw new Error(
+        "Documentation template file not found. Did you configure the template file?",
+      );
     }
 
     return fs.readFileSync(this.config?.template ?? "", "utf8");
