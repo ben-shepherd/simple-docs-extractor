@@ -1,14 +1,25 @@
-## File Name
+## DocumentContentExtractor.ts
+
+
+
 
 
  Extracts documentation from source files using various methods.
 
+
+
  This class provides flexible documentation extraction capabilities supporting
+
  three different extraction methods: tag-based extraction, regex pattern matching,
+
  and custom callback functions. It handles file validation, error reporting,
+
  and content cleaning.
 
+
+
  @example
+
  ```typescript
  // Extract using tags
  const extractor = new DocumentContentExtractor('example.js', {
@@ -27,14 +38,30 @@
  ```
  
 
+
+
 ---
+
+
 
 ## Methods
 
-Not available.
+
+
+%methods%
+
+
 
 ---
 
+
+
+Last updated: 2025-09-13T15:16:18.393Z
+
+
+
 This file is auto generated. Do not edit manually.*
+
+
 
 [Back to Index](./index.md)

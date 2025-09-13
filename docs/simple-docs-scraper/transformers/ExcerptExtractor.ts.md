@@ -1,13 +1,23 @@
-## File Name
+## ExcerptExtractor.ts
+
+
+
 
 
  Extracts and formats text excerpts from content with configurable length and formatting options.
 
+
+
  This utility class provides static methods for creating clean, readable excerpts from longer text content.
+
  It automatically removes markdown headings, handles word boundaries, adds ellipsis for truncated content,
+
  and ensures excerpts end with complete words and proper punctuation.
 
+
+
  @example
+
  ```typescript
  // Basic usage with default settings
  const content = `## Heading 1
@@ -20,7 +30,9 @@
  // Result: "This is a readable English sentence for testing purposes..."
  ```
 
+
  @example
+
  ```typescript
  // Custom length with ellipsis
  const excerpt = ExcerptExtractor.determineExcerpt(content, {
@@ -32,14 +44,30 @@
  ```
  
 
+
+
 ---
+
+
 
 ## Methods
 
-Not available.
+
+
+%methods%
+
+
 
 ---
 
+
+
+Last updated: 2025-09-13T15:16:18.394Z
+
+
+
 This file is auto generated. Do not edit manually.*
+
+
 
 [Back to Index](./index.md)
