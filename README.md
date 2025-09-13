@@ -12,7 +12,7 @@ Documentation is available [here](docs/index.md).
 
 ```typescript
 import path from 'path';
-import { SimpleDocsScraper, MultiLineCommentClear } from '../../dist/index.js';
+import { SimpleDocExtractor, MultiLineCommentClear } from '../../dist/index.js';
 
 const config = {
     baseDir: process.cwd(),
@@ -48,7 +48,7 @@ const config = {
     formatters: [MultiLineCommentClear],
 };
 
-new SimpleDocsScraper(config).start().then(result => {
+new SimpleDocExtractor(config).start().then(result => {
     console.log('Success count: ', result.successCount);
     console.log('Total count: ', result.totalCount);
     console.log('Logs:');

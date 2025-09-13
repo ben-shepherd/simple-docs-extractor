@@ -43,7 +43,7 @@ export type SimpleDocExtractorResult = {
  *
  * @example
  * ```typescript
- * const scraper = new SimpleDocsScraper({
+ * const scraper = new SimpleDocsExtractor({
  *   baseDir: './src',
  *   extraction: {
  *     extractMethod: 'tags',
@@ -78,7 +78,7 @@ export class SimpleDocExtractor {
    * <method name="getConfig">
    * Returns the current configuration.
    *
-   * @returns The current SimpleDocsScraper configuration
+   * @returns The current SimpleDocExtractor configuration
    * </method>
    */
   getConfig(): SimpleDocExtractorConfig {

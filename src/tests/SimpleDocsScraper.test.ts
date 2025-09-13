@@ -1,4 +1,5 @@
 import { TagExtractorPlugin } from "@/simple-docs-scraper/extractors/TagExtractorPlugin.js";
+import { LocalesService } from "@/simple-docs-scraper/services/LocalesService.js";
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import path from "path";
@@ -301,4 +302,56 @@ This is the second block
       expect(documentationContent).toContain("This is the second block");
     });
   });
+
+  describe("locales variables", () => {
+    test("should be able to use the variables in the template", async () => {
+
+      // Create a template file with the correct tags
+      fs.writeFileSync(getOutputPath("documentation.template.md"), 
+`%content%
+@updatedAt %locales.updatedAt%
+@fileName %locales.fileName%`,
+      );
+
+      fs.mkdirSync(getOutputPath("example"));
+      fs.writeFileSync(getOutputPath("example/sample.js"), 
+`/**
+* <docs>
+* This is a test block
+* </docs>
+*/`
+      );
+      const locales = new LocalesService(getOutputPath("example/sample.js")).getLocales();
+      
+      scraper = new SimpleDocExtractor({
+        ...defaultConfig,
+        targets: [
+          {
+            ...jsFilesTarget,
+            outDir: getOutputPath("example"),
+            globOptions: {
+              cwd: getOutputPath("example"),
+              extensions: "**/*.{js,ts}",
+            },
+          },
+        ],
+        generators: {
+          documentation: {
+            template: getOutputPath("documentation.template.md"),
+          },
+        },
+      });
+      await scraper.start();
+      
+
+      const documentationContent = fs.readFileSync(
+        getOutputPath("example/sample.js.md"),
+        "utf8",
+      );
+
+      expect(documentationContent).toContain("This is a test block");
+      expect(documentationContent).toContain(locales.updatedAt);
+      expect(documentationContent).toContain(locales.fileName);
+    })
+  })
 });
