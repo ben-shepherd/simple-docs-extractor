@@ -40,8 +40,7 @@ describe("Publish Docs", () => {
     );
 
     // Spy on process.exit so we can check if it was called, but don't actually exit
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    exitSpy = jest.spyOn(process, "exit").mockImplementation((code?: string | number | null | undefined): never => {
+    exitSpy = jest.spyOn(process, "exit").mockImplementation((): never => {
       return {} as never;
     });
 
