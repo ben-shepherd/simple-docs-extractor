@@ -1,20 +1,17 @@
-name: Formatting
+name: Formatting / Docs Changes
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: ["ci"]
-    types: [completed]
   pull_request:
     branches: [ main ]
     types: [closed]
 
 jobs:
-  commit-changes:
+  formatting-and-docs:
     runs-on: ubuntu-latest
     if: |
       github.event_name == 'workflow_dispatch' || 
-      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
+      (github.event_name == 'push' && github.actor != 'github-actions[bot]' && !startsWith(github.event.head_commit.message, 'docs:')) ||
       (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
 
     permissions:
@@ -25,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          ref: ${{ github.event.workflow_run.head_branch || github.head_ref }}
+          ref: ${{ github.head_ref }}
           token: ${{ secrets.ADMIN_TOKEN }}
 
       - name: Setup Node
@@ -36,6 +33,7 @@ jobs:
       - name: Setup Dependencies
         run: npm ci
 
+      # Other steps that change files in the repository go here
       - name: Fix Formatting
         run: npm run format
 
@@ -44,6 +42,9 @@ jobs:
 
       - name: Run Checks (Typecheck, TSLint, Format, Lint)
         run: npm run check
+
+      - name: Run Publish Docs
+        run: npm run docs:publish
 
       # Check if there are any changes to commit
       - name: Check for changes
@@ -59,8 +60,8 @@ jobs:
       - uses: stefanzweifel/git-auto-commit-action@v6
         if: steps.check-changes.outputs.changes == 'true'
         with:
-          commit_message: "chore: fix formatting and linting"
-          file_pattern: "**"
+          commit_message: "docs: publish documentation updates"
+          file_pattern: "docs/**"
           commit_author: "GitHub Actions <actions@github.com>"
           commit_user_name: "github-actions[bot]"
           commit_user_email: "actions@github.com"
