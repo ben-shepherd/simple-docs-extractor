@@ -34,16 +34,20 @@ export class MarkdownIndexProcessor {
   constructor(private config: MarkdownIndexProcessorConfig = {}) {}
 
   /**
+   * <method name="handle">
    * Starts the index file generation process for the configured base directory.
+   * </method>
    */
   async handle(baseDir: string) {
     await this.handleDirectoryRecusrively(baseDir);
   }
 
   /**
+   * <method name="handleDirectoryRecusrively">
    * Recursively processes a directory and all its subdirectories to create index files.
    *
    * @param directory - The directory path to process
+   * </method>
    */
   async handleDirectoryRecusrively(directory: string) {
     // Process files and folders

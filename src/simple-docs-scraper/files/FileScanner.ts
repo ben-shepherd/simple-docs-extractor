@@ -31,10 +31,12 @@ export class FileScanner {
   constructor(private target: FileScannerConfig) {}
 
   /**
+   * <method name="collect">
    * Collects all files matching the configured extensions in the target directory.
    *
    * @param globOptions - Additional glob options to override defaults
    * @returns Promise resolving to array of matching file paths
+   * </method>
    */
   async collect(globOptions: GlobOptions = {}): Promise<string[]> {
     let targetPath = this.target.cwd;

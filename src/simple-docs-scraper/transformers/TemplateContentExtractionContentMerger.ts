@@ -7,26 +7,47 @@ export type TemplateContentExtractionContentMergerConfig = {
 };
 
 /**
- * Merges the extracted content into the template content.
- *
+ * <docs>
+ * Merges extracted content into template content with attribute formatting and content separation.
+ * 
+ * This class handles the complex process of merging multiple extracted content pieces
+ * into a single template string. It groups content by search and replace patterns,
+ * formats attributes according to configured patterns, and applies content dividers
+ * between multiple content blocks.
+ * 
  * @example
  * ```typescript
+ * const merger = new TemplateContentExtractionContentMerger({ target });
  * const templateContent = "# Content\n{{content}}";
- * const extractedContentArray = [{ content: "This is the content", searchAndReplace: "{{content}}", attributes: { name: "John" } }];
- * const templateContentMergedContent = new TemplateContentExtractionContentMerger().handle(templateContent, extractedContentArray);
- *
- * // Example output:
- * // # Content\nName: "John"\n\nThis is the content"
+ * const extractedContentArray = [
+ *   { 
+ *     content: "This is the content", 
+ *     searchAndReplace: "{{content}}", 
+ *     attributes: { name: "John" } 
+ *   }
+ * ];
+ * const result = merger.handle(templateContent, extractedContentArray);
+ * // Result: "# Content\n### *name*: John\n\nThis is the content"
  * ```
+ * 
+ * @param {TemplateContentExtractionContentMergerConfig} config - Configuration containing the target for attribute format lookup
+ * </docs>
  */
 class TemplateContentExtractionContentMerger {
   constructor(private config: TemplateContentExtractionContentMergerConfig) {}
 
   /**
-   * Creates a content string from extraction results by replacing the configured placeholder.
-   *
-   * @param extractedContentArray - The extraction results to create the content from
-   * @returns The content string with injected content
+   * <method name="handle">
+   * Merges extracted content into template content by replacing placeholders.
+   * 
+   * Groups extracted content by search and replace patterns, then processes each
+   * group to replace the corresponding placeholders in the template with formatted
+   * content including attributes and dividers.
+   * 
+   * @param {string} templateContent - The template string containing placeholders
+   * @param {ExtractedContent[]} extractedContentArray - Array of extracted content to merge
+   * @returns {string} The template content with all placeholders replaced by formatted content
+   * </method>
    */
   handle(
     templateContent: string,
@@ -48,11 +69,13 @@ class TemplateContentExtractionContentMerger {
   }
 
   /**
+   * <method name="handleGrouped">
    * Handles a grouped extraction result.
    * - Iterate over the grouped extraction results and create a content block for each extraction result
    * - Add the divide by to the content block
    * - Replace the search and replace with the content block
    * - Return the template content
+   * </method>
    */
   private handleGrouped(
     grouped: Record<string, ExtractedContent[]>,
@@ -81,10 +104,12 @@ class TemplateContentExtractionContentMerger {
   }
 
   /**
+   * <method name="handleExtractContent">
    * Handles the extraction content.
    * - Add the divide by to the content block
    * - Add the content to the content block
    * - Return the content block
+   * </method>
    */
   private handleExtractContent(
     extractionResult: ExtractedContent,
@@ -109,10 +134,12 @@ class TemplateContentExtractionContentMerger {
   }
 
   /**
+   * <method name="buildAttributesContent">
    * Builds the attributes content.
    * - Add the attributes to the content block, using the attribute format defined in the extraction plugin
    * - If no attribute format is defined, use the default format
    * - Return the content block
+   * </method>
    */
   private buildAttributesContent(
     extractedContent: ExtractedContent,
@@ -135,10 +162,12 @@ class TemplateContentExtractionContentMerger {
   }
 
   /**
+   * <method name="getExtractionResultGroupedBySearchAndReplace">
    * Gets the extraction results grouped by search and replace.
    *
    * @param extractedContentArray - The extraction results to group by search and replace
    * @returns The extraction results grouped by search and replace
+   * </method>
    */
   getExtractionResultGroupedBySearchAndReplace(
     extractedContentArray: ExtractedContent[],
@@ -153,10 +182,12 @@ class TemplateContentExtractionContentMerger {
   }
 
   /**
+   * <method name="getDivideBy">
    * Gets the divide by for an extraction result.
    *
    * @param extractionResult - The extraction result to get the divide by for
    * @returns The divide by for the extraction result
+   * </method>
    */
   getDivideBy(extractedContent: ExtractedContent): string {
     return extractedContent?.divideBy ?? "\n\n---\n\n";

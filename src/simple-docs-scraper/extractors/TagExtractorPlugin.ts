@@ -1,33 +1,83 @@
 import { ErrorResult, ExtractedContent } from "../index.js";
 import { BaseExtractorConfig, ExtractorPlugin } from "../types/extractor.t.js";
 
+/**
+ * Configuration for the TagExtractorPlugin.
+ * 
+ * @param {string} tag - The HTML/XML tag name to extract content from (e.g., 'docs', 'example')
+ * @param {string} [divideBy] - Optional delimiter for dividing content into sections
+ */
 export type TagExtractorPluginConfig = BaseExtractorConfig & {
   tag: string;
   divideBy?: string;
 };
 
+/**
+ * <docs>
+ * Extracts content from HTML/XML-like tags in source files.
+ * 
+ * This extractor plugin searches for content between opening and closing tags,
+ * such as `<docs>content</docs>` or `<example>code</example>`. It supports
+ * extracting attributes from the opening tag and can handle multiple tag
+ * instances in a single file.
+ * 
+ * Example usage:
+ * ```typescript
+ * const extractor = new TagExtractorPlugin({
+ *   tag: 'docs',
+ *   searchAndReplace: ''
+ * });
+ * 
+ * // Will extract content from: <docs>This is documentation</docs>
+ * const result = await extractor.extractFromString('<docs>This is documentation</docs>');
+ * ```
+ * 
+ * @param {TagExtractorPluginConfig} config - The configuration object containing the tag name and options
+ * </docs>
+ */
 export class TagExtractorPlugin
   implements ExtractorPlugin<TagExtractorPluginConfig>
 {
   constructor(private config: TagExtractorPluginConfig) {}
 
+  /**
+   * <method name="setConfig">
+   * Updates the configuration for this extractor.
+   * 
+   * @param {TagExtractorPluginConfig} config - The new configuration object
+   * @returns {this} The current instance for method chaining
+   * </method>
+   */
   setConfig(config: TagExtractorPluginConfig): this {
     this.config = config;
     return this;
   }
 
+  /**
+   * <method name="getConfig">
+   * Retrieves the current configuration of this extractor.
+   * 
+   * @returns {TagExtractorPluginConfig} The current configuration object
+   * </method>
+   */
   getConfig(): TagExtractorPluginConfig {
     return this.config;
   }
 
   /**
-   * Extracts documentation using start and end tags.
-   *
-   * @param str - The content of the file to extract from
-   * @returns Extraction result with content between tags or error details
-   *
+   * <method name="extractFromString">
+   * Extracts content from HTML/XML-like tags in the provided string.
+   * 
+   * Searches for all instances of the configured tag and extracts the content
+   * between the opening and closing tags. Also extracts any attributes from
+   * the opening tag. Returns an error if no matching tags are found.
+   * 
+   * @param {string} str - The content string to extract from
+   * @returns {Promise<ExtractedContent[] | ErrorResult>} Array of extracted content objects or error result
+   * 
    * For regex101 example:
    * @see https://regex101.com/r/UzcvAj/2
+   * </method>
    */
   async extractFromString(
     str: string,
@@ -56,6 +106,14 @@ export class TagExtractorPlugin
     }) as ExtractedContent[];
   }
 
+  /**
+   * <method name="composeRegExp">
+   * Composes a regular expression pattern for matching the configured tag.
+   * 
+   * @param {string} rawTag - The cleaned tag name
+   * @returns {RegExp} The compiled regular expression for tag matching
+   * </method>
+   */
   composeRegExp(rawTag: string): RegExp {
     return new RegExp(
       `${this.getStartTagPattern(rawTag)}${this.getInsideTagPattern()}${this.getEndTagPattern(rawTag)}`,
@@ -63,6 +121,14 @@ export class TagExtractorPlugin
     );
   }
 
+  /**
+   * <method name="getAttributesOrUndefined">
+   * Extracts attributes from the opening tag string.
+   * 
+   * @param {string} startTag - The opening tag string to extract attributes from
+   * @returns {Record<string, string> | undefined} Object containing attribute key-value pairs or undefined if no attributes
+   * </method>
+   */
   getAttributesOrUndefined(
     startTag: string,
   ): Record<string, string> | undefined {
@@ -97,6 +163,15 @@ export class TagExtractorPlugin
     return `(<\/${rawTag}>)`;
   }
 
+  /**
+   * <method name="getRawTag">
+   * Cleans the tag name by removing non-word characters.
+   * 
+   * @param {string} startTag - The original tag name
+   * @returns {string} The cleaned tag name containing only word characters
+   * @throws {Error} When the resulting tag name is empty or invalid
+   * </method>
+   */
   getRawTag(startTag: string) {
     const removeNonCharactersPattern = /([^\w]+)/g;
     const result = startTag.replace(removeNonCharactersPattern, "");

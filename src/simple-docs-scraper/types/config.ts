@@ -13,10 +13,10 @@ export type DocumentationGeneratorConfig = {
 
 export interface SimpleDocExtractorConfig {
   baseDir: string;
+  targets: Target[];
   generators?: {
     index?: IndexGeneratorConfig;
     documentation?: DocumentationGeneratorConfig;
   };
-  targets: Target[];
   formatters?: TFormatter[];
 }

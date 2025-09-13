@@ -1,8 +1,7 @@
 import { TagExtractorPlugin } from "@/simple-docs-scraper/extractors/TagExtractorPlugin.js";
-import { AddDoubleLinesFormatter } from "@/simple-docs-scraper/formatters/AddDoubleLinesFormatter.js";
+import { RecommendedFormatters } from "@/simple-docs-scraper/formatters/RecommendedFormatters.js";
 import {
-  RemoveMultiLineCommentAsterisks,
-  SimpleDocExtractor,
+  SimpleDocExtractor
 } from "@/simple-docs-scraper/index.js";
 import { SimpleDocExtractorConfig } from "@/simple-docs-scraper/types/config.js";
 import path from "path";
@@ -66,7 +65,7 @@ export const DEFAULT_CONFIG: SimpleDocExtractorConfig = {
       ],
     },
   ],
-  formatters: [RemoveMultiLineCommentAsterisks, AddDoubleLinesFormatter],
+  formatters: RecommendedFormatters.recommended(),
 };
 
 export const publishDocs = async (

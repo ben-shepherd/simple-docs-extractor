@@ -22,11 +22,13 @@ export class DocFileGenerator {
   constructor(private config: DocFileGeneratorConfig) {}
 
   /**
+   * <method name="saveToMarkdownFile">
    * Generates a documentation file by injecting content into a template.
    *
    * @param injectedContent - The documentation content to inject into the template
    * @param outFile - The original file path used to determine the output filename
    * @throws {Error} When the template file is not found
+   * </method>
    */
   saveToMarkdownFile(injectedContent: string, outFile: string): void {
     const fileBaseName = path.basename(outFile);
@@ -44,10 +46,12 @@ export class DocFileGenerator {
   }
 
   /**
+   * <method name="getTemplateContent">
    * Retrieves the template content from the configured template file.
    *
    * @returns The template content as a string
    * @throws {Error} When the template file is not found
+   * </method>
    */
   getTemplateContent(searchAndReplace: string = "%content%"): string {
     if (!this.config.template) {

@@ -2,9 +2,9 @@ import fs from "fs";
 import path from "path";
 import { IndexStructurePreProcessorEntry } from "../processors/IndexStructurePreProcessor.js";
 import {
-  DEFAULT_CONFIG as DEFAULT_EXCERPT_CONFIG,
-  ExcerptExtractor,
-  ExcerptExtractorConfig,
+    DEFAULT_CONFIG as DEFAULT_EXCERPT_CONFIG,
+    ExcerptExtractor,
+    ExcerptExtractorConfig,
 } from "../transformers/ExcerptExtractor.js";
 
 export type IndexFileGeneratorConfig = {
@@ -52,6 +52,7 @@ export class IndexFileGenerator {
   constructor(private config: IndexFileGeneratorConfig) {}
 
   /**
+   * <method name="saveIndexFile">
    * Saves an index file by processing entries and generating formatted content.
    *
    * This method creates a markdown index file that lists files and directories
@@ -59,6 +60,7 @@ export class IndexFileGenerator {
    * through callbacks, and template injection to create the final index file.
    *
    * @param processedArray - Array of processed directory entries to include in the index
+   * </method>
    */
   saveIndexFile(processedArray: IndexStructurePreProcessorEntry[]) {
     // Check if the out directory exists

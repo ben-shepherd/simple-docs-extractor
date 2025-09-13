@@ -49,11 +49,13 @@ export class ContentInjection {
   ) {}
 
   /**
+   * <method name="getTemplateContentWithReplaceString">
    * Gets the template content with the replace string replaced.
    *
    * @param replaceWith - The string to replace the replace string with
    * @param searchAndReplace - The search and replace string to replace
    * @returns The template content with the replace string replaced
+   * </method>
    */
   getTemplateContentWithReplaceString(
     replaceWith: string,
@@ -64,10 +66,12 @@ export class ContentInjection {
   }
 
   /**
+   * <method name="mergeExtractedContentsIntoTemplateString">
    * Creates a content string from extraction results by replacing the configured placeholder.
    *
    * @param extractionResults - The extraction results to create the content from
    * @returns The content string with injected content
+   * </method>
    */
   mergeExtractedContentsIntoTemplateString(
     extractionResults: ExtractedContent[],
@@ -83,10 +87,12 @@ export class ContentInjection {
   }
 
   /**
+   * <method name="applyDefaultText">
    * Applies the default text to the template content.
    *
    * @param templateContent - The template content to apply the default text to
    * @returns The template content with the default text applied
+   * </method>
    */
   applyDefaultText(
     injectedContent: string,
@@ -104,11 +110,13 @@ export class ContentInjection {
   }
 
   /**
+   * <method name="writeFile">
    * Injects content into a template file and writes the result to an output file.
    *
    * @param replaceWith - The content to replace the placeholder with
    * @param outFile - The output file path to write the result to
    * @throws {Error} When the template file is not found
+   * </method>
    */
   writeFile(injectedContent: string, outFile: string): void {
     if (fs.existsSync(outFile)) {

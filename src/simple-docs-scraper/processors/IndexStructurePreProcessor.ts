@@ -37,6 +37,7 @@ export class IndexStructurePreProcessor {
   constructor(private config: IndexStructurePreProcessorConfig = {}) {}
 
   /**
+   * <method name="getDirectoryEntries">
    * Retrieves directory entries filtered for markdown files and directories.
    *
    * This method scans a directory and returns only markdown files and all
@@ -45,6 +46,7 @@ export class IndexStructurePreProcessor {
    *
    * @param baseDir - The directory path to scan
    * @returns Promise resolving to array of filtered file and directory paths
+   * </method>
    */
   async getDirectoryEntries(baseDir: string): Promise<string[]> {
     if (!fs.existsSync(baseDir)) {
@@ -72,6 +74,7 @@ export class IndexStructurePreProcessor {
   }
 
   /**
+   * <method name="process">
    * Processes a directory and returns structured entries for index generation.
    *
    * This method scans a directory, processes each entry (file or directory),
@@ -80,6 +83,7 @@ export class IndexStructurePreProcessor {
    *
    * @param baseDir - The directory path to process
    * @returns Promise resolving to array of processed entries ready for index generation
+   * </method>
    */
   async process(baseDir: string): Promise<IndexStructurePreProcessorEntry[]> {
     const srcArray = await this.getDirectoryEntries(baseDir);
@@ -137,6 +141,7 @@ export class IndexStructurePreProcessor {
   }
 
   /**
+   * <method name="appendIndexMdIfFound">
    * Appends 'index.md' to the markdown link if the directory contains an index file.
    *
    * This method checks if a directory contains an index.md file and updates the
@@ -144,6 +149,7 @@ export class IndexStructurePreProcessor {
    *
    * @param result - The partial entry result to update
    * @param excerpt - Optional excerpt to include in the link
+   * </method>
    */
   appendIndexMdIfFound(
     result: Partial<IndexStructurePreProcessorEntry>,
@@ -187,6 +193,7 @@ export class IndexStructurePreProcessor {
   }
 
   /**
+   * <method name="markdownLink">
    * Generates a markdown link or plain text based on configuration.
    *
    * This method creates either a markdown link or plain text based on the
@@ -197,6 +204,7 @@ export class IndexStructurePreProcessor {
    * @param link - The link target
    * @param excerpt - Optional excerpt to include
    * @returns Formatted markdown link or plain text
+   * </method>
    */
   protected markdownLink(display: string, link: string, excerpt?: string) {
     let result = "";
