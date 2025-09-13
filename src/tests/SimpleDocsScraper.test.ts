@@ -305,24 +305,27 @@ This is the second block
 
   describe("locales variables", () => {
     test("should be able to use the variables in the template", async () => {
-
       // Create a template file with the correct tags
-      fs.writeFileSync(getOutputPath("documentation.template.md"), 
-`%content%
+      fs.writeFileSync(
+        getOutputPath("documentation.template.md"),
+        `%content%
 @updatedAt %locales.updatedAt%
 @fileName %locales.fileName%`,
       );
 
       fs.mkdirSync(getOutputPath("example"));
-      fs.writeFileSync(getOutputPath("example/sample.js"), 
-`/**
+      fs.writeFileSync(
+        getOutputPath("example/sample.js"),
+        `/**
 * <docs>
 * This is a test block
 * </docs>
-*/`
+*/`,
       );
-      const locales = new LocalesService(getOutputPath("example/sample.js")).getLocales();
-      
+      const locales = new LocalesService(
+        getOutputPath("example/sample.js"),
+      ).getLocales();
+
       scraper = new SimpleDocExtractor({
         ...defaultConfig,
         targets: [
@@ -342,7 +345,6 @@ This is the second block
         },
       });
       await scraper.start();
-      
 
       const documentationContent = fs.readFileSync(
         getOutputPath("example/sample.js.md"),
@@ -352,6 +354,6 @@ This is the second block
       expect(documentationContent).toContain("This is a test block");
       expect(documentationContent).toContain(locales.updatedAt);
       expect(documentationContent).toContain(locales.fileName);
-    })
-  })
+    });
+  });
 });

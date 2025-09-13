@@ -19,7 +19,7 @@ export type ProcessResultSuccess = {
   outDir: string;
   fileName: string;
   loggableFileName: string;
-  locales: Locales
+  locales: Locales;
 };
 
 export type ProcessResultError = {
@@ -91,13 +91,15 @@ export class CodeFileProcessor {
     }
 
     // Get the locales (variables that can be used in the template)
-    const locales = this.addLocalesToExtractedContent(file, extractedContentArray);
+    const locales = this.addLocalesToExtractedContent(
+      file,
+      extractedContentArray,
+    );
 
     // Merge the extraction results into the template string
-    injectedContent =
-      contentInjection.mergeExtractedContentsIntoTemplateString(
-        extractedContentArray,
-      );
+    injectedContent = contentInjection.mergeExtractedContentsIntoTemplateString(
+      extractedContentArray,
+    );
 
     // Apply default text
     injectedContent = contentInjection.applyDefaultText(
@@ -118,7 +120,6 @@ export class CodeFileProcessor {
 
     // Build the output directory
     const transformedOutDir = this.buildOutputPath(file, target);
-  
 
     // Generate the documentation file
     new DocFileGenerator({
@@ -141,9 +142,13 @@ export class CodeFileProcessor {
    * @param extractionResults - The extracted content
    * @returns The locales
    */
-  private addLocalesToExtractedContent(file: string, extractionResults: ExtractedContent[]) {
+  private addLocalesToExtractedContent(
+    file: string,
+    extractionResults: ExtractedContent[],
+  ) {
     const locales = new LocalesService(file).getLocales();
-    const localesAsExtractedContents = LocalesService.toExtractedContents(locales);
+    const localesAsExtractedContents =
+      LocalesService.toExtractedContents(locales);
     extractionResults.push(...localesAsExtractedContents);
     return locales;
   }
