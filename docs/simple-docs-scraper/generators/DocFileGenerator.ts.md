@@ -30,7 +30,19 @@
 
 
 
-Not available.
+### **saveToMarkdownFile**
+
+ Generates a documentation file by injecting content into a template.
+
+
+
+ @param injectedContent - The documentation content to inject into the template
+
+ @param outFile - The original file path used to determine the output filename
+
+ @throws {Error} When the template file is not found
+
+ 
 
 
 
@@ -38,7 +50,25 @@ Not available.
 
 
 
-Last updated: 2025-09-13T15:53:52.471Z
+### **getTemplateContent**
+
+ Retrieves the template content from the configured template file.
+
+
+
+ @returns The template content as a string
+
+ @throws {Error} When the template file is not found
+
+ 
+
+
+
+---
+
+
+
+Last updated: 2025-09-13T16:44:55.014Z
 
 
 

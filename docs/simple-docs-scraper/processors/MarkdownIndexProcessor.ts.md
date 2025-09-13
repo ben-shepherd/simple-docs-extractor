@@ -40,7 +40,11 @@
 
 
 
-Not available.
+### **handle**
+
+ Starts the index file generation process for the configured base directory.
+
+ 
 
 
 
@@ -48,7 +52,23 @@ Not available.
 
 
 
-Last updated: 2025-09-13T15:53:52.471Z
+### **handleDirectoryRecusrively**
+
+ Recursively processes a directory and all its subdirectories to create index files.
+
+
+
+ @param directory - The directory path to process
+
+ 
+
+
+
+---
+
+
+
+Last updated: 2025-09-13T16:45:35.258Z
 
 
 

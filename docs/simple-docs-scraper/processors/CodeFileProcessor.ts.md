@@ -51,7 +51,19 @@
 
 
 
-Not available.
+### **preProcess**
+
+ Pre-processes a file by extracting documentation and preparing it for output generation.
+
+
+
+ @param file - The source file path to process
+
+ @param target - The target configuration containing output directory and options
+
+ @returns Promise resolving to processing result with content or error details
+
+ 
 
 
 
@@ -59,7 +71,69 @@ Not available.
 
 
 
-Last updated: 2025-09-13T15:53:52.471Z
+### **addLocalesToExtractedContent**
+
+ Adds the locales to the extracted content
+
+ @param file - The file path
+
+ @param extractionResults - The extracted content
+
+ @returns The locales
+
+ 
+
+
+
+---
+
+
+
+### **buildOutputPath**
+
+ Builds the output directory path by preserving the source file's directory structure.
+
+ 
+
+ Takes a source file path and maps it to the corresponding output directory,
+
+ maintaining the relative folder structure from the target's working directory.
+
+ 
+
+ @param file - The source file path
+
+ @param target - The target configuration containing output directory and glob options
+
+ @returns The complete output directory path
+
+ 
+
+
+
+---
+
+
+
+### **processFile**
+
+ Processes a single file by extracting documentation and generating output.
+
+
+
+ @param processedResult - The file path to process
+
+ @param target - The target configuration containing output directory
+
+ 
+
+
+
+---
+
+
+
+Last updated: 2025-09-13T16:45:22.399Z
 
 
 

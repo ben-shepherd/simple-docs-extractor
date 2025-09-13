@@ -44,7 +44,23 @@
 
 
 
-Not available.
+### **saveIndexFile**
+
+ Saves an index file by processing entries and generating formatted content.
+
+
+
+ This method creates a markdown index file that lists files and directories
+
+ in a structured format. It handles excerpt generation, custom formatting
+
+ through callbacks, and template injection to create the final index file.
+
+
+
+ @param processedArray - Array of processed directory entries to include in the index
+
+ 
 
 
 
@@ -52,7 +68,7 @@ Not available.
 
 
 
-Last updated: 2025-09-13T15:53:52.471Z
+Last updated: 2025-09-13T16:44:54.913Z
 
 
 

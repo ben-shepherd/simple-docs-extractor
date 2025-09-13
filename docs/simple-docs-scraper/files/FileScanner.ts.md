@@ -39,7 +39,17 @@
 
 
 
-Not available.
+### **collect**
+
+ Collects all files matching the configured extensions in the target directory.
+
+
+
+ @param globOptions - Additional glob options to override defaults
+
+ @returns Promise resolving to array of matching file paths
+
+ 
 
 
 
@@ -47,7 +57,7 @@ Not available.
 
 
 
-Last updated: 2025-09-13T15:53:52.470Z
+Last updated: 2025-09-13T16:45:58.691Z
 
 
 

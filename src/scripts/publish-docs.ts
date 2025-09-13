@@ -31,7 +31,7 @@ export const DEFAULT_CONFIG: SimpleDocExtractorConfig = {
       filesHeading: "\n## Files\n",
       directoryHeading: "\n## Folders\n",
       excerpt: {
-        length: 75,
+        length: 120,
         addEllipsis: false,
         firstSentenceOnly: true,
       },

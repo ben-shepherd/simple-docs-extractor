@@ -8,7 +8,8 @@ This is the index file for the generated documentation. Below you will find the 
 ## Files
 
 - [AddDoubleLinesFormatter.ts.md](AddDoubleLinesFormatter.ts.md) - AddDoubleLinesFormatter.
-- [MultiLineCommentClear.ts.md](MultiLineCommentClear.ts.md) - MultiLineCommentClear formatter removes leading asterisks and whitespace fr
+- [MultiLineCommentClear.ts.md](MultiLineCommentClear.ts.md) - MultiLineCommentClear formatter removes leading asterisks and whitespace from multi-line comments.
+- [RecommendedFormatters.ts.md](RecommendedFormatters.ts.md) - RecommendedFormatters.
 - [RemoveMultiLineCommentAsterisks.ts.md](RemoveMultiLineCommentAsterisks.ts.md) - RemoveMultiLineCommentAsterisks.
 
 
