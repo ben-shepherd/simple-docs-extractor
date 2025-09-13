@@ -3,7 +3,7 @@ import { LocalesService } from "@/simple-docs-scraper/services/LocalesService.js
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import path from "path";
-import { SimpleDocExtractor } from "../simple-docs-scraper/services/SimpleDocExtractor.js";
+import { SimpleDocExtractor, Target } from "../simple-docs-scraper/services/SimpleDocExtractor.js";
 import { SimpleDocExtractorConfig } from "../simple-docs-scraper/types/config.t.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";
@@ -22,7 +22,7 @@ const plugins = [
   }),
 ];
 
-const jsFilesTarget = {
+const jsFilesTarget: Target = {
   globOptions: {
     cwd: path.join(process.cwd(), "src/tests/files/js-files"),
     patterns: "**/*.{js,ts}",
@@ -32,14 +32,14 @@ const jsFilesTarget = {
   plugins,
 };
 
-const twigFilesTarget = {
+const twigFilesTarget: Target = {
   globOptions: {
     cwd: path.join(process.cwd(), "src/tests/files/twig-files"),
     patterns: "**/*.html.twig",
   },
   outDir: getOutputPath("twig-files"),
   createIndexFile: true,
-  extraction: plugins,
+  plugins,
 };
 
 export const defaultConfig: SimpleDocExtractorConfig = {
@@ -170,19 +170,23 @@ describe("Example Test Suite", () => {
   });
 
   describe("start", () => {
-    test("should be able to run the scraper", async () => {
+    test("should be able to run the scraper with default config", async () => {
       const result = await scraper.start();
 
       const jsFiles = fs.readdirSync(getOutputPath("js-files"));
+      const jsFilesNested = fs.readdirSync(getOutputPath("js-files/nested-js-files"));
       const twigFiles = fs.readdirSync(getOutputPath("twig-files"));
 
-      const expectedJsFilesCount = 4; // 3 files, plus 1 folder
-      const expectedTwigFilesCount = 2; // 1 plus the index file
-
       expect(result.successCount).toBe(4);
-      expect(result.totalCount).toBe(5);
-      expect(jsFiles).toHaveLength(expectedJsFilesCount);
-      expect(twigFiles).toHaveLength(expectedTwigFilesCount);
+      expect(result.totalCount).toBe(5); // exampleFuncNoDocs.js should be ignored as there is no documentation
+
+      expect(jsFiles).toContain("exampleFunc.js.md");
+      expect(jsFiles).toContain("exampleTsFunc.ts.md");
+      expect(jsFiles).toContain("nested-js-files");
+      expect(jsFilesNested).toContain("index.md");
+      expect(jsFilesNested).toContain("nestedFunc.js.md");
+
+      expect(twigFiles).toContain("example.html.twig.md");
     });
 
     test("should generate logs", async () => {

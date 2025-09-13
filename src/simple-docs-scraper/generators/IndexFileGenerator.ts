@@ -6,12 +6,11 @@ import {
   ExcerptExtractor,
   ExcerptExtractorConfig,
 } from "../transformers/ExcerptExtractor.js";
-import { FileNameCallback, LineCallback } from "../types/config.t.js";
+import { FileNameCallback, LineCallback, TemplatePathConfig } from "../types/config.t.js";
 
-export type IndexFileGeneratorConfig = {
+export type IndexFileGeneratorConfig = TemplatePathConfig & {
   outDir: string;
   searchAndReplace?: string;
-  template?: string;
   baseDir?: string;
   markdownLinks?: boolean;
   filesHeading?: string;
@@ -178,16 +177,16 @@ export class IndexFileGenerator {
   }
 
   private getTemplateContent(): string {
-    if (!this.config.template) {
+    if (!this.config.templatePath) {
       return this.getSearchAndReplace();
     }
 
     // Check if the template file exists
-    if (!fs.existsSync(this.config.template)) {
+    if (!fs.existsSync(this.config.templatePath)) {
       throw new Error("Template file not found");
     }
 
-    return fs.readFileSync(this.config.template, "utf8");
+    return fs.readFileSync(this.config.templatePath, "utf8");
   }
 
   /**

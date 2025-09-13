@@ -236,7 +236,7 @@ describe("Example Test Suite", () => {
     test("should generate the index files with a custom template", async () => {
       const indexProcessor = new MarkdownIndexProcessor({
         markdownLinks: true,
-        template: getOutputPath("templates/index.template.md"),
+        templatePath: getOutputPath("templates/index.template.md"),
       });
 
       await indexProcessor.handle(docsPath);

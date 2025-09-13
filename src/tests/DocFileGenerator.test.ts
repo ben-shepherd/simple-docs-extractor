@@ -34,7 +34,7 @@ describe("Doc File Generator", () => {
       expect(
         () =>
           (docGenerator = new DocFileGenerator({
-            template: getOutputPath("test.template.md"),
+            templatePath: getOutputPath("test.template.md"),
             outDir: process.cwd() + "/src/tests/output",
           })),
       ).not.toThrow();
@@ -53,7 +53,7 @@ describe("Doc File Generator", () => {
   describe("generateContent", () => {
     test("should save the content to markdown file", () => {
       docGenerator = new DocFileGenerator({
-        template: getOutputPath("test.template.md"),
+        templatePath: getOutputPath("test.template.md"),
         outDir: process.cwd() + "/src/tests/output",
       });
 
@@ -86,7 +86,7 @@ describe("Doc File Generator", () => {
 
     test("should throw an error if the template file does not exist", () => {
       const docGenerator = new DocFileGenerator({
-        template: "path-to-non-existent.md",
+        templatePath: "path-to-non-existent.md",
         outDir: process.cwd() + "/src/tests/output",
       });
 

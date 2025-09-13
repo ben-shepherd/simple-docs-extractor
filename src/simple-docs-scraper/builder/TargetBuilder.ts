@@ -1,6 +1,5 @@
 import { GlobOptions } from "glob";
 import path from "path";
-import { DocumentContentExtractorConfig } from "../extractors/DocumentContentExtractor.js";
 import { Target } from "../services/SimpleDocExtractor.js";
 import { Templates } from "../types/config.t.js";
 import { ExtractorPlugin } from "../types/extractor.t.js";
@@ -70,8 +69,8 @@ export class TargetBuilder {
         return this;
     }
 
-    plugins(plugins: DocumentContentExtractorConfig) {
-        this._plugins = plugins;
+    plugins(plugins: ExtractorPlugin[] | ExtractorPlugin) {
+        this._plugins = Array.isArray(plugins) ? plugins : [plugins];
         return this;
     }
     

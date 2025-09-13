@@ -7,13 +7,13 @@ export type LineCallback = (fileNameEntry: string, lineNumber: number, excerpt?:
 
 export type FileNameCallback = (filePath: string) => string;
 
-export type IndexTemplateConfig = {
-  templatePath: string;
-} & Partial<IndexFileGeneratorConfig>;
-
-export type DocumentationTemplateConfig = {
+export type TemplatePathConfig = {
   templatePath?: string;
-} & Partial<DocFileGeneratorConfig>;
+}
+
+export type IndexTemplateConfig = TemplatePathConfig & Partial<IndexFileGeneratorConfig>;
+
+export type DocumentationTemplateConfig = TemplatePathConfig & Partial<DocFileGeneratorConfig>;
 
 export type Templates = {
   index?: IndexTemplateConfig;
