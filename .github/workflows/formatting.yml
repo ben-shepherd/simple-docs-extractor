@@ -2,52 +2,15 @@ name: Publish Docs
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
     types: [closed]
 
 jobs:
-  checks:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-
-      - name: Setup Node
-        uses: actions/setup-node@v5
-        with:
-          node-version: "lts/*"
-
-      - name: Setup Dependencies
-        run: npm ci
-
-      - name: Run Checks (Typecheck, TSLint, Format, Lint)
-        run: npm run check
-
-  test:
-    needs: [checks]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-
-      - name: Setup Node
-        uses: actions/setup-node@v5
-        with:
-          node-version: "lts/*"
-
-      - name: Setup Dependencies
-        run: npm ci
-
-      - name: Run Tests
-        run: npm run test:coverage
-
-  publish-docs:
-    needs: [checks, test]
+  commit-changes:
     runs-on: ubuntu-latest
     if: |
       github.event_name == 'workflow_dispatch' || 
-      (github.event_name == 'push' && github.actor != 'github-actions[bot]') ||
       (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
 
     permissions:
@@ -69,9 +32,14 @@ jobs:
       - name: Setup Dependencies
         run: npm ci
 
-      # Other steps that change files in the repository go here
-      - name: Run Publish Docs
-        run: npm run docs:publish
+      - name: Fix Formatting
+        run: npm run format
+
+      - name: Fix Linting
+        run: npm run lint:fix
+
+      - name: Run Checks (Typecheck, TSLint, Format, Lint)
+        run: npm run check
 
       # Check if there are any changes to commit
       - name: Check for changes
@@ -87,8 +55,8 @@ jobs:
       - uses: stefanzweifel/git-auto-commit-action@v6
         if: steps.check-changes.outputs.changes == 'true'
         with:
-          commit_message: "docs: publish documentation updates"
-          file_pattern: "docs/**"
+          commit_message: "chore: fix formatting and linting"
+          file_pattern: "**"
           commit_author: "GitHub Actions <actions@github.com>"
           commit_user_name: "github-actions[bot]"
           commit_user_email: "actions@github.com"
