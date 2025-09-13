@@ -1,4 +1,5 @@
 import { TagExtractorPlugin } from "@/simple-docs-scraper/extractors/TagExtractorPlugin.js";
+import { AddDoubleLinesFormatter } from "@/simple-docs-scraper/formatters/AddDoubleLinesFormatter.js";
 import {
   RemoveMultiLineCommentAsterisks,
   SimpleDocExtractor,
@@ -24,16 +25,7 @@ import path from "path";
  */
 export const DEFAULT_CONFIG: SimpleDocExtractorConfig = {
   baseDir: process.cwd(),
-  extraction: [
-    new TagExtractorPlugin({
-      tag: "docs",
-      searchAndReplace: "%content%",
-    }),
-    new TagExtractorPlugin({
-      tag: "method",
-      searchAndReplace: "%methods%",
-    }),
-  ],
+  extraction: [],
   generators: {
     index: {
       template: path.join(process.cwd(), "src/templates/index.template.md"),
@@ -62,9 +54,20 @@ export const DEFAULT_CONFIG: SimpleDocExtractorConfig = {
       },
       outDir: path.join(process.cwd(), "docs"),
       createIndexFile: true,
+      extraction: [
+        new TagExtractorPlugin({
+          tag: "docs",
+          searchAndReplace: "%content%",
+        }),
+        new TagExtractorPlugin({
+          tag: "method",
+          searchAndReplace: "%methods%",
+          attributeFormat: "### **{value}**",
+        }),
+      ],
     },
   ],
-  formatters: [RemoveMultiLineCommentAsterisks],
+  formatters: [RemoveMultiLineCommentAsterisks, AddDoubleLinesFormatter],
 };
 
 export const publishDocs = async (
