@@ -75,7 +75,7 @@ export class SimpleDocExtractor {
   ) {}
 
   /**
-   * <method>
+   * <method name="getConfig">
    * Returns the current configuration.
    *
    * @returns The current SimpleDocsScraper configuration
