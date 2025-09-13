@@ -1,3 +1,4 @@
+import { ExtractorPlugin } from "@/simple-docs-scraper/types/extractor.t.js";
 import {
   afterAll,
   afterEach,
@@ -52,7 +53,7 @@ describe("Injection", () => {
         outDir,
       });
 
-      const result = injection.replace("This is a test string.");
+      const result = injection.getTemplateContentWithReplaceString("This is a test string.", "%content%");
 
       expect(result).toContain("Start.");
       expect(result).toContain("This is a test string.");
@@ -67,7 +68,7 @@ describe("Injection", () => {
         outDir,
       });
 
-      const content = injection.replace("This is a test string.");
+      const content = injection.getTemplateContentWithReplaceString("This is a test string.", "%content%");
       injection.writeFile(content, "test.txt");
 
       // Make folder recursively if it doesn't exist
@@ -85,6 +86,148 @@ describe("Injection", () => {
       expect(fileContents).toContain("Start.");
       expect(fileContents).toContain("This is a test string.");
       expect(fileContents).toContain("End.");
+    });
+  });
+
+  describe("mergeExtractionResultsIntoTemplateString", () => {
+    test("should be able to merge extraction results into the template string", () => {
+
+      // Create a mock template file
+      fs.writeFileSync(
+        getOutputPath("test.template.txt"),
+        "Start. %content% End.",
+      );
+
+      injection = new ContentInjection({
+        template: getOutputPath("test.template.txt"),
+        outDir,
+      });
+
+      const result = injection.mergeExtractionResultsIntoTemplateString([
+        {
+          content: "This is a test string.",
+          searchAndReplace: "%content%",
+          attributes: {},
+        },
+      ]);
+
+      expect(result).toContain("Start.");
+      expect(result).toContain("This is a test string.");
+      expect(result).toContain("End.");
+    });
+
+    test("should be able to create multiple blocks of content with the same search and replace", () => {
+      injection = new ContentInjection({
+        template: getOutputPath("test.template.txt"),
+        outDir,
+      });
+      
+      const result = injection.mergeExtractionResultsIntoTemplateString([
+        {
+          content: "This is a test string.",
+          searchAndReplace: "%content%",
+          attributes: {},
+        },
+        {
+          content: "This is a test string 2.",
+          searchAndReplace: "%content%",
+          attributes: {}
+        },
+      ]);
+
+      expect(result).toContain("Start.");
+      expect(result).toContain("This is a test string.");
+      expect(result).toContain("This is a test string 2.");
+      expect(result).toContain("End.");
+    });
+
+    test("should not add the divide by to the last block", () => {
+      injection = new ContentInjection({
+        template: getOutputPath("test.template.txt"),
+        outDir,
+      });
+      
+      const result = injection.mergeExtractionResultsIntoTemplateString([
+        {
+          content: "This is a test string.",
+          searchAndReplace: "%content%",
+          attributes: {},
+          divideBy: "\n---\n",
+        },
+        {
+          content: "This is a test string 2.",
+          searchAndReplace: "%content%",
+          attributes: {},
+          divideBy: "\n---\n",
+        },
+      ]);
+
+      expect(result).toContain('This is a test string.\n---\nThis is a test string 2. End.')
+    });
+
+    test("should be placed in the correct order", () => {
+
+      // Create a mock template file
+      fs.writeFileSync(
+        getOutputPath("test.template.txt"),
+`StartDocs
+%content%
+EndDocs
+StartMethods
+%methods%
+EndMethods`
+      );
+
+      injection = new ContentInjection({
+        template: getOutputPath("test.template.txt"),
+        outDir,
+      });
+      
+      const result = injection.mergeExtractionResultsIntoTemplateString([
+        {
+          content: "This a content block",
+          searchAndReplace: "%content%",
+          attributes: {}
+        },
+        {
+          content: "This is a methods block",
+          searchAndReplace: "%methods%",
+          attributes: {}
+        },
+      ]);
+
+      expect(result).toContain('StartDocs\nThis a content block\nEndDocs\nStartMethods\nThis is a methods block\nEndMethods')
+    });
+
+    test("should place default text when no extraction results are provided", () => {
+
+      // Create a mock template file
+      fs.writeFileSync(
+        getOutputPath("test.template.txt"),
+`StartDocs
+%content%
+EndDocs`
+      );
+
+      injection = new ContentInjection({
+        template: getOutputPath("test.template.txt"),
+        outDir,
+      });
+
+      // Create a mock extractor plugin
+      const mockExtractorPlugin = {
+        getConfig: (): ReturnType<ExtractorPlugin['getConfig']> => ({
+          searchAndReplace: "%content%",
+          defaultText: "No content found.",
+        }),
+      } as ExtractorPlugin;
+      
+      // This should just return the template content, with no other changes
+      let result = injection.mergeExtractionResultsIntoTemplateString([]);
+      // We can then apply the default text
+      result = injection.applyDefaultText(result, [mockExtractorPlugin]);
+
+      expect(result).toContain('StartDocs\nNo content found.\nEndDocs')
     });
   });
 });

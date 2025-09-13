@@ -3,6 +3,7 @@ import { BaseExtractorConfig, ExtractorPlugin } from "../types/extractor.t.js";
 
 export type TagExtractorPluginConfig = BaseExtractorConfig & {
   tag: string;
+  divideBy?: string;
 };
 
 export class TagExtractorPlugin

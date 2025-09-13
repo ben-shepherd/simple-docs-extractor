@@ -4,7 +4,7 @@ import { TagExtractorPlugin } from "@/simple-docs-scraper/extractors/TagExtracto
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import { DocumentContentExtractor } from "../simple-docs-scraper/extractors/DocumentContentExtractor.js";
-import { MultiLineCommentClear } from "../simple-docs-scraper/formatters/MultiLineCommentClear.js";
+import { RemoveMultiLineCommentAsterisks } from "../simple-docs-scraper/formatters/RemoveMultiLineCommentAsterisks.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";
 
@@ -127,7 +127,7 @@ const example = () => null;`;
       const result = await docsExtractor.extractFromFile(
         getOutputPath("code-block-check/example.js"),
       );
-      const extractedContent = MultiLineCommentClear({
+      const extractedContent = RemoveMultiLineCommentAsterisks({
         filePath: "",
         outFile: "",
         content: result[0].content,

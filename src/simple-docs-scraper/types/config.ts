@@ -9,7 +9,7 @@ export type IndexGeneratorConfig = {
 } & Partial<IndexFileGeneratorConfig>;
 
 export type DocumentationGeneratorConfig = {
-  template: string;
+  template?: string;
 } & Partial<DocFileGeneratorConfig>;
 
 export interface SimpleDocExtractorConfig {

@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { ExtractedContent } from "../extractors/DocumentContentExtractor.js";
+import { ExtractorPlugin } from "../types/extractor.t.js";
 
 // Configuration for content injection operations
 export type InjectionConfig = {
@@ -42,8 +43,15 @@ export type InjectionResult = {
 export class ContentInjection {
   constructor(private config: InjectionConfig) {}
 
-  replace(replaceWith: string, searchAndReplace: string = "%content%"): string {
-    const templateContent = this.getTemplateContent(searchAndReplace);
+  /**
+   * Gets the template content with the replace string replaced.
+   *
+   * @param replaceWith - The string to replace the replace string with
+   * @param searchAndReplace - The search and replace string to replace
+   * @returns The template content with the replace string replaced
+   */
+  getTemplateContentWithReplaceString(replaceWith: string, searchAndReplace: string): string {
+    const templateContent = this.getTemplateContent();
     return templateContent.replace(searchAndReplace, replaceWith);
   }
 
@@ -56,19 +64,76 @@ export class ContentInjection {
   mergeExtractionResultsIntoTemplateString(
     extractionResults: ExtractedContent[],
   ): string {
-    const defaultSearchAndReplace =
-      extractionResults?.[0].searchAndReplace ?? "%content%";
-    let templateContent = this.getTemplateContent(defaultSearchAndReplace);
+    let templateContent = this.getTemplateContent();
 
-    for (const extractionResult of extractionResults) {
-      const extractedContentOnNewLines = extractionResult.content;
+    // Group the extraction results by search and replace
+    // e.g. { "%content%": [{content: "This is a test string.", searchAndReplace: "%content%"}, {content: "This is a test string 2.", searchAndReplace: "%content%"}] }
+    const extractionResultGroupedBySearchAndReplace = this.getExtractionResultGroupedBySearchAndReplace(extractionResults);
+    
+    // Iterate over the grouped extraction results
+    // and create a content block for each search and replace
+    // Finally, replace the default search and replace with the content block
+    for (const searchAndReplace in extractionResultGroupedBySearchAndReplace) {
+      const extractionResults = extractionResultGroupedBySearchAndReplace[searchAndReplace];
+      const contentBlock: string[] = [];
+
+      for(const [i, extractionResult] of extractionResults.entries()) {
+        const content = extractionResult.content;
+        const divideBy = this.getDivideBy(extractionResult);
+
+        // We don't want to add the divide by to the last block
+        if(i === extractionResults.length - 1) {
+          contentBlock.push(content);
+        } else {
+          contentBlock.push(content + divideBy);
+        }
+      }
+
+      // Replace the default search and replace with the content block
       templateContent = templateContent.replace(
-        extractionResult.searchAndReplace,
-        extractedContentOnNewLines,
+        searchAndReplace,
+        contentBlock.join(""),
       );
     }
 
     return templateContent;
+  }
+
+  /**
+   * Applies the default text to the template content.
+   *
+   * @param templateContent - The template content to apply the default text to
+   * @returns The template content with the default text applied
+   */
+  applyDefaultText(injectedContent: string, extractionPlugins: ExtractorPlugin[]): string {
+    for(const extractionPlugin of extractionPlugins) {
+      const defaultText = extractionPlugin.getConfig().defaultText ?? "Not available.";
+      injectedContent = injectedContent.replace(extractionPlugin.getConfig().searchAndReplace, defaultText);
+    }
+    return injectedContent;
+  }
+
+  /**
+   * Gets the extraction results grouped by search and replace.
+   *
+   * @param extractionResults - The extraction results to group by search and replace
+   * @returns The extraction results grouped by search and replace
+   */
+  getExtractionResultGroupedBySearchAndReplace(extractionResults: ExtractedContent[]): Record<string, ExtractedContent[]> {
+    return extractionResults.reduce((acc, extractionResult) => {
+      acc[extractionResult.searchAndReplace] = [...(acc[extractionResult.searchAndReplace] || []), extractionResult];
+      return acc;
+    }, {});
+  }
+
+  /**
+   * Gets the divide by for an extraction result.
+   *
+   * @param extractionResult - The extraction result to get the divide by for
+   * @returns The divide by for the extraction result
+   */
+  getDivideBy(extractionResult: ExtractedContent): string {
+    return extractionResult?.divideBy ?? "\n\n";
   }
 
   /**
@@ -93,16 +158,12 @@ export class ContentInjection {
    * @returns The template content as a string
    * @throws {Error} When the template file is not found
    */
-  protected getTemplateContent(searchAndReplace: string = "%content%"): string {
-    if (!this.config.template) {
-      return searchAndReplace;
-    }
-
+  protected getTemplateContent(): string {
     // Check if the template file exists
-    if (!fs.existsSync(this.config.template)) {
-      throw new Error("Template file not found");
+    if (!fs.existsSync(this.config?.template ?? "")) {
+      throw new Error("Documentation template file not found. Did you configure the template file?");
     }
 
-    return fs.readFileSync(this.config.template, "utf8");
+    return fs.readFileSync(this.config?.template ?? "", "utf8");
   }
 }

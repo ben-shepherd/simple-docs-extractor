@@ -204,6 +204,9 @@ export class SimpleDocExtractor {
   /**
    * <method name="getIndexProcessorConfig">
    * Gets the index processor config for the target.
+   * - Returns the target's index processor config if it exists
+   * - Returns the default index processor config if the target's index processor config does not exist
+   * - Returns an empty object if the default index processor config does not exist
    *
    * @param target - The target configuration
    * @returns The index processor config
