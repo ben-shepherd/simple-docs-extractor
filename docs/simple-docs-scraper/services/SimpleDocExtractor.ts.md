@@ -9,7 +9,7 @@
 
  @example
  ```typescript
- const scraper = new SimpleDocExtractor({
+ const scraper = new SimpleDocsExtractor({
    baseDir: './src',
    extraction: {
      extractMethod: 'tags',
