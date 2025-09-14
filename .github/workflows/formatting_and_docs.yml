@@ -1,4 +1,4 @@
-name: Formatting / Generate Docs / GitHub Pages
+name: Generate Docs / GitHub Pages
 
 on:
   workflow_dispatch:
@@ -7,16 +7,9 @@ on:
     types: [closed]
 
 jobs:
-  setup:
+  generate-docs:
     runs-on: ubuntu-latest
-    if: |
-      github.event_name == 'workflow_dispatch' || 
-      (github.event_name == 'push' && github.actor != 'github-actions[bot]' && !startsWith(github.event.head_commit.message, 'docs:')) ||
-      (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
-
     permissions:
-      # Give the default GITHUB_TOKEN write permission to commit and push the
-      # added or changed files to the repository.
       contents: write
 
     steps:
@@ -29,36 +22,13 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: "lts/*"
-  
+
       - name: Setup Dependencies
         run: npm ci
 
-  formatting-checks:
-    needs: [setup]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      
-      # Other steps that change files in the repository go here
-      - name: Fix Formatting
-        run: npm run format
-
-      - name: Fix Linting
-        run: npm run lint:fix
-
-      - name: Run Checks (Typecheck, TSLint, Format, Lint)
-        run: npm run check
-
-  generate-docs:
-    needs: [formatting-checks]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      
       - name: Run Publish Docs
         run: npm run docs:publish
 
-      # Check if there are any changes to commit
       - name: Check for changes
         id: check-changes
         run: |
@@ -68,7 +38,6 @@ jobs:
             echo "changes=false" >> $GITHUB_OUTPUT
           fi
 
-      # Commit all changed files back to the repository
       - uses: stefanzweifel/git-auto-commit-action@v6
         if: steps.check-changes.outputs.changes == 'true'
         with:
@@ -78,12 +47,3 @@ jobs:
           commit_user_name: "github-actions[bot]"
           commit_user_email: "actions@github.com"
           token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
-
-  configure-pages:
-    needs: [generate-docs]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
