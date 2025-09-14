@@ -1,4 +1,4 @@
-name: Formatting / Docs Changes
+name: Formatting / Generate Docs / GitHub Pages
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ on:
     types: [closed]
 
 jobs:
-  formatting-and-docs:
+  setup:
     runs-on: ubuntu-latest
     if: |
       github.event_name == 'workflow_dispatch' || 
@@ -29,10 +29,14 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: "lts/*"
-
+  
       - name: Setup Dependencies
         run: npm ci
 
+  formatting-checks:
+    needs: [setup]
+    runs-on: ubuntu-latest
+    steps:
       # Other steps that change files in the repository go here
       - name: Fix Formatting
         run: npm run format
@@ -42,6 +46,11 @@ jobs:
 
       - name: Run Checks (Typecheck, TSLint, Format, Lint)
         run: npm run check
+
+  generate-docs:
+    needs: [formatting-checks]
+    runs-on: ubuntu-latest
+    steps:
 
       - name: Run Publish Docs
         run: npm run docs:publish
@@ -66,3 +75,12 @@ jobs:
           commit_user_name: "github-actions[bot]"
           commit_user_email: "actions@github.com"
           token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+
+  configure-pages:
+    needs: [generate-docs]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
