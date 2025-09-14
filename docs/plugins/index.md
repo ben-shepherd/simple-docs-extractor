@@ -7,7 +7,7 @@ This is the index file for the generated documentation. Below you will find the 
 
 ## Files
 
-- [extractor-plugins.md](extractor-plugins.md) - Extractor plugins are the core components that extract documentation content from source files.
+- [extractor-plugins.md](extractor-plugins.md)
 
 
 

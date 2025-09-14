@@ -7,6 +7,7 @@ This is the index file for the generated documentation. Below you will find the 
 
 ## Folders
 
+- [builder/](builder/index.md)
 - [config/](config/index.md)
 - [extractors/](extractors/index.md)
 - [files/](files/index.md)

@@ -7,7 +7,9 @@ This is the index file for the generated documentation. Below you will find the 
 
 ## Files
 
-- [escapeRegexString.ts.md](escapeRegexString.ts.md)
+- [Builder.ts.md](Builder.ts.md)
+- [TargetBuilder.ts.md](TargetBuilder.ts.md)
+- [TemplateBuilder.ts.md](TemplateBuilder.ts.md)
 
 
 

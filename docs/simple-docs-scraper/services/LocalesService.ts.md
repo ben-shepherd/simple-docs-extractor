@@ -4,33 +4,17 @@
 
 
 
- Service for generating locale variables from file metadata.
+ Service for extracting and managing locale information from files.
 
- 
 
- This service extracts file metadata such as modification time and filename
 
- and converts them into locale variables that can be used in documentation
+ Provides functionality to get file metadata (last modified time and filename)
 
- templates. It provides both direct locale access and conversion to extracted
+ and convert it to extracted content format for template processing.
 
- content format for template injection.
 
- 
 
- @example
-
- ```typescript
- const localesService = new LocalesService('./src/example.js');
- const locales = localesService.getLocales();
- // Returns: { updatedAt: '2023-12-01T10:30:00.000Z', fileName: 'example.js' }
- 
- const extractedContents = localesService.getLocalesAsExtractedContents();
- // Returns array of ExtractedContent objects for template injection
- ```
- 
-
- @param {string} file - The file path to extract metadata from
+ @param {string} file - The file path to extract locale information from
 
  
 
@@ -46,11 +30,11 @@
 
 ### **toExtractedContents**
 
- Converts locale data into extracted content format for template injection.
+ Converts locale information to extracted content format for template processing.
 
- 
 
- @param {Locales} locales - The locale data to convert
+
+ @param {Locales} locales - The locale information to convert
 
  @returns {ExtractedContent[]} Array of extracted content objects with search and replace patterns
 
@@ -64,9 +48,9 @@
 
 ### **getLocales**
 
- Extracts locale data from the configured file.
+ Retrieves locale information from the file including last modified time and filename.
 
- 
+
 
  @returns {Locales} Object containing updatedAt timestamp and fileName
 
@@ -80,11 +64,11 @@
 
 ### **getLocalesAsExtractedContents**
 
- Gets locale data converted to extracted content format.
+ Gets locale information and converts it to extracted content format.
 
- 
 
- @returns {ExtractedContent[]} Array of extracted content objects ready for template injection
+
+ @returns {ExtractedContent[]} Array of extracted content objects ready for template processing
 
  
 
@@ -94,7 +78,7 @@
 
 
 
-Last updated: 2025-09-13T17:26:04.309Z
+Last updated: 2025-09-14T00:08:37.124Z
 
 
 

@@ -7,7 +7,7 @@ This is the index file for the generated documentation. Below you will find the 
 
 ## Files
 
-- [locales.md](locales.md) - The Locales system provides dynamic file metadata that can be injected into documentation templates.
+- [locales.md](locales.md)
 
 ## Folders
 

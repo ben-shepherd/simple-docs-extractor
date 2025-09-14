@@ -6,10 +6,6 @@
 
  RecommendedFormatters is a class that contains the recommended formatters for the SimpleDocsExtractor.
 
- - RemoveMultiLineCommentAsterisks
-
- - AddDoubleLinesFormatter
-
  
 
 
@@ -24,9 +20,13 @@
 
 ### **recommended**
 
- recommended returns the recommended formatters for the SimpleDocsExtractor.
+ This method returns the recommended formatters for the SimpleDocsExtractor.
 
- 
+ - RemoveMultiLineCommentAsterisks (Removes comment formatting)
+
+ - AddDoubleLinesFormatter (Adds spacing between content lines)
+
+
 
  @returns {TFormatter[]} The recommended formatters for the SimpleDocsExtractor.
 
@@ -38,7 +38,7 @@
 
 
 
-Last updated: 2025-09-13T17:26:04.308Z
+Last updated: 2025-09-14T00:08:37.020Z
 
 
 

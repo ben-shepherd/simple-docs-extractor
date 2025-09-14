@@ -93,13 +93,13 @@
 
  Builds the output directory path by preserving the source file's directory structure.
 
- 
+
 
  Takes a source file path and maps it to the corresponding output directory,
 
  maintaining the relative folder structure from the target's working directory.
 
- 
+
 
  @param file - The source file path
 
@@ -133,7 +133,25 @@
 
 
 
-Last updated: 2025-09-13T17:26:04.309Z
+### **getDocFileGeneratorConfig**
+
+ Gets the documentation template config for the target
+
+
+
+ @param target - The target configuration
+
+ @returns The documentation template config
+
+ 
+
+
+
+---
+
+
+
+Last updated: 2025-09-14T00:08:37.088Z
 
 
 

@@ -7,8 +7,8 @@ This is the index file for the generated documentation. Below you will find the 
 
 ## Files
 
-- [DocFileGenerator.ts.md](DocFileGenerator.ts.md) - DocFileGenerator.
-- [IndexFileGenerator.ts.md](IndexFileGenerator.ts.md) - IndexFileGenerator.
+- [DocFileGenerator.ts.md](DocFileGenerator.ts.md)
+- [IndexFileGenerator.ts.md](IndexFileGenerator.ts.md)
 
 
 

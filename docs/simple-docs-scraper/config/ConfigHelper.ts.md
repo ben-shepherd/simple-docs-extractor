@@ -6,7 +6,7 @@
 
  Helper class for retrieving configuration values from target configurations.
 
- 
+
 
  This utility class provides static methods to extract specific configuration
 
@@ -14,7 +14,7 @@
 
  their associated attribute formats by search and replace patterns.
 
- 
+
 
  @example
 
@@ -38,7 +38,7 @@
 
  Finds an extraction plugin by its search and replace pattern.
 
- 
+
 
  @param {Target} target - The target configuration containing extraction plugins
 
@@ -58,7 +58,7 @@
 
  Retrieves the attribute format for a specific search and replace pattern.
 
- 
+
 
  @param {Target} target - The target configuration containing extraction plugins
 
@@ -74,7 +74,7 @@
 
 
 
-Last updated: 2025-09-13T17:26:04.308Z
+Last updated: 2025-09-14T00:08:36.908Z
 
 
 
