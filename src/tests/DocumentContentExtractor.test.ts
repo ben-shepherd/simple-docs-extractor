@@ -1,10 +1,10 @@
-import { CallbackExtractor } from "@/simple-docs-scraper/extractors/CallbackExtractorPlugin.js";
-import { RegexExtractorPlugin } from "@/simple-docs-scraper/extractors/RegexExtractorPlugin.js";
-import { TagExtractorPlugin } from "@/simple-docs-scraper/extractors/TagExtractorPlugin.js";
+import { CallbackExtractor } from "@/simple-docs-scraper/plugins/CallbackExtractorPlugin.js";
+import { RegexExtractorPlugin } from "@/simple-docs-scraper/plugins/RegexExtractorPlugin.js";
+import { TagExtractorPlugin } from "@/simple-docs-scraper/plugins/TagExtractorPlugin.js";
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
-import { DocumentContentExtractor } from "../simple-docs-scraper/extractors/DocumentContentExtractor.js";
 import { RemoveMultiLineCommentAsterisks } from "../simple-docs-scraper/formatters/RemoveMultiLineCommentAsterisks.js";
+import { DocumentContentExtractor } from "../simple-docs-scraper/plugins/DocumentContentExtractor.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";
 

@@ -1,10 +1,10 @@
 import fs from "fs";
 import path from "path";
+import { DocFileGenerator } from "../generators/DocFileGenerator.js";
 import {
   DocumentContentExtractor,
   ExtractedContent
-} from "../extractors/DocumentContentExtractor.js";
-import { DocFileGenerator } from "../generators/DocFileGenerator.js";
+} from "../plugins/DocumentContentExtractor.js";
 import { Locales, LocalesService } from "../services/LocalesService.js";
 import { Target } from "../services/SimpleDocExtractor.js";
 import { ContentInjection } from "../transformers/ContentInjection.js";

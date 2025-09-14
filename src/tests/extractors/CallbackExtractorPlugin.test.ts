@@ -1,5 +1,5 @@
-import { CallbackExtractor } from "@/simple-docs-scraper/extractors/CallbackExtractorPlugin.js";
-import { ErrorResult } from "@/simple-docs-scraper/extractors/DocumentContentExtractor.js";
+import { CallbackExtractor } from "@/simple-docs-scraper/plugins/CallbackExtractorPlugin.js";
+import { ErrorResult } from "@/simple-docs-scraper/plugins/DocumentContentExtractor.js";
 import { beforeEach, describe, expect, test } from "@jest/globals";
 
 describe("Callback Extractor", () => {

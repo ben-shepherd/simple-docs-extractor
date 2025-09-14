@@ -1,5 +1,5 @@
-import { ErrorResult } from "@/simple-docs-scraper/extractors/DocumentContentExtractor.js";
-import { RegexExtractorPlugin } from "@/simple-docs-scraper/extractors/RegexExtractorPlugin.js";
+import { ErrorResult } from "@/simple-docs-scraper/plugins/DocumentContentExtractor.js";
+import { RegexExtractorPlugin } from "@/simple-docs-scraper/plugins/RegexExtractorPlugin.js";
 import { beforeEach, describe, expect, test } from "@jest/globals";
 
 describe("Regex Extractor", () => {
