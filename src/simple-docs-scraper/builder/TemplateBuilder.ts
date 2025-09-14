@@ -21,7 +21,7 @@ import { FileNameCallback, LineCallback, Templates } from "../types/config.t.js"
  */
 export class TemplateBuilder {
     constructor(
-        private _type: 'index' | 'documentation',
+        private _type: 'rootIndex' | 'index' | 'documentation',
         private _templatePath?: string,
         private _markdownLinks: boolean = true,
         private _filesHeading: string = "\n## Files\n",

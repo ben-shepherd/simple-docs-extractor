@@ -9,9 +9,8 @@ import {
 } from "../processors/CodeFileProcessor.js";
 import { MarkdownIndexProcessor } from "../processors/MarkdownIndexProcessor.js";
 import {
-  DocumentationTemplateConfig,
-  IndexTemplateConfig,
   SimpleDocExtractorConfig,
+  Templates
 } from "../types/config.t.js";
 import { ExtractorPlugin } from "../types/extractor.t.js";
 
@@ -20,10 +19,7 @@ export type Target = {
   globOptions: GlobOptions & { cwd: string; patterns: string | string[] };
   outDir: string;
   createIndexFile: boolean;
-  templates?: {
-    index?: IndexTemplateConfig;
-    documentation?: DocumentationTemplateConfig;
-  };
+  templates?: Templates;
   plugins?: ExtractorPlugin[];
 };
 
@@ -165,6 +161,9 @@ export class SimpleDocExtractor {
 
     // Create the index files
     await this.handleRecursivelyCreateIndexFiles(target);
+
+    // Create the root index file
+    await this.handleRootIndexFile(target);
   }
 
   /**
@@ -229,6 +228,26 @@ export class SimpleDocExtractor {
     await new MarkdownIndexProcessor({
       ...this.getIndexProcessorConfig(target),
     }).handle(target.outDir);
+  }
+
+  /**
+   * <method name="handleRootIndexFile">
+   * Creates the root index file.
+   * 
+   * @param target - The target configuration
+   * </method>
+   */
+  private async handleRootIndexFile(target: Target) {
+    const templateConfig = target.templates?.rootIndex;
+    const baseDir = target.outDir;
+
+    if(!templateConfig) {
+      return;
+    }
+    
+    await new MarkdownIndexProcessor({
+      ...templateConfig,
+    }).handle(baseDir);
   }
 
   /**

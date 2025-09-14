@@ -144,6 +144,21 @@ export class TargetBuilder {
     }
 
     /**
+     * <method name="useRootIndexTemplate">
+     * Sets a root index template file path.
+     * 
+     * @param {string} templatePath - The path to the root index template file
+     * @returns {TargetBuilder} This builder instance for method chaining
+     * </method>
+     */
+    rootIndexTemplate(callback: TemplateCallback) {
+        const builder = new TemplateBuilder('rootIndex');
+        callback(builder);
+        this._templates.rootIndex = builder.build().rootIndex;
+        return this;
+    }
+
+    /**
      * <method name="documentationTemplate">
      * Configures the documentation template using a callback function.
      * 

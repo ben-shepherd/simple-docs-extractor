@@ -17,6 +17,7 @@ export type DocumentationTemplateConfig = TemplatePathConfig & Partial<DocFileGe
 
 export type Templates = {
   index?: IndexTemplateConfig;
+  rootIndex?: IndexTemplateConfig;
   documentation?: DocumentationTemplateConfig;
 };
 
