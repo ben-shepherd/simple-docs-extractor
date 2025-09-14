@@ -1,12 +1,6 @@
-remote_theme: "jekyll/minima@1e8a445"
+remote_theme: pages-themes/cayman@v0.2.0
+plugins:
+- jekyll-remote-theme
 
-minima:
-  nav_pages:
-  hide_site_feed_link: true
-  social_links:
-    - title: "Simple Docs Extractor on GitHub"
-      icon: github
-      url: "https://github.com/ben-shepherd/simple-docs-extractor"
-  author:
-    name: Ben Shepherd
-    email: "ben.shepherd@gmx.com"
+title: Simple Docs Extractor
+description: A simple documentation extractor for JavaScript and TypeScript.
