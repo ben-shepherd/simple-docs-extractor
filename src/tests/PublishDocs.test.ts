@@ -129,12 +129,12 @@ describe("Publish Docs", () => {
       await publishDocs({
         ...testConfig,
       });
-    });
 
-    const rootIndexFileContent = fs.readFileSync(getOutputPath("docs/index.md"), "utf8");
+      const rootIndexFileContent = fs.readFileSync(getOutputPath("docs/index.md"), "utf8");
 
       expect(rootIndexFileContent).toContain("# Simple Docs Extractor");
       expect(rootIndexFileContent).toContain("## Features");
       expect(rootIndexFileContent).toContain("## Table of Contents");
+    });
   });
 });
