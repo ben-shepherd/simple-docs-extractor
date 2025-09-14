@@ -137,4 +137,25 @@ describe("Publish Docs", () => {
       expect(rootIndexFileContent).toContain("## Table of Contents");
     });
   });
+
+  describe("uses non-root index template in sub Folders", () => {
+    test("should use the non-root index template in sub folders", async () => {
+      await publishDocs({
+        ...testConfig,
+      });
+
+      const rootIndexFileContent = fs.readFileSync(getOutputPath("docs/index.md"), "utf8");
+  
+      expect(rootIndexFileContent).toContain("# Simple Docs Extractor");
+      expect(rootIndexFileContent).toContain("## Features");
+      expect(rootIndexFileContent).toContain("## Table of Contents");
+
+      const nonRootIndexFileContent = fs.readFileSync(getOutputPath("docs/simple-docs-scraper/index.md"), "utf8");
+
+      expect(nonRootIndexFileContent).not.toContain("# Simple Docs Scraper");
+      expect(nonRootIndexFileContent).not.toContain("## Features");
+      expect(nonRootIndexFileContent).toContain("Table of Contents");
+    });
+
+  });
 });

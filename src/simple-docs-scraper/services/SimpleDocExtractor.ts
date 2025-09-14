@@ -227,6 +227,7 @@ export class SimpleDocExtractor {
 
     await new MarkdownIndexProcessor({
       ...this.getIndexProcessorConfig(target),
+      recursive: true,
     }).handle(target.outDir);
   }
 
@@ -247,6 +248,7 @@ export class SimpleDocExtractor {
     
     await new MarkdownIndexProcessor({
       ...templateConfig,
+      recursive: false,
     }).handle(baseDir);
   }
 
