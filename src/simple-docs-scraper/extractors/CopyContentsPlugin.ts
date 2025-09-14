@@ -34,8 +34,8 @@ export class CopyContentsPlugin implements ExtractorPlugin<CopyContentsPluginCon
      * @returns {Promise<ExtractedContent[] | ErrorResult>} An array of extracted content objects or an error result
      * </method>
      */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async extractFromString(_str: string = ''): Promise<ExtractedContent[] | ErrorResult> {
+     
+    async extractFromString(): Promise<ExtractedContent[] | ErrorResult> {
         const fileToCopy = Array.isArray(this.config.fileToCopy) ? this.config.fileToCopy : [this.config.fileToCopy];
         const results: ExtractedContent[] = [];
 
