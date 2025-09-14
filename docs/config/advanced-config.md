@@ -2,6 +2,15 @@
 
 The SimpleDocsExtractor uses a comprehensive configuration system to control how documentation is extracted, processed, and generated. This document covers all available configuration options.
 
+## Table of Contents
+
+- [Main Configuration Object](#main-configuration-object)
+  - [Required Properties](#required-properties)
+  - [Optional Properties](#optional-properties)
+- [Target Configuration](#target-configuration)
+  - [Target Properties](#target-properties)
+
+
 ## Main Configuration Object
 
 The main configuration is defined by the `SimpleDocExtractorConfig` interface:

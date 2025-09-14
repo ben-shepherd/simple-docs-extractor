@@ -2,6 +2,12 @@
 
 The Locales system provides dynamic file metadata that can be injected into documentation templates. These locales are automatically generated based on the source file being processed and provide useful information about the file's properties.
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Available Locales](#available-locales)
+
+
 ## Available Locales
 
 The following locales are available for use in documentation templates:
@@ -30,21 +36,4 @@ The following locales are available for use in documentation templates:
 **Usage in templates:**
 ```markdown
 Last updated: %locales.updatedAt%
-```
-
-## Integration with Templates
-
-Locales are automatically injected into documentation templates during the processing phase. The `CodeFileProcessor` adds these locales to the extracted content, making them available for replacement in template files.
-
-**Example template usage:**
-```markdown
-## %locales.fileName%
-
-[Documentation content here]
-
----
-
-Last updated: %locales.updatedAt%
-
-*This file is auto generated. Do not edit manually.*
 ```
