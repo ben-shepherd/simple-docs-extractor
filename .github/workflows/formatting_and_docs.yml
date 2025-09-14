@@ -37,6 +37,8 @@ jobs:
     needs: [setup]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v5
+      
       # Other steps that change files in the repository go here
       - name: Fix Formatting
         run: npm run format
@@ -51,7 +53,8 @@ jobs:
     needs: [formatting-checks]
     runs-on: ubuntu-latest
     steps:
-
+      - uses: actions/checkout@v5
+      
       - name: Run Publish Docs
         run: npm run docs:publish
 
