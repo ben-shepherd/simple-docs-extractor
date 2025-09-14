@@ -2,6 +2,18 @@
 
 The SimpleDocsExtractor provides a fluent builder pattern API that makes configuration more readable and maintainable. This approach allows you to chain configuration methods together, making complex setups easier to understand and modify.
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Basic Usage](#basic-usage)
+  - [Creating a Simple Configuration](#creating-a-simple-configuration)
+- [Builder Methods](#builder-methods)
+  - [Main Builder (`Builder`)](#main-builder-builder)
+  - [Target Builder (`TargetBuilder`)](#target-builder-targetbuilder)
+  - [Template Builder (`TemplateBuilder`)](#template-builder-templatebuilder)
+- [Benefits of the Builder Pattern](#benefits-of-the-builder-pattern)
+
+
 ## Overview
 
 The builder pattern consists of three main builder classes:
@@ -18,7 +30,7 @@ The builder pattern consists of three main builder classes:
 import { SimpleDocExtractor } from "@/simple-docs-scraper/index.js";
 import { TagExtractorPlugin } from "@/simple-docs-scraper/extractors/TagExtractorPlugin.js";
 
-const config = SimpleDocExtractor
+const builder = SimpleDocExtractor
     .create(process.cwd())
     .target((target) => {
         target.cwd("src")
@@ -35,26 +47,13 @@ const config = SimpleDocExtractor
     .addRecommendedFormatters()
     .buildConfig();
 
-const extractor = new SimpleDocExtractor(config);
-const result = await extractor.start();
-```
+// Create the service
+const config = builder.buildConfig();
 
-### Direct Service Creation
+// Alternatively, you can build the service directly
+const extractor = builder.buildService();
 
-You can also build the service directly without creating a config object:
-
-```typescript
-const extractor = SimpleDocExtractor
-    .create(process.cwd())
-    .target((target) => {
-        target.cwd("src")
-        target.patterns("**/*.{js,ts}")
-        target.outDir("docs")
-        target.createIndexFiles()
-    })
-    .addRecommendedFormatters()
-    .buildService();
-
+// Start the service
 const result = await extractor.start();
 ```
 
@@ -259,62 +258,6 @@ Sets a callback function to process file names.
 template.fileNameCallback((fileName) => fileName.replace('.ts', ''))
 ```
 
-## Advanced Examples
-
-### Multiple Targets with Different Configurations
-
-```typescript
-const config = SimpleDocExtractor
-    .create(process.cwd())
-    .target((target) => {
-        target.cwd("src")
-        target.patterns("**/*.{js,ts}")
-        target.ignores(["**/tests/**", "**/scripts/**"])
-        target.outDir("docs/js")
-        target.createIndexFiles()
-        target.plugins([
-            new TagExtractorPlugin({
-                tag: "docs",
-                searchAndReplace: "%content%",
-            }),
-        ])
-    })
-    .target((target) => {
-        target.cwd('scripts')
-        target.patterns("**/*.js")
-        target.outDir("docs/scripts")
-        target.indexTemplate((template) => {
-            template.useFile("src/templates/script-index.template.md")
-            template.useMarkdownLinks()
-        })
-        target.documentationTemplate((template) => {
-            template.useFile("src/templates/script-doc.template.md")
-        })
-    })
-    .addRecommendedFormatters()
-    .buildConfig();
-```
-
-### Custom Formatters
-
-```typescript
-const customFormatter: TFormatter = (config: FormatterConfig) => {
-    // Custom formatting logic
-    return config.content.toUpperCase();
-};
-
-const config = SimpleDocExtractor
-    .create(process.cwd())
-    .target((target) => {
-        target.cwd("src")
-        target.patterns("**/*.{js,ts}")
-        target.outDir("docs")
-    })
-    .addRecommendedFormatters()
-    .addFormatters(customFormatter)
-    .buildConfig();
-```
-
 ## Benefits of the Builder Pattern
 
 1. **Readability**: Method chaining makes the configuration flow clear and easy to follow
@@ -322,55 +265,3 @@ const config = SimpleDocExtractor
 3. **Type Safety**: Full TypeScript support with autocomplete
 4. **Maintainability**: Configuration is self-documenting and easy to modify
 5. **Reusability**: Can easily create multiple configurations for different scenarios
-
-## Migration from Object Configuration
-
-If you're migrating from object-based configuration, the builder pattern provides the same functionality with improved readability:
-
-**Before (Object Configuration):**
-```typescript
-const config: SimpleDocExtractorConfig = {
-  baseDir: process.cwd(),
-  targets: [
-    {
-      globOptions: {
-        cwd: "src",
-        patterns: "**/*.{js,ts}",
-        ignore: ["**/tests/**"],
-      },
-      outDir: "docs",
-      createIndexFile: true,
-      plugins: [
-        new TagExtractorPlugin({
-          tag: "docs",
-          searchAndReplace: "%content%",
-        }),
-      ],
-    },
-  ],
-  formatters: RecommendedFormatters.recommended(),
-};
-```
-
-**After (Builder Pattern):**
-```typescript
-const config = SimpleDocExtractor
-    .create(process.cwd())
-    .target((target) => {
-        target.cwd("src")
-        target.patterns("**/*.{js,ts}")
-        target.ignores(["**/tests/**"])
-        target.outDir("docs")
-        target.createIndexFiles()
-        target.plugins([
-            new TagExtractorPlugin({
-                tag: "docs",
-                searchAndReplace: "%content%",
-            }),
-        ])
-    })
-    .addRecommendedFormatters()
-    .buildConfig();
-```
-
-The builder pattern makes the configuration more readable and easier to understand at a glance.

@@ -2,6 +2,17 @@
 
 This document provides a simple example of how to configure the SimpleDocsExtractor.
 
+## Table of Contents
+
+- [Basic Configuration](#basic-configuration)
+- [Configuration Breakdown](#configuration-breakdown)
+  - [Required Properties](#required-properties)
+  - [Target Configuration](#target-configuration)
+  - [Extractor Plugins](#extractor-plugins)
+  - [Formatters](#formatters)
+- [Usage](#usage)
+
+
 ## Basic Configuration
 
 Here's a minimal configuration that processes TypeScript and JavaScript files:

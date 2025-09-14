@@ -2,6 +2,23 @@
 
 This guide explains how to set up automated documentation publishing using GitHub Actions.
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Reference Implementation](#reference-implementation)
+- [Required Setup](#required-setup)
+  - [1. Repository Secrets](#1-repository-secrets)
+  - [2. Permissions](#2-permissions)
+- [Key Workflow Steps](#key-workflow-steps)
+  - [1. Checkout Code](#1-checkout-code)
+  - [2. Generate Documentation](#2-generate-documentation)
+  - [3. Commit Changes](#3-commit-changes)
+- [Push to Protected Branches](#push-to-protected-branches)
+- [Usage](#usage)
+  - [Automatic Publishing](#automatic-publishing)
+  - [Manual Publishing](#manual-publishing)
+
+
 ## Overview
 
 The automated publishing workflow automatically generates and commits documentation updates when:
@@ -11,7 +28,9 @@ The automated publishing workflow automatically generates and commits documentat
 
 ## Reference Implementation
 
-See [formatting_and_docs.yml](../../.github/workflows/formatting_and_docs.yml) for a complete working example.
+See [formatting_and_docs.yml](https://github.com/ben-shepherd/simple-docs-extractor/blob/main/.github/workflows/formatting_and_docs.yml) for a complete working example.
+
+Note: The deployment of Github Pages is triggered when a new change is pushed to the main branch.
 
 ## Required Setup
 
