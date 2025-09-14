@@ -55,6 +55,11 @@ export class MarkdownIndexProcessor {
       markdownLink: this.config?.markdownLinks,
     }).process(directory);
 
+    // If no md files are found, return
+    if (processedEntries.length === 0) {
+      return;
+    }
+    
     // Handle directories recursively
     const directoryEntries = processedEntries.filter((entry) => entry.isDir);
     for (const dirEntry of directoryEntries) {
