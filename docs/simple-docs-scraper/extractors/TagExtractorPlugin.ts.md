@@ -6,7 +6,7 @@
 
  Extracts content from HTML/XML-like tags in source files.
 
-
+ 
 
  This extractor plugin searches for content between opening and closing tags,
 
@@ -42,7 +42,7 @@ This is documentation
 
  Updates the configuration for this extractor.
 
-
+ 
 
  @param {TagExtractorPluginConfig} config - The new configuration object
 
@@ -60,7 +60,7 @@ This is documentation
 
  Retrieves the current configuration of this extractor.
 
-
+ 
 
  @returns {TagExtractorPluginConfig} The current configuration object
 
@@ -76,7 +76,7 @@ This is documentation
 
  Extracts content from HTML/XML-like tags in the provided string.
 
-
+ 
 
  Searches for all instances of the configured tag and extracts the content
 
@@ -84,13 +84,13 @@ This is documentation
 
  the opening tag. Returns an error if no matching tags are found.
 
-
+ 
 
  @param {string} str - The content string to extract from
 
  @returns {Promise<ExtractedContent[] | ErrorResult>} Array of extracted content objects or error result
 
-
+ 
 
  For regex101 example:
 
@@ -108,7 +108,7 @@ This is documentation
 
  Composes a regular expression pattern for matching the configured tag.
 
-
+ 
 
  @param {string} rawTag - The cleaned tag name
 
@@ -126,7 +126,7 @@ This is documentation
 
  Extracts attributes from the opening tag string.
 
-
+ 
 
  @param {string} startTag - The opening tag string to extract attributes from
 
@@ -144,7 +144,7 @@ This is documentation
 
  Returns the pattern for the start tag.
 
-
+ 
 
  @param {string} rawTag - The raw tag name
 
@@ -162,7 +162,7 @@ This is documentation
 
  Returns the pattern for the attributes.
 
-
+ 
 
  @returns {string} The pattern for the attributes
 
@@ -178,7 +178,7 @@ This is documentation
 
  Returns the pattern for the inside tag.
 
-
+ 
 
  @returns {string} The pattern for the inside tag
 
@@ -194,7 +194,7 @@ This is documentation
 
  Returns the pattern for the end tag.
 
-
+ 
 
  @param {string} rawTag - The raw tag name
 
@@ -212,7 +212,7 @@ This is documentation
 
  Cleans the tag name by removing non-word characters.
 
-
+ 
 
  @param {string} startTag - The original tag name
 
@@ -228,7 +228,7 @@ This is documentation
 
 
 
-Last updated: 2025-09-14T12:32:46.275Z
+Last updated: 2025-09-14T15:05:57.636Z
 
 
 

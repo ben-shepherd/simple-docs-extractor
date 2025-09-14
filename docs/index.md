@@ -14,9 +14,11 @@ With GitHub Actions, the documentation is published to GitHub Pages automaticall
 
 ## Documentation
 
-Read more [here](docs/index.md).
+Read more [here](./docs/index.md).
 
 View the documentation on [GitHub Pages](https://ben-shepherd.github.io/simple-docs-extractor/).
+
+View the [Table of Contents](#table-of-contents) for this project.
 
 ## Features
 

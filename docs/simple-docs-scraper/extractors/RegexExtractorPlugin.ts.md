@@ -6,7 +6,7 @@
 
  Extracts content from strings using regular expression patterns.
 
-
+ 
 
  This extractor plugin uses a configured regular expression to find and extract
 
@@ -14,7 +14,7 @@
 
  the content from the first capture group will be extracted.
 
-
+ 
 
  Example usage:
 
@@ -23,11 +23,11 @@
    pattern: /\/\*\*([\s\S]*?)\*\//g,
    searchAndReplace: ''
  });
-
+ 
  // Will extract content from: \/*\* This is documentation \*
  const result = await extractor.extractFromString('/** This is documentation *\/');
  ```
-
+ 
 
  @param {RegexExtractorPluginConfig} config - The configuration object containing the regex pattern and options
 
@@ -47,7 +47,7 @@
 
  Updates the configuration for this extractor.
 
-
+ 
 
  @param {RegexExtractorPluginConfig} config - The new configuration object
 
@@ -65,7 +65,7 @@
 
  Retrieves the current configuration of this extractor.
 
-
+ 
 
  @returns {RegexExtractorPluginConfig} The current configuration object
 
@@ -81,7 +81,7 @@
 
  Extracts content from the provided string using the configured regex pattern.
 
-
+ 
 
  Applies the regex pattern to the input string and extracts the content from
 
@@ -89,7 +89,7 @@
 
  first capture group is not a string.
 
-
+ 
 
  @param {string} str - The content string to extract from
 
@@ -103,7 +103,7 @@
 
 
 
-Last updated: 2025-09-14T12:32:46.255Z
+Last updated: 2025-09-14T15:05:57.636Z
 
 
 

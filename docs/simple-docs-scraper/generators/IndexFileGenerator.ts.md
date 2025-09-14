@@ -72,7 +72,7 @@
 
  Applies plugins to the template content.
 
-
+ 
 
  @param {string} templateContent - The template content to apply plugins to
 
@@ -84,7 +84,7 @@
 
 
 
-Last updated: 2025-09-14T12:32:46.340Z
+Last updated: 2025-09-14T15:05:57.637Z
 
 
 
