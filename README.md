@@ -8,6 +8,8 @@ A lightweight TypeScript library for extracting documentation from source files 
 
 Documentation is available [here](docs/index.md).
 
+View on [GitHub Pages](https://ben-shepherd.github.io/simple-docs-extractor/).
+
 ## Features
 
 - **Easy Documentation Writing** - Write docs directly in your code using simple tags like `<docs>` and `<method>`
