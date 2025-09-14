@@ -7,7 +7,6 @@ Below you will find the table of contents and links to all generated documentati
 
 ## Folders
 
-- [assets/](assets/index.md)
 - [config/](config/index.md)
 - [github-actions/](github-actions/index.md)
 - [plugins/](plugins/index.md)

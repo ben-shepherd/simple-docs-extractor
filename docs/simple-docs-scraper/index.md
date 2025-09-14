@@ -13,6 +13,7 @@ This is the index file for the generated documentation. Below you will find the 
 - [files/](files/index.md)
 - [formatters/](formatters/index.md)
 - [generators/](generators/index.md)
+- [plugins/](plugins/index.md)
 - [processors/](processors/index.md)
 - [services/](services/index.md)
 - [transformers/](transformers/index.md)
