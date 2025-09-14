@@ -418,6 +418,35 @@ This is the second block
     });
   });
 
+  describe("documentation files", () => {
+    test("should not generate documentation files for no extracted content", async () => {
+
+      fs.mkdirSync(getOutputPath("js-files"));
+      fs.writeFileSync(getOutputPath("js-files/no-extracted-content.js"), "/**\n* This is a test block\n*/\n");
+
+      scraper = new SimpleDocExtractor({
+        ...defaultConfig,
+        targets: [
+          {
+            ...jsFilesTarget,
+            globOptions: {
+              ...jsFilesTarget.globOptions,
+              cwd: getOutputPath("js-files"),
+            },
+            outDir: getOutputPath("js-files"),
+          },
+        ],
+      });
+
+      const results = await scraper.start();
+
+      const fileExists = fs.existsSync(getOutputPath("no-extracted-content.js.md"));
+
+      expect(fileExists).toBe(false);
+      expect(results.missingDocumentationFiles).toContain(getOutputPath("js-files/no-extracted-content.js"));
+    });
+  });
+
   describe("index files", () => {
     test("should generate the index files for the root directory", async () => {
 

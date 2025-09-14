@@ -1,5 +1,6 @@
 import { ExcerptExtractorConfig } from "../transformers/ExcerptExtractor.js";
 import { FileNameCallback, LineCallback, Templates } from "../types/config.t.js";
+import { ExtractorPlugin } from "../types/extractor.t.js";
 
 /**
  * <docs>
@@ -28,7 +29,8 @@ export class TemplateBuilder {
         private _directoryHeading: string = "\n## Folders\n",
         private _excerpt?: ExcerptExtractorConfig,
         private _lineCallback?: LineCallback,
-        private _fileNameCallback?: FileNameCallback
+        private _fileNameCallback?: FileNameCallback,
+        private _plugins: ExtractorPlugin[] = []
     ) {}
 
     /**
@@ -122,6 +124,19 @@ export class TemplateBuilder {
     }
 
     /**
+     * <method name="plugins">
+     * Sets the plugins to use for this template.
+     * 
+     * @param {ExtractorPlugin[]} plugins - The plugins to use
+     * @returns {TemplateBuilder} This builder instance for method chaining
+     * </method>
+     */
+    plugins(plugins: ExtractorPlugin | ExtractorPlugin[]) {
+        this._plugins = Array.isArray(plugins) ? plugins : [plugins];
+        return this;
+    }
+
+    /**
      * <method name="build">
      * Builds and returns the template configuration object.
      * 
@@ -137,7 +152,8 @@ export class TemplateBuilder {
                 directoryHeading: this._directoryHeading,
                 excerpt: this._excerpt,
                 lineCallback: this._lineCallback,
-                fileNameCallback: this._fileNameCallback
+                fileNameCallback: this._fileNameCallback,
+                plugins: this._plugins
             }
         }
     }

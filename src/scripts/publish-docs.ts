@@ -1,3 +1,4 @@
+import { CopyContentsPlugin } from "@/simple-docs-scraper/extractors/CopyContentsPlugin.js";
 import { TagExtractorPlugin } from "@/simple-docs-scraper/extractors/TagExtractorPlugin.js";
 import {
   SimpleDocExtractor
@@ -45,8 +46,18 @@ export const DEFAULT_CONFIG = SimpleDocExtractor
         tag: "method",
         searchAndReplace: "%methods%",
         attributeFormat: "### **{value}**",
-      }),
+      })
     ])
+    target.rootIndexTemplate((template) => {
+      template.useFile(path.join(process.cwd(), "src/templates/root-index.template.md"));
+      template.useMarkdownLinks();
+      template.plugins(
+        new CopyContentsPlugin({
+          fileToCopy: path.join(process.cwd(), "README.md"),
+          searchAndReplace: "%readme%",
+        }),
+      )
+    })
   })
   .addRecommendedFormatters()
   .buildConfig();

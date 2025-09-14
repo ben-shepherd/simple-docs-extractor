@@ -3,7 +3,7 @@ import { ExtractedContent } from "../extractors/DocumentContentExtractor.js";
 import { Target } from "../services/SimpleDocExtractor.js";
 
 export type TemplateContentExtractionContentMergerConfig = {
-  target: Target;
+  target?: Target;
 };
 
 /**
@@ -34,7 +34,7 @@ export type TemplateContentExtractionContentMergerConfig = {
  * </docs>
  */
 class TemplateContentExtractionContentMerger {
-  constructor(private config: TemplateContentExtractionContentMergerConfig) {}
+  constructor(private config: TemplateContentExtractionContentMergerConfig = {}) {}
 
   /**
    * <method name="handle">
@@ -145,6 +145,10 @@ class TemplateContentExtractionContentMerger {
     extractedContent: ExtractedContent,
     contentBlock: string[],
   ) {
+    if(!this.config.target) {
+      return contentBlock;
+    }
+
     const attributes = extractedContent?.attributes ?? {};
     const attributeFormat =
       ConfigHelper.getAttributeFormatBySearchAndReplace(

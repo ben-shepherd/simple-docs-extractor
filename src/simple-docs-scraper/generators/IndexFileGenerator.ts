@@ -1,12 +1,15 @@
 import fs from "fs";
 import path from "path";
+import { ExtractedContent } from "../extractors/DocumentContentExtractor.js";
 import { IndexStructurePreProcessorEntry } from "../processors/IndexStructurePreProcessor.js";
 import {
   DEFAULT_CONFIG as DEFAULT_EXCERPT_CONFIG,
   ExcerptExtractor,
   ExcerptExtractorConfig,
 } from "../transformers/ExcerptExtractor.js";
+import TemplateContentExtractionContentMerger from "../transformers/TemplateContentExtractionContentMerger.js";
 import { FileNameCallback, LineCallback, TemplatePathConfig } from "../types/config.t.js";
+import { ExtractorPlugin } from "../types/extractor.t.js";
 
 export type IndexFileGeneratorConfig = TemplatePathConfig & {
   outDir: string;
@@ -18,6 +21,7 @@ export type IndexFileGeneratorConfig = TemplatePathConfig & {
   excerpt?: ExcerptExtractorConfig;
   lineCallback?: LineCallback;
   fileNameCallback?: FileNameCallback
+  plugins?: ExtractorPlugin[];
 };
 
 /**
@@ -58,7 +62,7 @@ export class IndexFileGenerator {
    * @param processedArray - Array of processed directory entries to include in the index
    * </method>
    */
-  saveIndexFile(processedArray: IndexStructurePreProcessorEntry[]) {
+  async saveIndexFile(processedArray: IndexStructurePreProcessorEntry[]) {
     // Check if the out directory exists
     if (!fs.existsSync(this.config.outDir)) {
       fs.mkdirSync(this.config.outDir, { recursive: true });
@@ -122,11 +126,37 @@ export class IndexFileGenerator {
       }
     }
 
+    // Replace the search and replace with the content
     templateContent = templateContent.replace(
       this.getSearchAndReplace(),
       content,
     );
+    
+    // Apply plugins to the template content
+    templateContent = await this.applyPlugins(templateContent);
+
+    // Write the file
     fs.writeFileSync(outFilePath, templateContent);
+  }
+
+  /**
+   * <method name="applyPlugins">
+   * Applies plugins to the template content.
+   * 
+   * @param {string} templateContent - The template content to apply plugins to
+   * </method>
+   */
+  protected async applyPlugins(templateContent: string) {
+    if (this.config.plugins) {
+      for (const plugin of this.config.plugins) {
+        const results = await plugin.extractFromString(templateContent);
+        
+        templateContent = new TemplateContentExtractionContentMerger()
+          .handle(templateContent, results as ExtractedContent[]);
+      }
+    }
+
+    return templateContent;
   }
 
   private createExcerpt(
