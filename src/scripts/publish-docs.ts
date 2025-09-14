@@ -24,6 +24,7 @@ import path from "path";
  */
 export const DEFAULT_CONFIG = SimpleDocExtractor
   .create(process.cwd())
+    // Define our global templates (This can also be done on a target level)
     .indexTemplate((template) => {
       template.useFile(path.join(process.cwd(), "src/templates/index.template.md"));
       template.useMarkdownLinks();
@@ -31,13 +32,14 @@ export const DEFAULT_CONFIG = SimpleDocExtractor
     .documentationTemplate((template) => {
       template.useFile(path.join(process.cwd(), "src/templates/documentation.template.md"));
     })
+  // Define our target(s) to extract documentation from
   .target((target) => {
-    target.cwd(path.join(process.cwd(), 'src'))
-    target.patterns("**/*.{js,ts}")
-    target.ignores(["**/tests/**", "**/scripts/**"])
-    target.outDir(path.join(process.cwd(), "docs"))
-    target.createIndexFiles()
-    target.plugins([
+    target.cwd(path.join(process.cwd(), 'src')) // The directory to search for files to extract documentation from
+    target.outDir(path.join(process.cwd(), "docs")) // The directory to output the generated documentation to
+    target.patterns("**/*.{js,ts}") // The patterns to match files to extract documentation from
+    target.ignores(["**/tests/**", "**/scripts/**"]) // The patterns to ignore when searching for files to extract documentation from
+    target.createIndexFiles() // Whether to create an index.md file for this target
+    target.plugins([ // The plugins to use when extracting documentation
       new TagExtractorPlugin({
         tag: "docs",
         searchAndReplace: "%content%",
@@ -48,10 +50,11 @@ export const DEFAULT_CONFIG = SimpleDocExtractor
         attributeFormat: "### **{value}**",
       })
     ])
+    // Define the template to use for the root index file
     target.rootIndexTemplate((template) => {
-      template.useFile(path.join(process.cwd(), "src/templates/root-index.template.md"));
-      template.useMarkdownLinks();
-      template.plugins(
+      template.useFile(path.join(process.cwd(), "src/templates/root-index.template.md")); // The template to use for the root index file
+      template.useMarkdownLinks(); // Whether to use markdown links in the root index file
+      template.plugins( // The plugins to use when generating the root index file
         new CopyContentsPlugin({
           fileToCopy: path.join(process.cwd(), "README.md"),
           searchAndReplace: "%readme%",
@@ -59,8 +62,8 @@ export const DEFAULT_CONFIG = SimpleDocExtractor
       )
     })
   })
-  .addRecommendedFormatters()
-  .buildConfig();
+  .addRecommendedFormatters() // Add the recommended formatters to the configuration
+  .buildConfig(); // Build the configuration
 
 export const publishDocs = async (
   config: SimpleDocExtractorConfig = DEFAULT_CONFIG,
