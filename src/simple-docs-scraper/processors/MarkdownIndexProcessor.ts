@@ -7,7 +7,13 @@ import { IndexStructurePreProcessor } from "./IndexStructurePreProcessor.js";
 export type MarkdownIndexProcessorConfig = Omit<
   IndexFileGeneratorConfig,
   "outDir"
->;
+> & {
+  recursive: boolean;
+};
+
+export const DEFAULT_CONFIG: MarkdownIndexProcessorConfig = {
+  recursive: true,
+};
 
 /**
  * <docs>
@@ -31,7 +37,7 @@ export type MarkdownIndexProcessorConfig = Omit<
  * </docs>
  */
 export class MarkdownIndexProcessor {
-  constructor(private config: MarkdownIndexProcessorConfig = {}) {}
+  constructor(private config: MarkdownIndexProcessorConfig = DEFAULT_CONFIG) { }
 
   /**
    * <method name="handle">
@@ -59,17 +65,19 @@ export class MarkdownIndexProcessor {
     if (processedEntries.length === 0) {
       return;
     }
-    
-    // Handle directories recursively
-    const directoryEntries = processedEntries.filter((entry) => entry.isDir);
-    for (const dirEntry of directoryEntries) {
-      await this.handleDirectoryRecusrively(dirEntry.src);
-    }
 
-    // Re-process entries
-    processedEntries = await new IndexStructurePreProcessor({
-      markdownLink: this.config?.markdownLinks,
-    }).process(directory);
+    if (this.config?.recursive) {
+      // Handle directories recursively
+      const directoryEntries = processedEntries.filter((entry) => entry.isDir);
+      for (const dirEntry of directoryEntries) {
+        await this.handleDirectoryRecusrively(dirEntry.src);
+      }
+
+      // Re-process entries
+      processedEntries = await new IndexStructurePreProcessor({
+        markdownLink: this.config?.markdownLinks,
+      }).process(directory);
+    }
 
     // Save the index.md file
     await new IndexFileGenerator({

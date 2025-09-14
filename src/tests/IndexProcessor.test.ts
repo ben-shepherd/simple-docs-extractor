@@ -237,6 +237,7 @@ describe("Example Test Suite", () => {
       const indexProcessor = new MarkdownIndexProcessor({
         markdownLinks: true,
         templatePath: getOutputPath("templates/index.template.md"),
+        recursive: true,
       });
 
       await indexProcessor.handle(docsPath);
@@ -266,6 +267,7 @@ describe("Example Test Suite", () => {
 
       const indexProcessor = new MarkdownIndexProcessor({
         markdownLinks: true,
+        recursive: true,
       });
       await indexProcessor.handle(docsListDirs);
 
@@ -293,6 +295,7 @@ describe("Example Test Suite", () => {
 
       const indexProcessor = new MarkdownIndexProcessor({
         markdownLinks: true,
+        recursive: true,
       });
 
       await indexProcessor.handle(docsListDirs);
@@ -322,6 +325,7 @@ describe("Example Test Suite", () => {
 
       const indexProcessor = new MarkdownIndexProcessor({
         markdownLinks: true,
+        recursive: true,
       });
 
       await indexProcessor.handle(docsListDirs);
@@ -379,6 +383,7 @@ describe("Example Test Suite", () => {
     test("should create files with a heading", async () => {
       indexProcessor = new MarkdownIndexProcessor({
         filesHeading: "## Files",
+        recursive: true,
       });
 
       fs.mkdirSync(getOutputPath("docs-heading"), { recursive: true });
@@ -398,6 +403,7 @@ describe("Example Test Suite", () => {
     test("should create directories with a heading", async () => {
       indexProcessor = new MarkdownIndexProcessor({
         directoryHeading: "## Folders",
+        recursive: true,
       });
 
       fs.mkdirSync(getOutputPath("docs-heading/a"), { recursive: true });
@@ -417,6 +423,7 @@ describe("Example Test Suite", () => {
       indexProcessor = new MarkdownIndexProcessor({
         directoryHeading: "## Folders",
         filesHeading: "## Files",
+        recursive: true,
       });
 
       fs.mkdirSync(getOutputPath("docs-heading/a"), { recursive: true });
@@ -457,6 +464,7 @@ This additional text helps simulate a more realistic documentation scenario.`;
           addEllipsis: true,
           firstSentenceOnly: false,
         },
+        recursive: true,
       });
       await indexProcessor.handle(getOutputPath("docs-excerpt"));
 
