@@ -3,4 +3,4 @@ plugins:
 - jekyll-remote-theme
 
 title: Simple Docs Extractor
-description: A simple documentation extractor for JavaScript and TypeScript.
+description: Documentation solution for writing documentation directly in your source code
