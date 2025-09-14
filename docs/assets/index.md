@@ -7,12 +7,7 @@ This is the index file for the generated documentation. Below you will find the 
 
 ## Folders
 
-- [assets/](assets/index.md)
-- [config/](config/index.md)
-- [github-actions/](github-actions/index.md)
-- [plugins/](plugins/index.md)
-- [simple-docs-scraper/](simple-docs-scraper/index.md)
-- [templates/](templates/index.md)
+- [css/](css/index.md)
 
 
 

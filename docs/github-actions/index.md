@@ -7,9 +7,7 @@ This is the index file for the generated documentation. Below you will find the 
 
 ## Files
 
-- [documentation-template.md](documentation-template.md)
-- [index-template.md](index-template.md)
-- [locales.md](locales.md)
+- [automate-publishing.md](automate-publishing.md)
 
 
 
