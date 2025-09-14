@@ -11,7 +11,7 @@ export type MarkdownIndexProcessorConfig = Omit<
   recursive: boolean;
 };
 
-export const DEFAULT_CONFIG: MarkdownIndexProcessorConfig = {
+export const MARKDOWN_INDEX_PROCESSOR_DEFAULTS: MarkdownIndexProcessorConfig = {
   recursive: true,
 };
 
@@ -37,7 +37,7 @@ export const DEFAULT_CONFIG: MarkdownIndexProcessorConfig = {
  * </docs>
  */
 export class MarkdownIndexProcessor {
-  constructor(private config: MarkdownIndexProcessorConfig = DEFAULT_CONFIG) { }
+  constructor(private config: MarkdownIndexProcessorConfig = MARKDOWN_INDEX_PROCESSOR_DEFAULTS) { }
 
   /**
    * <method name="handle">
