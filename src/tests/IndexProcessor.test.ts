@@ -470,4 +470,15 @@ This additional text helps simulate a more realistic documentation scenario.`;
       );
     });
   });
+
+  describe("creation with no md files found", () => {
+    test("should not create an index.md file when no md files are found", async () => {
+      fs.mkdirSync(getOutputPath("docs-no-md"), { recursive: true });
+      fs.writeFileSync(getOutputPath("docs-no-md/styles.scss"), "");
+
+      await indexProcessor.handle(getOutputPath("docs-no-md"));
+
+      expect(fs.existsSync(getOutputPath("docs-no-md/index.md"))).toBe(false);
+    });
+  });
 });
