@@ -186,6 +186,24 @@
 
 
 
+### **useRootIndexTemplate**
+
+ Sets a root index template file path.
+
+
+
+ @param {string} templatePath - The path to the root index template file
+
+ @returns {TargetBuilder} This builder instance for method chaining
+
+ 
+
+
+
+---
+
+
+
 ### **documentationTemplate**
 
  Configures the documentation template using a callback function.
@@ -238,7 +256,7 @@
 
 
 
-Last updated: 2025-09-14T00:59:43.952Z
+Last updated: 2025-09-14T12:17:18.530Z
 
 
 

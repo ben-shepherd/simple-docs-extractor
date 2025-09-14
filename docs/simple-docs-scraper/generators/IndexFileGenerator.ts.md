@@ -68,7 +68,23 @@
 
 
 
-Last updated: 2025-09-14T00:59:44.152Z
+### **applyPlugins**
+
+ Applies plugins to the template content.
+
+
+
+ @param {string} templateContent - The template content to apply plugins to
+
+ 
+
+
+
+---
+
+
+
+Last updated: 2025-09-14T12:17:18.702Z
 
 
 

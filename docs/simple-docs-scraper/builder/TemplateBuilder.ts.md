@@ -168,6 +168,24 @@
 
 
 
+### **plugins**
+
+ Sets the plugins to use for this template.
+
+
+
+ @param {ExtractorPlugin[]} plugins - The plugins to use
+
+ @returns {TemplateBuilder} This builder instance for method chaining
+
+ 
+
+
+
+---
+
+
+
 ### **build**
 
  Builds and returns the template configuration object.
@@ -184,7 +202,7 @@
 
 
 
-Last updated: 2025-09-14T00:59:43.967Z
+Last updated: 2025-09-14T12:17:18.546Z
 
 
 

@@ -160,6 +160,22 @@
 
 
 
+### **handleRootIndexFile**
+
+ Creates the root index file.
+
+
+
+ @param target - The target configuration
+
+ 
+
+
+
+---
+
+
+
 ### **getIndexProcessorConfig**
 
  Gets the index processor config for the target.
@@ -202,7 +218,7 @@
 
 
 
-Last updated: 2025-09-14T00:59:44.223Z
+Last updated: 2025-09-14T12:17:18.776Z
 
 
 

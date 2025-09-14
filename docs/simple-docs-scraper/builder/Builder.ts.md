@@ -72,6 +72,24 @@
 
 
 
+### **rootIndexTemplate**
+
+ Configures the global root index template using a callback function.
+
+
+
+ @param {TemplateCallback} callback - The callback function to configure the template
+
+ @returns {Builder} This builder instance for method chaining
+
+ 
+
+
+
+---
+
+
+
 ### **documentationTemplate**
 
  Configures the global documentation template using a callback function.
@@ -156,7 +174,7 @@
 
 
 
-Last updated: 2025-09-14T00:59:43.929Z
+Last updated: 2025-09-14T12:17:18.504Z
 
 
 
