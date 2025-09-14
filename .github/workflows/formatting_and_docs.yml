@@ -60,10 +60,9 @@ jobs:
       - uses: stefanzweifel/git-auto-commit-action@v6
         if: steps.check-changes.outputs.changes == 'true'
         with:
-          commit_message: "docs: publish documentation updates"
+          commit_message: "docs: publish documentation updates: skip-checks:true"
           file_pattern: "docs/**"
           commit_author: "GitHub Actions <actions@github.com>"
           commit_user_name: "github-actions[bot]"
           commit_user_email: "actions@github.com"
-        env:
-          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+          token: ${{ secrets.ADMIN_TOKEN || secrets.GITHUB_TOKEN }}
