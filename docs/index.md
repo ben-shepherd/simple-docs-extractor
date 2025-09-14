@@ -34,8 +34,6 @@ With GitHub Actions, the documentation is published to GitHub Pages automaticall
 
 View the documentation on [GitHub Pages](https://ben-shepherd.github.io/simple-docs-extractor/).
 
-To see indivudual documentation pages for each file, view the [Table of Contents](#table-of-contents) for this project.
-
 ## Features
 
 - **Easy Documentation Writing** - Write docs directly in your code using simple tags like `<docs>` and `<method>`
@@ -54,7 +52,31 @@ To see indivudual documentation pages for each file, view the [Table of Contents
 
 ## Examples
 
-### Basic Configuration Using the Builder Pattern
+### Basic Configuration with Minimal Configuration
+
+```typescript
+const service = SimpleDocExtractor
+  .create(process.cwd())
+  .target((target) => {
+    target.cwd(path.join(process.cwd(), 'src'))
+    target.outDir(path.join(process.cwd(), "docs"))
+    target.patterns("**/*")
+    target.createIndexFiles()
+  })
+  .addRecommendedFormatters()
+  .buildService();
+
+await service.start();
+```
+
+## Simple Doc Configuration Example
+
+This is the same example as used in our [publish-docs.ts](./src/scripts/publish-docs.ts) script.
+
+- Extracts content from <docs> from the top of the classes.
+- Extracts content from <method> from the top of the methods.
+- It also copies the README.md file to the root index file.
+- It only targets js/ts files.
 
 ```typescript
 import path from "path";
