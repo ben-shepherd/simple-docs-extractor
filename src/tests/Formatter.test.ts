@@ -1,5 +1,5 @@
-import { TagExtractorPlugin } from "@/simple-docs-scraper/extractors/TagExtractorPlugin.js";
 import { AddDoubleLinesFormatter } from "@/simple-docs-scraper/formatters/AddDoubleLinesFormatter.js";
+import { TagExtractorPlugin } from "@/simple-docs-scraper/plugins/TagExtractorPlugin.js";
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import path from "path";

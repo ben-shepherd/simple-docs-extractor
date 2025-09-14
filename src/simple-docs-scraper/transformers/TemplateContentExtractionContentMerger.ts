@@ -1,5 +1,5 @@
 import { ConfigHelper } from "../config/ConfigHelper.js";
-import { ExtractedContent } from "../extractors/DocumentContentExtractor.js";
+import { ExtractedContent } from "../plugins/DocumentContentExtractor.js";
 import { Target } from "../services/SimpleDocExtractor.js";
 
 export type TemplateContentExtractionContentMergerConfig = {

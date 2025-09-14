@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { ExtractedContent } from "../extractors/DocumentContentExtractor.js";
+import { ExtractedContent } from "../plugins/DocumentContentExtractor.js";
 
 // Type representing locale information extracted from a file
 export type Locales = {

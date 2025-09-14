@@ -1,5 +1,5 @@
-import { CopyContentsPlugin } from "@/simple-docs-scraper/extractors/CopyContentsPlugin.js";
 import { ErrorResult } from "@/simple-docs-scraper/index.js";
+import { CopyContentsPlugin } from "@/simple-docs-scraper/plugins/CopyContentsPlugin.js";
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import { deleteOutputFiles } from "../helpers/deleteOutputFiles.js";

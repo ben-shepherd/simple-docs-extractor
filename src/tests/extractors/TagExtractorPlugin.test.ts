@@ -1,5 +1,5 @@
-import { TagExtractorPlugin } from "@/simple-docs-scraper/extractors/TagExtractorPlugin.js";
 import { ExtractedContent } from "@/simple-docs-scraper/index.js";
+import { TagExtractorPlugin } from "@/simple-docs-scraper/plugins/TagExtractorPlugin.js";
 import { beforeEach, describe, expect, test } from "@jest/globals";
 
 describe("Tag Extractor", () => {

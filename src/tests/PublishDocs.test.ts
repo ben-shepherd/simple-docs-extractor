@@ -133,8 +133,8 @@ describe("Publish Docs", () => {
       const rootIndexFileContent = fs.readFileSync(getOutputPath("docs/index.md"), "utf8");
 
       expect(rootIndexFileContent).toContain("# Simple Docs Extractor");
+      expect(rootIndexFileContent).toContain("## About");
       expect(rootIndexFileContent).toContain("## Features");
-      expect(rootIndexFileContent).toContain("## Table of Contents");
     });
   });
 
@@ -147,8 +147,8 @@ describe("Publish Docs", () => {
       const rootIndexFileContent = fs.readFileSync(getOutputPath("docs/index.md"), "utf8");
   
       expect(rootIndexFileContent).toContain("# Simple Docs Extractor");
+      expect(rootIndexFileContent).toContain("## About");
       expect(rootIndexFileContent).toContain("## Features");
-      expect(rootIndexFileContent).toContain("## Table of Contents");
 
       const nonRootIndexFileContent = fs.readFileSync(getOutputPath("docs/simple-docs-scraper/index.md"), "utf8");
 

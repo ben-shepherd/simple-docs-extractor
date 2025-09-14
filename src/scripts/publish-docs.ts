@@ -1,8 +1,8 @@
-import { CopyContentsPlugin } from "@/simple-docs-scraper/extractors/CopyContentsPlugin.js";
-import { TagExtractorPlugin } from "@/simple-docs-scraper/extractors/TagExtractorPlugin.js";
 import {
   SimpleDocExtractor
 } from "@/simple-docs-scraper/index.js";
+import { CopyContentsPlugin } from "@/simple-docs-scraper/plugins/CopyContentsPlugin.js";
+import { TagExtractorPlugin } from "@/simple-docs-scraper/plugins/TagExtractorPlugin.js";
 import { SimpleDocExtractorConfig } from "@/simple-docs-scraper/types/config.t.js";
 import path from "path";
 

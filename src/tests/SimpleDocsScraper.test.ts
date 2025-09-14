@@ -1,4 +1,4 @@
-import { TagExtractorPlugin } from "@/simple-docs-scraper/extractors/TagExtractorPlugin.js";
+import { TagExtractorPlugin } from "@/simple-docs-scraper/plugins/TagExtractorPlugin.js";
 import { LocalesService } from "@/simple-docs-scraper/services/LocalesService.js";
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";

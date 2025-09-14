@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { ExtractedContent } from "../extractors/DocumentContentExtractor.js";
+import { ExtractedContent } from "../plugins/DocumentContentExtractor.js";
 import { IndexStructurePreProcessorEntry } from "../processors/IndexStructurePreProcessor.js";
 import {
   DEFAULT_CONFIG as DEFAULT_EXCERPT_CONFIG,

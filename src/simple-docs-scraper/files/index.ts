@@ -1,2 +1,3 @@
-export * from "../extractors/DocumentContentExtractor.js";
+export * from "../plugins/DocumentContentExtractor.js";
 export * from "./FileScanner.js";
+

@@ -2,13 +2,12 @@
 
 Extractor plugins are the core components that extract documentation content from source files. They provide flexible ways to identify and extract documentation using different methods.
 
-## Files
-
-- [TagExtractorPlugin](./simple-docs-scraper/extractors/TagExtractorPlugin.ts.md)
-- [RegexExtractorPlugin](./simple-docs-scraper/extractors/RegexExtractorPlugin.ts.md)
-- [CallbackExtractorPlugin](./simple-docs-scraper/extractors/CallbackExtractorPlugin.ts.md)
-
 ## Built-in Plugins
+
+- [TagExtractorPlugin](https://github.com/ben-shepherd/simple-docs-extractor/blob/main/src/simple-docs-scraper/plugins/TagExtractorPlugin.ts)
+- [RegexExtractorPlugin](https://github.com/ben-shepherd/simple-docs-extractor/blob/main/src/simple-docs-scraper/plugins/RegexExtractorPlugin.ts)
+- [CallbackExtractorPlugin](https://github.com/ben-shepherd/simple-docs-extractor/blob/main/src/simple-docs-scraper/plugins/CallbackExtractorPlugin.ts)
+- [CopyContentsPlugin](https://github.com/ben-shepherd/simple-docs-extractor/blob/main/src/simple-docs-scraper/plugins/CopyContentsPlugin.ts)
 
 ### Tag Extractor Plugin
 
@@ -92,6 +91,47 @@ const extractor = new CallbackExtractorPlugin({
 - `callback` (function): Custom extraction function
 - `searchAndReplace` (string): Replacement text for the extracted content
 - `defaultText` (optional): Default text when no content is found
+
+### Copy Contents Plugin
+
+Copies the entire contents of specified files into the documentation. This is useful for including external files like README files, configuration examples, or other documentation files.
+
+```typescript
+import { CopyContentsPlugin } from 'simple-docs-scraper/extractors';
+
+const extractor = new CopyContentsPlugin({
+  fileToCopy: 'README.md',
+  searchAndReplace: '%readme%'
+});
+```
+
+**Configuration:**
+- `fileToCopy` (string | string[]): Path(s) to the file(s) to copy
+- `searchAndReplace` (string): Replacement text for the copied content
+
+**Example usage:**
+```typescript
+// Single file
+const extractor = new CopyContentsPlugin({
+  fileToCopy: 'docs/installation.md',
+  searchAndReplace: '%installation%'
+});
+
+// Multiple files
+const extractor = new CopyContentsPlugin({
+  fileToCopy: ['README.md', 'CHANGELOG.md', 'LICENSE'],
+  searchAndReplace: '%project-files%'
+});
+```
+
+**Error handling:**
+The plugin will return an error if any of the specified files cannot be found:
+```typescript
+{
+  errorMessage: "Unable to copy file contents. File 'missing-file.md' not found",
+  throwable: true
+}
+```
 
 ## Creating Custom Extractor Plugins
 
@@ -217,3 +257,4 @@ const results = await extractor.extractFromString(fileContent);
 - **Code Comments**: Extract single-line or multi-line comments
 - **Markdown**: Extract content from markdown files
 - **API Documentation**: Extract OpenAPI/Swagger documentation
+- **File Inclusion**: Copy entire file contents (README, CHANGELOG, LICENSE, etc.)
