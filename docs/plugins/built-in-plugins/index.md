@@ -7,12 +7,10 @@ This is the index file for the generated documentation. Below you will find the 
 
 ## Files
 
-- [CreatingCustomPlugins.md](CreatingCustomPlugins.md)
-- [usage.md](usage.md)
-
-## Folders
-
-- [built-in-plugins/](built-in-plugins/index.md)
+- [CallbackExtractorPlugin.md](CallbackExtractorPlugin.md)
+- [CopyContentsPlugin.md](CopyContentsPlugin.md)
+- [RegexExtractorPlugin.md](RegexExtractorPlugin.md)
+- [TagExtractorPlugin.md](TagExtractorPlugin.md)
 
 
 
