@@ -106,7 +106,7 @@ describe("Injection", () => {
         "This is a test string.",
         "%content%",
       );
-      injection.writeFile(content, "test.txt");
+      injection.writeFile(content, getOutputPath("test.txt"));
 
       // Make folder recursively if it doesn't exist
       if (!fs.existsSync(process.cwd() + "/src/tests/output")) {
