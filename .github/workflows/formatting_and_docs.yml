@@ -65,4 +65,4 @@ jobs:
           commit_author: "GitHub Actions <actions@github.com>"
           commit_user_name: "github-actions[bot]"
           commit_user_email: "actions@github.com"
-          token: ${{ secrets.ADMIN_TOKEN || secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
