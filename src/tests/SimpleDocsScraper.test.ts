@@ -417,4 +417,70 @@ This is the second block
       expect(results.logs.some((log) => log.includes("Found 1 file(s) with no documentation"))).toBe(true);
     });
   });
+
+  describe("documentation files", () => {
+    test("should not generate documentation files for no extracted content", async () => {
+
+      fs.mkdirSync(getOutputPath("js-files"));
+      fs.writeFileSync(getOutputPath("js-files/no-extracted-content.js"), "/**\n* This is a test block\n*/\n");
+
+      scraper = new SimpleDocExtractor({
+        ...defaultConfig,
+        targets: [
+          {
+            ...jsFilesTarget,
+            globOptions: {
+              ...jsFilesTarget.globOptions,
+              cwd: getOutputPath("js-files"),
+            },
+            outDir: getOutputPath("js-files"),
+          },
+        ],
+      });
+
+      const results = await scraper.start();
+
+      const fileExists = fs.existsSync(getOutputPath("no-extracted-content.js.md"));
+
+      expect(fileExists).toBe(false);
+      expect(results.missingDocumentationFiles).toContain(getOutputPath("js-files/no-extracted-content.js"));
+    });
+  });
+
+  describe("index files", () => {
+    test("should generate the index files for the root directory", async () => {
+
+      fs.writeFileSync(getOutputPath("root-index.template.md"), TEMPLATE_CONTENT + '\nRoot Index');
+
+      scraper = new SimpleDocExtractor({
+        ...defaultConfig,
+        targets: [
+          {
+            ...jsFilesTarget,
+            templates: {
+              ...jsFilesTarget.templates,
+              rootIndex: {
+                templatePath: getOutputPath("root-index.template.md"),
+              },
+            },
+          },
+          twigFilesTarget,
+        ]
+      });
+
+      await scraper.start();
+
+      const rootIndexFileContent = fs.readFileSync(
+        getOutputPath("js-files/index.md"),
+        "utf8",
+      );
+      const twigFilesIndexFileContent = fs.readFileSync(
+        getOutputPath("twig-files/index.md"),
+        "utf8",
+      );
+
+      expect(rootIndexFileContent).toContain("Root Index");
+      expect(twigFilesIndexFileContent).not.toContain("Root Index");
+    });
+  });
 });

@@ -62,6 +62,21 @@ export class Builder {
     }
 
     /**
+     * <method name="rootIndexTemplate">
+     * Configures the global root index template using a callback function.
+     * 
+     * @param {TemplateCallback} callback - The callback function to configure the template
+     * @returns {Builder} This builder instance for method chaining
+     * </method>
+     */
+    rootIndexTemplate(callback: TemplateCallback) {
+        const builder = new TemplateBuilder('rootIndex');
+        callback(builder);
+        this._templates.rootIndex = builder.build().rootIndex;
+        return this;
+    }
+
+    /**
      * <method name="documentationTemplate">
      * Configures the global documentation template using a callback function.
      * 

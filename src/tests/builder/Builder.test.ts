@@ -93,6 +93,17 @@ describe("Builder", () => {
                         template.useMarkdownLinks()
                     })
                     target.useDocumentationTemplate("src/templates/documentation.template.md")
+                    target.rootIndexTemplate((template) => {
+                        template.useFile("src/templates/root-index.template.md")
+                        template.useMarkdownLinks()
+                        template.filesHeading("\n## Files\n")
+                        template.directoryHeading("\n## Folders\n")
+                        template.excerpt({
+                            length: 120,
+                            addEllipsis: false,
+                            firstSentenceOnly: true,
+                        })
+                    })
                 })
                 .buildConfig();
 
@@ -105,6 +116,16 @@ describe("Builder", () => {
 
             expect(config.targets[0].templates?.documentation).toBeDefined();
             expect(config.targets[0].templates?.documentation?.templatePath).toBe("src/templates/documentation.template.md");
+
+            expect(config.targets[0].templates?.rootIndex).toBeDefined();
+            expect(config.targets[0].templates?.rootIndex?.templatePath).toBe("src/templates/root-index.template.md");
+            expect(config.targets[0].templates?.rootIndex?.markdownLinks).toBe(true);
+            expect(config.targets[0].templates?.rootIndex?.filesHeading).toBe("\n## Files\n");
+            expect(config.targets[0].templates?.rootIndex?.directoryHeading).toBe("\n## Folders\n");
+            expect(config.targets[0].templates?.rootIndex?.excerpt).toBeDefined();
+            expect(config.targets[0].templates?.rootIndex?.excerpt?.length).toBe(120);
+            expect(config.targets[0].templates?.rootIndex?.excerpt?.addEllipsis).toBe(false);
+            expect(config.targets[0].templates?.rootIndex?.excerpt?.firstSentenceOnly).toBe(true);
         })
     });
 });

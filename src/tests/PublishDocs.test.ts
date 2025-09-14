@@ -95,11 +95,46 @@ describe("Publish Docs", () => {
 
   describe("publishDocs with missing documentation", () => {
     test("should exit with code 1 if there is missing documentation", async () => {
+
+      // Create a sample file with no documentation
+      fs.writeFileSync(
+        path.join(process.cwd(), "src/sample-missing-documentation.js"),
+        `/**
+        * This is a test block
+        */`,
+      );
+
       await publishDocs({
         ...testConfig,
       });
 
       expect(exitSpy).toHaveBeenCalledWith(1);
+    });
+  });
+
+  describe("no extracted content", () => {
+    test("should not generate documentation files for no extracted content", async () => {
+      await publishDocs({
+        ...testConfig,
+      });
+
+      const rootIndexFileContent = fs.existsSync(getOutputPath("docs/index.ts.md"));
+
+      expect(rootIndexFileContent).toBe(false);
+    });
+  });
+
+  describe("publishDocs with plugins", () => {
+    test("should copy the README.md file to the root index file", async () => {
+      await publishDocs({
+        ...testConfig,
+      });
+
+      const rootIndexFileContent = fs.readFileSync(getOutputPath("docs/index.md"), "utf8");
+
+      expect(rootIndexFileContent).toContain("# Simple Docs Extractor");
+      expect(rootIndexFileContent).toContain("## Features");
+      expect(rootIndexFileContent).toContain("## Table of Contents");
     });
   });
 });
