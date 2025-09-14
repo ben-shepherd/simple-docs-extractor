@@ -1,15 +1,14 @@
-%readme%
+## Simple Docs Extractor
 
----
-
-## Table of Contents
-
-This is the index file for the generated documentation. Below you will find the table of contents and links to all generated documentation files.
+Below you will find the table of contents and links to all generated documentation files.
 
 ---
 
 %content%
 
+---
+
+%readme%
 
 ---
 

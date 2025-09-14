@@ -1,8 +1,8 @@
-# Simple Docs Extractor
+## About
 
 A lightweight TypeScript library for extracting documentation from source files and organizing them into a structured output directory.
 
-*Having trouble getting started? Send me an [email](mailto:ben.shepherd@gmx.com) or create an [issue](https://github.com/ben-shepherd/simple-docs-extractor/issues).
+*Having trouble getting started? Send me an [email](mailto:ben.shepherd@gmx.com) or create an [issue](https://github.com/ben-shepherd/simple-docs-extractor/issues)*.
 
 ## Why this approach?
 
@@ -14,11 +14,9 @@ With GitHub Actions, the documentation is published to GitHub Pages automaticall
 
 ## Documentation
 
-Read more [here](./docs/index.md).
-
 View the documentation on [GitHub Pages](https://ben-shepherd.github.io/simple-docs-extractor/).
 
-View the [Table of Contents](#table-of-contents) for this project.
+To see indivudual documentation pages for each file, view the [Table of Contents](#table-of-contents) for this project.
 
 ## Features
 
