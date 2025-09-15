@@ -4,7 +4,7 @@ export type ExcerptExtractorConfig = {
   length?: number;
 };
 
-export const DEFAULT_CONFIG: ExcerptExtractorConfig = {
+export const DEFAULT_EXCERPT_CONFIG: ExcerptExtractorConfig = {
   firstSentenceOnly: true,
   addEllipsis: true,
   length: 75,
@@ -46,7 +46,7 @@ export const DEFAULT_CONFIG: ExcerptExtractorConfig = {
 export class ExcerptExtractor {
   static determineExcerpt(
     content: string,
-    config: ExcerptExtractorConfig = DEFAULT_CONFIG,
+    config: ExcerptExtractorConfig = DEFAULT_EXCERPT_CONFIG,
   ): string | undefined {
     // Remove headings
     content = ExcerptExtractor.removeHeadings(content);

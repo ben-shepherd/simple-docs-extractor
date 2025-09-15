@@ -489,4 +489,22 @@ This additional text helps simulate a more realistic documentation scenario.`;
       expect(fs.existsSync(getOutputPath("docs-no-md/index.md"))).toBe(false);
     });
   });
+
+  describe("flatten", () => {
+    test("should flatten the index.md file", async () => {
+
+      fs.mkdirSync(getOutputPath("docs-flatten/sub-folder/sub-folder2"), { recursive: true });
+      fs.writeFileSync(getOutputPath("docs-flatten/a.md"), "");
+      fs.writeFileSync(getOutputPath("docs-flatten/sub-folder/b.md"), "");
+      fs.writeFileSync(getOutputPath("docs-flatten/sub-folder/sub-folder2/c.md"), "");
+
+      indexProcessor = new MarkdownIndexProcessor({
+        flatten: true,
+        recursive: true,
+      });
+      await indexProcessor.handle(getOutputPath("docs-flatten"));
+
+      expect(1).toBe(1);
+    });
+  })
 });

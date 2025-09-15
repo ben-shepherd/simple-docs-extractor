@@ -11,6 +11,7 @@ export type IndexStructurePreProcessorEntry = {
   isDir: boolean;
   basename: string;
   markdownLink: string;
+  entries?: IndexStructurePreProcessorEntry[];
 };
 
 /**

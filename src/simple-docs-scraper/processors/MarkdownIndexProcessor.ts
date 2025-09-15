@@ -2,7 +2,7 @@ import {
   IndexFileGenerator,
   IndexFileGeneratorConfig,
 } from "../generators/IndexFileGenerator.js";
-import { IndexStructurePreProcessor } from "./IndexStructurePreProcessor.js";
+import { IndexStructurePreProcessor, IndexStructurePreProcessorEntry } from "./IndexStructurePreProcessor.js";
 
 export type MarkdownIndexProcessorConfig = Omit<
   IndexFileGeneratorConfig,
@@ -39,7 +39,7 @@ export const MARKDOWN_INDEX_PROCESSOR_DEFAULTS: MarkdownIndexProcessorConfig = {
 export class MarkdownIndexProcessor {
   constructor(
     private config: MarkdownIndexProcessorConfig = MARKDOWN_INDEX_PROCESSOR_DEFAULTS,
-  ) {}
+  ) { }
 
   /**
    * <method name="handle">
@@ -47,7 +47,70 @@ export class MarkdownIndexProcessor {
    * </method>
    */
   async handle(baseDir: string) {
-    await this.handleDirectoryRecusrively(baseDir);
+    if (this.config.flatten) {
+      await this.handleFlatten(baseDir);
+    } else if (this.config.recursive) {
+      await this.handleDirectoryRecusrively(baseDir);
+    }
+    else {
+      await this.handleDirectoryRecusrively(baseDir);
+    }
+  }
+
+  async handleFlatten(directory: string) {
+    // Process files and folders
+    let processedEntries = await new IndexStructurePreProcessor({
+      markdownLink: this.config?.markdownLinks,
+    }).process(directory);
+
+    // If no md files are found, return
+    if (processedEntries.length === 0) {
+      return;
+    }
+
+    const recursivelyAddSubEntries = async (entries: IndexStructurePreProcessorEntry[]) => {
+      for (const i in entries) {
+        const entry = entries[i]
+
+        if(false === entry.isDir) {
+          continue;
+        }
+        
+        entries[i].entries = await new IndexStructurePreProcessor({
+          markdownLink: this.config?.markdownLinks,
+        }).process(entry.src);
+      }
+
+      return entries
+    }
+
+    processedEntries = await recursivelyAddSubEntries(processedEntries);
+
+    // Save the index.md file
+    await new IndexFileGenerator({
+      ...(this.config ?? {}),
+      outDir: directory,
+      flatten: true,
+    }).saveIndexFile(processedEntries);
+  }
+
+  async handleSingleDirectory(directory: string) {
+
+    // Process files and folders
+    const processedEntries = await new IndexStructurePreProcessor({
+      markdownLink: this.config?.markdownLinks,
+    }).process(directory);
+
+    // If no md files are found, return
+    if (processedEntries.length === 0) {
+      return;
+    }
+
+    // Save the index.md file
+    await new IndexFileGenerator({
+      ...(this.config ?? {}),
+      outDir: directory,
+    }).saveIndexFile(processedEntries);
   }
 
   /**

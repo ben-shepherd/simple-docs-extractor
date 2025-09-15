@@ -3,7 +3,7 @@ import path from "path";
 import { ExtractedContent } from "../plugins/DocumentContentExtractor.js";
 import { IndexStructurePreProcessorEntry } from "../processors/IndexStructurePreProcessor.js";
 import {
-  DEFAULT_CONFIG as DEFAULT_EXCERPT_CONFIG,
+  DEFAULT_EXCERPT_CONFIG,
   ExcerptExtractor,
   ExcerptExtractorConfig,
 } from "../transformers/ExcerptExtractor.js";
@@ -14,6 +14,7 @@ import {
   TemplatePathConfig,
 } from "../types/config.t.js";
 import { ExtractorPlugin } from "../types/extractor.t.js";
+import { IndexContentGenerator } from "./IndexContenGenerator.js";
 
 export type IndexFileGeneratorConfig = TemplatePathConfig & {
   outDir: string;
@@ -26,6 +27,7 @@ export type IndexFileGeneratorConfig = TemplatePathConfig & {
   lineCallback?: LineCallback;
   fileNameCallback?: FileNameCallback;
   plugins?: ExtractorPlugin[];
+  flatten?: boolean;
 };
 
 /**
@@ -72,63 +74,66 @@ export class IndexFileGenerator {
       fs.mkdirSync(this.config.outDir, { recursive: true });
     }
 
+    const indexContentGenerator = new IndexContentGenerator({
+      lineCallback: this.config.lineCallback,
+      fileNameCallback: this.config.fileNameCallback,
+      directoryHeading: this.config.directoryHeading,
+      filesHeading: this.config.filesHeading,
+      excerpt: this.config.excerpt,
+    });
+
     let templateContent = this.getTemplateContent();
-    let content = "";
-    let excerpt: string | undefined = undefined;
-    let lineNumber = 1;
     const outFilePath = path.join(this.config.outDir, "index.md");
+    let content = "";
 
-    const filesTotalCount = processedArray.filter(
-      (proc) => proc.isDir === false,
-    ).length;
-    let filesProcessed = 0;
-    const dirsTotalCount = processedArray.filter(
-      (proc) => proc.isDir === true,
-    ).length;
-    let dirsProcessed = 0;
-
-    for (const current of processedArray) {
-      const { entryName, markdownLink } = current;
-
-      // If we're a file, genereate an excerpt
-      excerpt = this.createExcerpt(excerpt, current);
-
-      // We should only consider creating a file heading once we have reached the files
-      if (false === current.isDir) {
-        content = this.createFileHeading(
-          filesProcessed,
-          filesTotalCount,
-          content,
-        );
-      }
-
-      // We should only consider creating a directory heading once all files have been rendered
-      if (filesProcessed === filesTotalCount) {
-        content = this.createDirectoryHeading(
-          dirsProcessed,
-          dirsTotalCount,
-          content,
-        );
-      }
-
-      if (this.config.lineCallback) {
-        content += this.config.lineCallback(entryName, lineNumber, excerpt);
-      } else {
-        let line = `- ${markdownLink ?? entryName}`;
-        if (excerpt) {
-          line += ` - ${excerpt}`;
-        }
-        content += `${line}\n`;
-      }
-
-      lineNumber++;
-
-      if (false === current.isDir) {
-        filesProcessed++;
-      } else {
-        dirsProcessed++;
-      }
+    if (this.config.flatten) {
+      content = indexContentGenerator.handleFlattened(processedArray);
+    } else {
+      content = indexContentGenerator.handle(processedArray);
     }
+
+    // for (const current of processedArray) {
+    //   const { entryName, markdownLink } = current;
+
+    //   // If we're a file, genereate an excerpt
+    //   excerpt = this.createExcerpt(excerpt, current);
+
+    //   // We should only consider creating a file heading once we have reached the files
+    //   if (false === current.isDir) {
+    //     content = this.createFileHeading(
+    //       filesProcessed,
+    //       filesTotalCount,
+    //       content,
+    //     );
+    //   }
+
+    //   // We should only consider creating a directory heading once all files have been rendered
+    //   if (filesProcessed === filesTotalCount) {
+    //     content = this.createDirectoryHeading(
+    //       dirsProcessed,
+    //       dirsTotalCount,
+    //       content,
+    //     );
+    //   }
+
+    //   if (this.config.lineCallback) {
+    //     content += this.config.lineCallback(entryName, lineNumber, excerpt);
+    //   } else {
+    //     let line = `- ${markdownLink ?? entryName}`;
+    //     if (excerpt) {
+    //       line += ` - ${excerpt}`;
+    //     }
+    //     content += `${line}\n`;
+    //   }
+
+    //   lineNumber++;
+
+    //   if (false === current.isDir) {
+    //     filesProcessed++;
+    //   } else {
+    //     dirsProcessed++;
+    //   }
+    // }
 
     // Replace the search and replace with the content
     templateContent = templateContent.replace(
