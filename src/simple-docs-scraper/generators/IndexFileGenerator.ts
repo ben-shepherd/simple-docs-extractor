@@ -8,7 +8,11 @@ import {
   ExcerptExtractorConfig,
 } from "../transformers/ExcerptExtractor.js";
 import TemplateContentExtractionContentMerger from "../transformers/TemplateContentExtractionContentMerger.js";
-import { FileNameCallback, LineCallback, TemplatePathConfig } from "../types/config.t.js";
+import {
+  FileNameCallback,
+  LineCallback,
+  TemplatePathConfig,
+} from "../types/config.t.js";
 import { ExtractorPlugin } from "../types/extractor.t.js";
 
 export type IndexFileGeneratorConfig = TemplatePathConfig & {
@@ -20,7 +24,7 @@ export type IndexFileGeneratorConfig = TemplatePathConfig & {
   directoryHeading?: string;
   excerpt?: ExcerptExtractorConfig;
   lineCallback?: LineCallback;
-  fileNameCallback?: FileNameCallback
+  fileNameCallback?: FileNameCallback;
   plugins?: ExtractorPlugin[];
 };
 
@@ -131,7 +135,7 @@ export class IndexFileGenerator {
       this.getSearchAndReplace(),
       content,
     );
-    
+
     // Apply plugins to the template content
     templateContent = await this.applyPlugins(templateContent);
 
@@ -142,7 +146,7 @@ export class IndexFileGenerator {
   /**
    * <method name="applyPlugins">
    * Applies plugins to the template content.
-   * 
+   *
    * @param {string} templateContent - The template content to apply plugins to
    * </method>
    */
@@ -150,9 +154,11 @@ export class IndexFileGenerator {
     if (this.config.plugins) {
       for (const plugin of this.config.plugins) {
         const results = await plugin.extractFromString(templateContent);
-        
-        templateContent = new TemplateContentExtractionContentMerger()
-          .handle(templateContent, results as ExtractedContent[]);
+
+        templateContent = new TemplateContentExtractionContentMerger().handle(
+          templateContent,
+          results as ExtractedContent[],
+        );
       }
     }
 

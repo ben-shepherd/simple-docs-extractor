@@ -9,41 +9,43 @@ export type TemplateContentExtractionContentMergerConfig = {
 /**
  * <docs>
  * Merges extracted content into template content with attribute formatting and content separation.
- * 
+ *
  * This class handles the complex process of merging multiple extracted content pieces
  * into a single template string. It groups content by search and replace patterns,
  * formats attributes according to configured patterns, and applies content dividers
  * between multiple content blocks.
- * 
+ *
  * @example
  * ```typescript
  * const merger = new TemplateContentExtractionContentMerger({ target });
  * const templateContent = "# Content\n{{content}}";
  * const extractedContentArray = [
- *   { 
- *     content: "This is the content", 
- *     searchAndReplace: "{{content}}", 
- *     attributes: { name: "John" } 
+ *   {
+ *     content: "This is the content",
+ *     searchAndReplace: "{{content}}",
+ *     attributes: { name: "John" }
  *   }
  * ];
  * const result = merger.handle(templateContent, extractedContentArray);
  * // Result: "# Content\n### *name*: John\n\nThis is the content"
  * ```
- * 
+ *
  * @param {TemplateContentExtractionContentMergerConfig} config - Configuration containing the target for attribute format lookup
  * </docs>
  */
 class TemplateContentExtractionContentMerger {
-  constructor(private config: TemplateContentExtractionContentMergerConfig = {}) {}
+  constructor(
+    private config: TemplateContentExtractionContentMergerConfig = {},
+  ) {}
 
   /**
    * <method name="handle">
    * Merges extracted content into template content by replacing placeholders.
-   * 
+   *
    * Groups extracted content by search and replace patterns, then processes each
    * group to replace the corresponding placeholders in the template with formatted
    * content including attributes and dividers.
-   * 
+   *
    * @param {string} templateContent - The template string containing placeholders
    * @param {ExtractedContent[]} extractedContentArray - Array of extracted content to merge
    * @returns {string} The template content with all placeholders replaced by formatted content
@@ -145,7 +147,7 @@ class TemplateContentExtractionContentMerger {
     extractedContent: ExtractedContent,
     contentBlock: string[],
   ) {
-    if(!this.config.target) {
+    if (!this.config.target) {
       return contentBlock;
     }
 

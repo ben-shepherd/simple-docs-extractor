@@ -8,20 +8,16 @@ import { RemoveMultiLineCommentAsterisks } from "./RemoveMultiLineCommentAsteris
  * </docs>
  */
 export class RecommendedFormatters {
-  
-    /**
-     * <method name="recommended">
-     * This method returns the recommended formatters for the SimpleDocsExtractor.
-     * - RemoveMultiLineCommentAsterisks (Removes comment formatting)
-     * - AddDoubleLinesFormatter (Adds spacing between content lines)
-     * 
-     * @returns {TFormatter[]} The recommended formatters for the SimpleDocsExtractor.
-     * </method>
-     */
-    static recommended(): TFormatter[] {
-        return [
-            RemoveMultiLineCommentAsterisks,
-            AddDoubleLinesFormatter,
-        ]
-    }
+  /**
+   * <method name="recommended">
+   * This method returns the recommended formatters for the SimpleDocsExtractor.
+   * - RemoveMultiLineCommentAsterisks (Removes comment formatting)
+   * - AddDoubleLinesFormatter (Adds spacing between content lines)
+   *
+   * @returns {TFormatter[]} The recommended formatters for the SimpleDocsExtractor.
+   * </method>
+   */
+  static recommended(): TFormatter[] {
+    return [RemoveMultiLineCommentAsterisks, AddDoubleLinesFormatter];
+  }
 }
