@@ -1,3 +1,4 @@
+import { IndexContentGenerator, IndexContentGeneratorConfig, State } from "@/simple-docs-scraper/generators/IndexContenGenerator.js";
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import path from "path";
@@ -368,6 +369,11 @@ describe("Example Test Suite", () => {
       fs.mkdirSync(getOutputPath("docs-sorting/c"));
       fs.mkdirSync(getOutputPath("docs-sorting/d"));
 
+      indexProcessor = new MarkdownIndexProcessor({
+        filesHeading: undefined,
+        directoryHeading: undefined,
+        recursive: true,
+      });
       await indexProcessor.handle(getOutputPath("docs-sorting"));
 
       const indexFileContent = fs.readFileSync(
@@ -504,7 +510,22 @@ This additional text helps simulate a more realistic documentation scenario.`;
       });
       await indexProcessor.handle(getOutputPath("docs-flatten"));
 
-      expect(1).toBe(1);
+      const indexFileContent = fs.readFileSync(
+        getOutputPath("docs-flatten/index.md"),
+        "utf8",
+      );
+
+      const indenter = (level: number) => {
+        return new IndexContentGenerator({} as IndexContentGeneratorConfig).createIndenterPrefix({ indentLevel: level } as State);
+      }
+
+      expect(indexFileContent).toBe(
+        `${indenter(0)}- a.md\n` +
+        `${indenter(0)}- sub-folder/\n` +
+          `${indenter(1)}- b.md\n` +
+          `${indenter(1)}- sub-folder2/\n` +
+            `${indenter(2)}- c.md\n`
+      );
     });
   })
 });

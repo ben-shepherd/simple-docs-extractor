@@ -18,8 +18,8 @@ import { IndexContentGenerator } from "./IndexContenGenerator.js";
 
 export type IndexFileGeneratorConfig = TemplatePathConfig & {
   outDir: string;
-  searchAndReplace?: string;
   baseDir?: string;
+  searchAndReplace?: string;
   markdownLinks?: boolean;
   filesHeading?: string;
   directoryHeading?: string;
@@ -28,6 +28,20 @@ export type IndexFileGeneratorConfig = TemplatePathConfig & {
   fileNameCallback?: FileNameCallback;
   plugins?: ExtractorPlugin[];
   flatten?: boolean;
+};
+
+// TODO: Define defaults for all optional properties
+// Note: This will most likely affect existing tests
+const INDEX_FILE_GENERATOR_DEFAULTS: Partial<IndexFileGeneratorConfig> = {
+  // searchAndReplace: "%content%",
+  // markdownLinks: true,
+  // filesHeading: '# Files',
+  // directoryHeading: '# Folders',
+  // flatten: false,
+  // excerpt: DEFAULT_EXCERPT_CONFIG,
+  // plugins: [],
+  // lineCallback: undefined,
+  // fileNameCallback: undefined,
 };
 
 /**
@@ -55,7 +69,23 @@ export type IndexFileGeneratorConfig = TemplatePathConfig & {
  * </docs>
  */
 export class IndexFileGenerator {
-  constructor(private config: IndexFileGeneratorConfig) {}
+  private indexContentGenerator: IndexContentGenerator;
+
+  constructor(private config: IndexFileGeneratorConfig) {
+    this.config = {
+      ...INDEX_FILE_GENERATOR_DEFAULTS,
+      ...this.config,
+    };
+    this.indexContentGenerator = new IndexContentGenerator({
+      lineCallback: this.config.lineCallback,
+      fileNameCallback: this.config.fileNameCallback,
+      directoryHeading: this.config.directoryHeading,
+      filesHeading: this.config.filesHeading,
+      excerpt: this.config.excerpt,
+      flatten: this.config.flatten ?? false,
+    });
+
+  }
 
   /**
    * <method name="saveIndexFile">
@@ -74,23 +104,11 @@ export class IndexFileGenerator {
       fs.mkdirSync(this.config.outDir, { recursive: true });
     }
 
-    const indexContentGenerator = new IndexContentGenerator({
-      lineCallback: this.config.lineCallback,
-      fileNameCallback: this.config.fileNameCallback,
-      directoryHeading: this.config.directoryHeading,
-      filesHeading: this.config.filesHeading,
-      excerpt: this.config.excerpt,
-    });
-
-    let templateContent = this.getTemplateContent();
+    // Get the output file path
     const outFilePath = path.join(this.config.outDir, "index.md");
-    let content = "";
 
-    if (this.config.flatten) {
-      content = indexContentGenerator.handleFlattened(processedArray);
-    } else {
-      content = indexContentGenerator.handle(processedArray);
-    }
+    // Generate the content
+    const content = this.indexContentGenerator.handle(processedArray);
 
     // for (const current of processedArray) {
     //   const { entryName, markdownLink } = current;
@@ -134,6 +152,10 @@ export class IndexFileGenerator {
     //     dirsProcessed++;
     //   }
     // }
+
+    
+    // Store the template content
+    let templateContent = this.getTemplateContent();
 
     // Replace the search and replace with the content
     templateContent = templateContent.replace(

@@ -71,14 +71,17 @@ export class MarkdownIndexProcessor {
     const recursivelyAddSubEntries = async (entries: IndexStructurePreProcessorEntry[]) => {
       for (const i in entries) {
         const entry = entries[i]
+        
+        entries[i].entries = await new IndexStructurePreProcessor({
+          markdownLink: this.config?.markdownLinks,
+        }).process(entry.src);
 
         if(false === entry.isDir) {
           continue;
         }
         
-        entries[i].entries = await new IndexStructurePreProcessor({
-          markdownLink: this.config?.markdownLinks,
-        }).process(entry.src);
+
+        entries[i].entries = await recursivelyAddSubEntries(entries[i].entries);
       }
 
       return entries

@@ -141,7 +141,7 @@ export class ExcerptExtractor {
     }
 
     const sentences = this.splitIntoSentences(excerpt);
-    return sentences[0];
+    return sentences?.[0] ?? "";
   }
 
   static removeSingleLetterAtEndOfSentence(excerpt: string) {

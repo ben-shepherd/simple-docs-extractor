@@ -53,6 +53,9 @@ export class IndexStructurePreProcessor {
     if (!fs.existsSync(baseDir)) {
       return [];
     }
+    if(fs.statSync(baseDir).isFile()) {
+      return [];
+    }
 
     return fs
       .readdirSync(baseDir)
