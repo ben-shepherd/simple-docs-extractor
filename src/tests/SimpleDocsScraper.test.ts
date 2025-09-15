@@ -3,7 +3,10 @@ import { LocalesService } from "@/simple-docs-scraper/services/LocalesService.js
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import path from "path";
-import { SimpleDocExtractor, Target } from "../simple-docs-scraper/services/SimpleDocExtractor.js";
+import {
+  SimpleDocExtractor,
+  Target,
+} from "../simple-docs-scraper/services/SimpleDocExtractor.js";
 import { SimpleDocExtractorConfig } from "../simple-docs-scraper/types/config.t.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";
@@ -174,7 +177,9 @@ describe("Example Test Suite", () => {
       const result = await scraper.start();
 
       const jsFiles = fs.readdirSync(getOutputPath("js-files"));
-      const jsFilesNested = fs.readdirSync(getOutputPath("js-files/nested-js-files"));
+      const jsFilesNested = fs.readdirSync(
+        getOutputPath("js-files/nested-js-files"),
+      );
       const twigFiles = fs.readdirSync(getOutputPath("twig-files"));
 
       expect(result.successCount).toBe(4);
@@ -386,8 +391,6 @@ This is the second block
 
   describe("missing documentation", () => {
     test("should produce warnings for missing documentation", async () => {
-
-
       fs.mkdirSync(getOutputPath("missing-documentation"));
       fs.writeFileSync(
         getOutputPath("missing-documentation/sample.js"),
@@ -407,22 +410,28 @@ This is the second block
               cwd: getOutputPath("missing-documentation"),
               patterns: "**/*.{js,ts}",
             },
-          }
+          },
         ],
       });
 
       const results = await scraper.start();
 
       expect(results.missingDocumentationCount).toBeGreaterThan(0);
-      expect(results.logs.some((log) => log.includes("Found 1 file(s) with no documentation"))).toBe(true);
+      expect(
+        results.logs.some((log) =>
+          log.includes("Found 1 file(s) with no documentation"),
+        ),
+      ).toBe(true);
     });
   });
 
   describe("documentation files", () => {
     test("should not generate documentation files for no extracted content", async () => {
-
       fs.mkdirSync(getOutputPath("js-files"));
-      fs.writeFileSync(getOutputPath("js-files/no-extracted-content.js"), "/**\n* This is a test block\n*/\n");
+      fs.writeFileSync(
+        getOutputPath("js-files/no-extracted-content.js"),
+        "/**\n* This is a test block\n*/\n",
+      );
 
       scraper = new SimpleDocExtractor({
         ...defaultConfig,
@@ -440,17 +449,23 @@ This is the second block
 
       const results = await scraper.start();
 
-      const fileExists = fs.existsSync(getOutputPath("no-extracted-content.js.md"));
+      const fileExists = fs.existsSync(
+        getOutputPath("no-extracted-content.js.md"),
+      );
 
       expect(fileExists).toBe(false);
-      expect(results.missingDocumentationFiles).toContain(getOutputPath("js-files/no-extracted-content.js"));
+      expect(results.missingDocumentationFiles).toContain(
+        getOutputPath("js-files/no-extracted-content.js"),
+      );
     });
   });
 
   describe("index files", () => {
     test("should generate the index files for the root directory", async () => {
-
-      fs.writeFileSync(getOutputPath("root-index.template.md"), TEMPLATE_CONTENT + '\nRoot Index');
+      fs.writeFileSync(
+        getOutputPath("root-index.template.md"),
+        TEMPLATE_CONTENT + "\nRoot Index",
+      );
 
       scraper = new SimpleDocExtractor({
         ...defaultConfig,
@@ -465,7 +480,7 @@ This is the second block
             },
           },
           twigFilesTarget,
-        ]
+        ],
       });
 
       await scraper.start();

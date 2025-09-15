@@ -5,3 +5,5 @@ export * from "./services/index.js";
 export * from "./transformers/index.js";
 export * from "./types/index.js";
 export * from "./processors/index.js";
+export * from "./builder/index.js";
+export * from "./plugins/index.js";

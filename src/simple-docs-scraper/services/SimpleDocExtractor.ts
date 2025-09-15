@@ -8,10 +8,7 @@ import {
   ProcessResultError,
 } from "../processors/CodeFileProcessor.js";
 import { MarkdownIndexProcessor } from "../processors/MarkdownIndexProcessor.js";
-import {
-  SimpleDocExtractorConfig,
-  Templates
-} from "../types/config.t.js";
+import { SimpleDocExtractorConfig, Templates } from "../types/config.t.js";
 import { ExtractorPlugin } from "../types/extractor.t.js";
 
 // Configuration for a single target directory to process
@@ -86,7 +83,7 @@ export class SimpleDocExtractor {
   static create(baseDir: string): Builder {
     return new Builder(baseDir);
   }
-  
+
   /**
    * <method name="getConfig">
    * Returns the current configuration.
@@ -112,8 +109,10 @@ export class SimpleDocExtractor {
 
     this.logs.push(`Finished. Success: ${this.success} / Total: ${this.total}`);
 
-    if(this.missingDocumentationCount > 0) {
-      this.logs.push(`Found ${this.missingDocumentationCount} file(s) with no documentation`);
+    if (this.missingDocumentationCount > 0) {
+      this.logs.push(
+        `Found ${this.missingDocumentationCount} file(s) with no documentation`,
+      );
     }
 
     return {
@@ -202,7 +201,7 @@ export class SimpleDocExtractor {
     // Process the file
     preProcessedFiles.push(processedResult);
 
-    if(!this.config.dryRun) {
+    if (!this.config.dryRun) {
       await fileProcessor.processFile(processedResult, target);
     }
 
@@ -234,7 +233,7 @@ export class SimpleDocExtractor {
   /**
    * <method name="handleRootIndexFile">
    * Creates the root index file.
-   * 
+   *
    * @param target - The target configuration
    * </method>
    */
@@ -242,10 +241,10 @@ export class SimpleDocExtractor {
     const templateConfig = target.templates?.rootIndex;
     const baseDir = target.outDir;
 
-    if(!templateConfig) {
+    if (!templateConfig) {
       return;
     }
-    
+
     await new MarkdownIndexProcessor({
       ...templateConfig,
       recursive: false,

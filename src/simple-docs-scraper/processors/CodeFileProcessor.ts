@@ -3,7 +3,7 @@ import path from "path";
 import { DocFileGenerator } from "../generators/DocFileGenerator.js";
 import {
   DocumentContentExtractor,
-  ExtractedContent
+  ExtractedContent,
 } from "../plugins/DocumentContentExtractor.js";
 import { Locales, LocalesService } from "../services/LocalesService.js";
 import { Target } from "../services/SimpleDocExtractor.js";
@@ -60,7 +60,7 @@ export type ProcessResult = ProcessResultSuccess | ProcessResultError;
  * </docs>
  */
 export class CodeFileProcessor {
-  constructor(private config: SimpleDocExtractorConfig) { }
+  constructor(private config: SimpleDocExtractorConfig) {}
 
   /**
    * <method name="preProcess">
@@ -163,10 +163,10 @@ export class CodeFileProcessor {
   /**
    * <method name="buildOutputPath">
    * Builds the output directory path by preserving the source file's directory structure.
-   * 
+   *
    * Takes a source file path and maps it to the corresponding output directory,
    * maintaining the relative folder structure from the target's working directory.
-   * 
+   *
    * @param file - The source file path
    * @param target - The target configuration containing output directory and glob options
    * @returns The complete output directory path
@@ -197,7 +197,8 @@ export class CodeFileProcessor {
 
     // Generate the documentation file
     new DocFileGenerator({
-      templatePath: this.getDocFileGeneratorConfig(target)?.templatePath ?? undefined,
+      templatePath:
+        this.getDocFileGeneratorConfig(target)?.templatePath ?? undefined,
       outDir: processedResult.outDir,
     }).saveToMarkdownFile(processedResult.content, outFile);
   }
@@ -205,7 +206,7 @@ export class CodeFileProcessor {
   /**
    * <method name="getDocFileGeneratorConfig">
    * Gets the documentation template config for the target
-   * 
+   *
    * @param target - The target configuration
    * @returns The documentation template config
    * </method>

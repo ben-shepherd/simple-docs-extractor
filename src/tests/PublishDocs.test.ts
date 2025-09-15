@@ -1,4 +1,11 @@
-import { afterAll, beforeEach, describe, expect, jest, test } from "@jest/globals";
+import {
+  afterAll,
+  beforeEach,
+  describe,
+  expect,
+  jest,
+  test,
+} from "@jest/globals";
 import fs from "fs";
 import { glob } from "glob";
 import path from "path";
@@ -9,7 +16,7 @@ import { getOutputPath } from "./helpers/getOutputPath.js";
 
 describe("Publish Docs", () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let exitSpy: any
+  let exitSpy: any;
   let testConfig: SimpleDocExtractorConfig;
 
   beforeEach(() => {
@@ -29,7 +36,7 @@ describe("Publish Docs", () => {
 
     // Mock console.log to suppress output during test
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-    console.log = (...args: any[]) => { };
+    console.log = (...args: any[]) => {};
 
     // Create a sample file with no documentation
     fs.writeFileSync(
@@ -43,13 +50,18 @@ describe("Publish Docs", () => {
     exitSpy = jest.spyOn(process, "exit").mockImplementation((): never => {
       return {} as never;
     });
-
   });
 
   afterAll(() => {
     // Delete the sample file
-    if (fs.existsSync(path.join(process.cwd(), "src/sample-missing-documentation.js"))) {
-      fs.unlinkSync(path.join(process.cwd(), "src/sample-missing-documentation.js"));
+    if (
+      fs.existsSync(
+        path.join(process.cwd(), "src/sample-missing-documentation.js"),
+      )
+    ) {
+      fs.unlinkSync(
+        path.join(process.cwd(), "src/sample-missing-documentation.js"),
+      );
     }
   });
 
@@ -95,7 +107,6 @@ describe("Publish Docs", () => {
 
   describe("publishDocs with missing documentation", () => {
     test("should exit with code 1 if there is missing documentation", async () => {
-
       // Create a sample file with no documentation
       fs.writeFileSync(
         path.join(process.cwd(), "src/sample-missing-documentation.js"),
@@ -118,7 +129,9 @@ describe("Publish Docs", () => {
         ...testConfig,
       });
 
-      const rootIndexFileContent = fs.existsSync(getOutputPath("docs/index.ts.md"));
+      const rootIndexFileContent = fs.existsSync(
+        getOutputPath("docs/index.ts.md"),
+      );
 
       expect(rootIndexFileContent).toBe(false);
     });
@@ -130,7 +143,10 @@ describe("Publish Docs", () => {
         ...testConfig,
       });
 
-      const rootIndexFileContent = fs.readFileSync(getOutputPath("docs/index.md"), "utf8");
+      const rootIndexFileContent = fs.readFileSync(
+        getOutputPath("docs/index.md"),
+        "utf8",
+      );
 
       expect(rootIndexFileContent).toContain("# Simple Docs Extractor");
       expect(rootIndexFileContent).toContain("## About");
@@ -144,18 +160,23 @@ describe("Publish Docs", () => {
         ...testConfig,
       });
 
-      const rootIndexFileContent = fs.readFileSync(getOutputPath("docs/index.md"), "utf8");
-  
+      const rootIndexFileContent = fs.readFileSync(
+        getOutputPath("docs/index.md"),
+        "utf8",
+      );
+
       expect(rootIndexFileContent).toContain("# Simple Docs Extractor");
       expect(rootIndexFileContent).toContain("## About");
       expect(rootIndexFileContent).toContain("## Features");
 
-      const nonRootIndexFileContent = fs.readFileSync(getOutputPath("docs/simple-docs-scraper/index.md"), "utf8");
+      const nonRootIndexFileContent = fs.readFileSync(
+        getOutputPath("docs/simple-docs-scraper/index.md"),
+        "utf8",
+      );
 
       expect(nonRootIndexFileContent).not.toContain("# Simple Docs Scraper");
       expect(nonRootIndexFileContent).not.toContain("## Features");
       expect(nonRootIndexFileContent).toContain("Table of Contents");
     });
-
   });
 });

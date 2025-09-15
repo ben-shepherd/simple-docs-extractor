@@ -9,7 +9,6 @@ import { SimpleDocExtractorConfig } from "../simple-docs-scraper/types/config.t.
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";
 
-
 const extraction = [
   new TagExtractorPlugin({
     searchAndReplace: "%content%",
@@ -109,9 +108,8 @@ const exampleFunc = () => {
 
   describe("AddDoubleLinesFormatter", () => {
     test("should add double lines formatter", async () => {
-      const sourceCode = 
-`This is the first line
-This is the second line`
+      const sourceCode = `This is the first line
+This is the second line`;
 
       const formattedCode = AddDoubleLinesFormatter({
         filePath: "",
@@ -119,16 +117,17 @@ This is the second line`
         content: sourceCode,
       });
 
-      expect(formattedCode).toBe("This is the first line\n\nThis is the second line");
+      expect(formattedCode).toBe(
+        "This is the first line\n\nThis is the second line",
+      );
     });
 
     test("should add double lines and ignore code blocks", async () => {
-      const sourceCode = 
-`This is the first line
+      const sourceCode = `This is the first line
 \`\`\`
 This is the second line
 This is the third line
-\`\`\``
+\`\`\``;
 
       const formattedCode = AddDoubleLinesFormatter({
         filePath: "",
@@ -136,8 +135,9 @@ This is the third line
         content: sourceCode,
       });
 
-      expect(formattedCode).toBe("This is the first line\n\n```\nThis is the second line\nThis is the third line\n```");
+      expect(formattedCode).toBe(
+        "This is the first line\n\n```\nThis is the second line\nThis is the third line\n```",
+      );
     });
   });
 });
-  

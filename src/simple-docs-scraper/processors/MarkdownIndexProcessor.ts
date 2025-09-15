@@ -37,7 +37,9 @@ export const MARKDOWN_INDEX_PROCESSOR_DEFAULTS: MarkdownIndexProcessorConfig = {
  * </docs>
  */
 export class MarkdownIndexProcessor {
-  constructor(private config: MarkdownIndexProcessorConfig = MARKDOWN_INDEX_PROCESSOR_DEFAULTS) { }
+  constructor(
+    private config: MarkdownIndexProcessorConfig = MARKDOWN_INDEX_PROCESSOR_DEFAULTS,
+  ) {}
 
   /**
    * <method name="handle">
