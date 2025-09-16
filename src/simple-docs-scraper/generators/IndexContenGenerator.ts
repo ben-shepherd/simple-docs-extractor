@@ -2,6 +2,7 @@ import fs from "fs";
 import { DEFAULT_EXCERPT_CONFIG, ExcerptExtractor, IndexFileGeneratorConfig } from "../index.js";
 import { IndexStructurePreProcessorEntry } from "../processors/IndexStructurePreProcessor.js";
 import { createMarkdownLink } from "../utils/createMarkdownLink.js";
+import { createIndenterPrefix } from "../utils/listIndenterPrefix.js";
     
 export type State = {
     config: IndexFileGeneratorConfig,
@@ -339,11 +340,7 @@ export class IndexContentGenerator {
      * </method>
      */
     createIndenterPrefix(state: State) {
-        if (state.indentLevel === 0) {
-            return "";
-        }
-
-        return " ".repeat(state.indentLevel * 2);
+        return createIndenterPrefix(state.indentLevel);
     }
 
     /**

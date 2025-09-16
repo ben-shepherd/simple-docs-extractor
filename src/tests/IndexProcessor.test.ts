@@ -1,5 +1,4 @@
-import { IndexContentGenerator, State } from "@/simple-docs-scraper/generators/IndexContenGenerator.js";
-import { IndexFileGeneratorConfig } from "@/simple-docs-scraper/generators/IndexFileGenerator.js";
+import { createIndenterPrefix } from "@/simple-docs-scraper/utils/listIndenterPrefix.js";
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import path from "path";
@@ -523,7 +522,7 @@ This additional text helps simulate a more realistic documentation scenario.`;
       );
 
       const indenter = (level: number) => {
-        return new IndexContentGenerator({} as IndexFileGeneratorConfig).createIndenterPrefix({ indentLevel: level } as State);
+        return createIndenterPrefix(level);
       }
 
       expect(indexFileContent).toBe(
@@ -555,7 +554,7 @@ This additional text helps simulate a more realistic documentation scenario.`;
       );
 
       const indenter = (level: number) => {
-        return new IndexContentGenerator({} as IndexFileGeneratorConfig).createIndenterPrefix({ indentLevel: level } as State);
+        return createIndenterPrefix(level);
       }
 
       expect(indexFileContent).toBe(
@@ -567,4 +566,63 @@ This additional text helps simulate a more realistic documentation scenario.`;
       );
     });
   })
+
+  describe("recursion", () => {
+    test("should add the index.md to the path when isRootConfig is true, recursive is false and flatten is true", async () => {
+
+      fs.mkdirSync(getOutputPath("docs-recursion/sub-folder/sub-folder2"), { recursive: true });
+      fs.writeFileSync(getOutputPath("docs-recursion/a.md"), "");
+      fs.writeFileSync(getOutputPath("docs-recursion/sub-folder/b.md"), "");
+      fs.writeFileSync(getOutputPath("docs-recursion/sub-folder/sub-folder2/c.md"), "");
+
+      indexProcessor = new MarkdownIndexProcessor({
+        isRootConfig: true,
+        recursive: false,
+        flatten: true,
+        markdownLinks: true,
+      });
+      await indexProcessor.handle(getOutputPath("docs-recursion"));
+
+      const indexFileContent = fs.readFileSync(
+        getOutputPath("docs-recursion/index.md"),
+        "utf8",
+      );
+
+      const indenter = (level: number) => {
+        return createIndenterPrefix(level);
+      }
+
+      expect(indexFileContent).toBe(
+        `${indenter(0)}- [a.md](a.md)\n` +
+        `${indenter(0)}- [sub-folder/](sub-folder/index.md)\n` +
+          `${indenter(1)}- [b.md](sub-folder/b.md)\n` +
+          `${indenter(1)}- [sub-folder2/](sub-folder/sub-folder2/index.md)\n` +
+            `${indenter(2)}- [c.md](sub-folder/sub-folder2/c.md)\n`
+      );
+
+    });
+
+    test("should not process nested index.md files when recursive is false", async () => {
+
+      fs.mkdirSync(getOutputPath("docs-recursion/sub-folder/sub-folder2"), { recursive: true });
+      fs.writeFileSync(getOutputPath("docs-recursion/a.md"), "");
+      fs.writeFileSync(getOutputPath("docs-recursion/sub-folder/b.md"), "");
+      fs.writeFileSync(getOutputPath("docs-recursion/sub-folder/sub-folder2/c.md"), "");
+
+      indexProcessor = new MarkdownIndexProcessor({
+        recursive: false,
+        flatten: true,
+        markdownLinks: true,
+      });
+      await indexProcessor.handle(getOutputPath("docs-recursion"));
+
+      const indexFileExists = fs.existsSync(getOutputPath("docs-recursion/index.md"));
+      const subFolderIndexFileExists = fs.existsSync(getOutputPath("docs-recursion/sub-folder/index.md"));
+      const subFolder2IndexFileExists = fs.existsSync(getOutputPath("docs-recursion/sub-folder/sub-folder2/index.md"));
+
+      expect(indexFileExists).toBe(true);
+      expect(subFolderIndexFileExists).toBe(false);
+      expect(subFolder2IndexFileExists).toBe(false);
+    });
+  });
 });
