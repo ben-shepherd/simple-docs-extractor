@@ -133,7 +133,7 @@ export class SimpleDocExtractor {
    * </method>
    */
   async handleTarget(target: Target, targetIndex: number) {
-    const fileProcessor = new CodeFileProcessor(this.config);
+    const codeFileProcessor = new CodeFileProcessor(this.config);
 
     this.logs.push(`targets[${targetIndex}]: Starting target`);
 
@@ -154,7 +154,7 @@ export class SimpleDocExtractor {
         target,
         targetIndex,
         preProcessedFiles,
-        fileProcessor,
+        codeFileProcessor,
       );
     }
 
@@ -173,7 +173,7 @@ export class SimpleDocExtractor {
    * @param target - The target configuration
    * @param targetIndex - The index of the target for logging
    * @param preProcessedFiles - Array to collect processed file results
-   * @param fileProcessor - The file processor instance to use
+   * @param codeFileProcessor - The file processor instance to use
    * </method>
    */
   private async processSingleFile(
@@ -181,9 +181,9 @@ export class SimpleDocExtractor {
     target: Target,
     targetIndex: number,
     preProcessedFiles: ProcessResult[],
-    fileProcessor: CodeFileProcessor,
+    codeFileProcessor: CodeFileProcessor,
   ) {
-    const processedResult = await fileProcessor.preProcess(file, target);
+    const processedResult = await codeFileProcessor.preProcess(file, target);
     this.total++;
 
     // If there is an error, log it and return
@@ -202,7 +202,7 @@ export class SimpleDocExtractor {
     preProcessedFiles.push(processedResult);
 
     if (!this.config.dryRun) {
-      await fileProcessor.processFile(processedResult, target);
+      await codeFileProcessor.processFile(processedResult, target);
     }
 
     // Log the success

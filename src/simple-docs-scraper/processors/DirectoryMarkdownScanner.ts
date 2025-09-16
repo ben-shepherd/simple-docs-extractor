@@ -1,18 +1,18 @@
 import fs from "fs";
 import path from "path";
 
-type IndexStructurePreProcessorConfig = {
+type DirectoryMarkdownScannerConfig = {
   markdownLink?: boolean;
 };
 
-export type IndexStructurePreProcessorEntry = {
+export type DirectoryMarkdownScannerEntry = {
   src: string;
   entryName: string;
   pathToEntryName?: string;
   isDir: boolean;
   basename: string;
   markdownLink: string;
-  entries?: IndexStructurePreProcessorEntry[];
+  entries?: DirectoryMarkdownScannerEntry[];
 };
 
 /**
@@ -26,7 +26,7 @@ export type IndexStructurePreProcessorEntry = {
  *
  * @example
  * ```typescript
- * const processor = new IndexStructurePreProcessor({
+ * const processor = new DirectoryMarkdownScanner({
  *   markdownLink: true
  * });
  *
@@ -35,8 +35,8 @@ export type IndexStructurePreProcessorEntry = {
  * ```
  * </docs>
  */
-export class IndexStructurePreProcessor {
-  constructor(private config: IndexStructurePreProcessorConfig = {}) {}
+export class DirectoryMarkdownScanner {
+  constructor(private config: DirectoryMarkdownScannerConfig = {}) {}
 
   /**
    * <method name="getDirectoryEntries">
@@ -90,17 +90,17 @@ export class IndexStructurePreProcessor {
    * @returns Promise resolving to array of processed entries ready for index generation
    * </method>
    */
-  async process(baseDir: string): Promise<IndexStructurePreProcessorEntry[]> {
+  async process(baseDir: string): Promise<DirectoryMarkdownScannerEntry[]> {
     const srcArray = await this.getDirectoryEntries(baseDir);
 
-    let results: IndexStructurePreProcessorEntry[] = [];
+    let results: DirectoryMarkdownScannerEntry[] = [];
 
     for (const src of srcArray) {
       // const parentDirectory = path.dirname(entry);
       const excerpt = undefined;
       const basename = path.basename(src);
 
-      const result: Partial<IndexStructurePreProcessorEntry> = {
+      const result: Partial<DirectoryMarkdownScannerEntry> = {
         src: src,
         isDir: false,
         basename,
@@ -126,7 +126,7 @@ export class IndexStructurePreProcessor {
         );
       }
 
-      results.push(result as IndexStructurePreProcessorEntry);
+      results.push(result as DirectoryMarkdownScannerEntry);
     }
 
     // Sort results so files appear first
@@ -136,8 +136,8 @@ export class IndexStructurePreProcessor {
   }
 
   sortWithFilesAppearingFirst(
-    processedEntries: IndexStructurePreProcessorEntry[],
-  ): IndexStructurePreProcessorEntry[] {
+    processedEntries: DirectoryMarkdownScannerEntry[],
+  ): DirectoryMarkdownScannerEntry[] {
     return processedEntries.sort((a, b) => {
       const aint = a.isDir === false ? 0 : 1;
       const bint = b.isDir === false ? 0 : 1;
@@ -157,7 +157,7 @@ export class IndexStructurePreProcessor {
    * </method>
    */
   appendIndexMdIfFound(
-    result: Partial<IndexStructurePreProcessorEntry>,
+    result: Partial<DirectoryMarkdownScannerEntry>,
     excerpt?: string,
   ): void {
     const directoryContainsIndex = fs.existsSync(

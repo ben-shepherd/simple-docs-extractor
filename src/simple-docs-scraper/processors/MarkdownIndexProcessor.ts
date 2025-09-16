@@ -3,7 +3,7 @@ import {
   IndexFileGenerator,
   IndexFileGeneratorConfig,
 } from "../generators/IndexFileGenerator.js";
-import { IndexStructurePreProcessor, IndexStructurePreProcessorEntry } from "./IndexStructurePreProcessor.js";
+import { DirectoryMarkdownScanner, DirectoryMarkdownScannerEntry } from "./DirectoryMarkdownScanner.js";
 
 export type MarkdownIndexProcessorConfig = Omit<
   IndexFileGeneratorConfig,
@@ -94,9 +94,9 @@ export class MarkdownIndexProcessor {
    * @param directory - The directory path to process
    * </method>
    */
-  private async getProcessedEntries(directory: string): Promise<IndexStructurePreProcessorEntry[]> {
+  private async getProcessedEntries(directory: string): Promise<DirectoryMarkdownScannerEntry[]> {
     // Process files and folders
-    let processedEntries = await new IndexStructurePreProcessor({
+    let processedEntries = await new DirectoryMarkdownScanner({
       markdownLink: this.config?.markdownLinks,
     }).process(directory);
 
@@ -115,11 +115,11 @@ export class MarkdownIndexProcessor {
    * @param entries - The entries to add sub-entries to
    * </method>
    */
-  private async recursivelyAddSubEntries(entries: IndexStructurePreProcessorEntry[]): Promise<IndexStructurePreProcessorEntry[]> {
+  private async recursivelyAddSubEntries(entries: DirectoryMarkdownScannerEntry[]): Promise<DirectoryMarkdownScannerEntry[]> {
     for (const i in entries) {
       const entry = entries[i];
 
-      entries[i].entries = await new IndexStructurePreProcessor({
+      entries[i].entries = await new DirectoryMarkdownScanner({
         markdownLink: this.config?.markdownLinks,
       }).process(entry.src);
 

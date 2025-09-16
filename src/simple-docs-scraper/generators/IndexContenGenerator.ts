@@ -1,7 +1,7 @@
 import fs from "fs";
 import { DEFAULTS } from "../consts/defaults.js";
 import { ExcerptExtractor, IndexFileGeneratorConfig } from "../index.js";
-import { IndexStructurePreProcessorEntry } from "../processors/IndexStructurePreProcessor.js";
+import { DirectoryMarkdownScannerEntry } from "../processors/DirectoryMarkdownScanner.js";
 import { createMarkdownLink } from "../utils/createMarkdownLink.js";
 import { createIndenterPrefix } from "../utils/listIndenterPrefix.js";
     
@@ -61,14 +61,14 @@ export class IndexContentGenerator {
      * the total counts of files and directories from the processed array.
      * It allows for partial overrides of both configuration and state properties.
      *
-     * @param {IndexStructurePreProcessorEntry[]} processedArray - Array of processed entries
+     * @param {DirectoryMarkdownScannerEntry[]} processedArray - Array of processed entries
      * @param {Partial<IndexContentGeneratorConfig>} [overwriteConfig] - Optional config overrides
      * @param {Partial<State>} [overwriteState] - Optional state overrides
      * @returns {State} Initialized state object
      * </method>
      */
     getDefaultState(
-        processedArray: IndexStructurePreProcessorEntry[],
+        processedArray: DirectoryMarkdownScannerEntry[],
         overwriteConfig?: Partial<IndexFileGeneratorConfig>,
         overwriteState?: Partial<State>
     ): State {
@@ -101,11 +101,11 @@ export class IndexContentGenerator {
      * markdown content. It handles both regular entries and flattened entries
      * based on the configuration.
      *
-     * @param {IndexStructurePreProcessorEntry[]} processedArray - Array of processed entries
+     * @param {DirectoryMarkdownScannerEntry[]} processedArray - Array of processed entries
      * @returns {string} Generated markdown content
      * </method>
      */
-    generate(processedArray: IndexStructurePreProcessorEntry[]): string {
+    generate(processedArray: DirectoryMarkdownScannerEntry[]): string {
         let state = this.getDefaultState(processedArray);
 
         for (const entry of processedArray) {
@@ -128,11 +128,11 @@ export class IndexContentGenerator {
      * and formatted lines, then updates the processing counters.
      *
      * @param {State} state - Current generation state
-     * @param {IndexStructurePreProcessorEntry} entry - Entry to process
+     * @param {DirectoryMarkdownScannerEntry} entry - Entry to process
      * @returns {State} Updated state after processing the entry
      * </method>
      */
-    generateEntry(state: State, entry: IndexStructurePreProcessorEntry): State {
+    generateEntry(state: State, entry: DirectoryMarkdownScannerEntry): State {
         state.excerpt = this.createExcerpt(state, entry);
         this.createFileHeading(state, entry);
         this.createDirectoryHeading(state, entry);
@@ -150,11 +150,11 @@ export class IndexContentGenerator {
      * proper path information.
      *
      * @param {State} state - Current generation state
-     * @param {IndexStructurePreProcessorEntry} entry - Entry to process recursively
+     * @param {DirectoryMarkdownScannerEntry} entry - Entry to process recursively
      * @param {string} currentEntryName - Current path to the entry
      * </method>
      */
-    private generateFlatEntriesRecursively(state: State, entry: IndexStructurePreProcessorEntry, currentEntryName: string) {
+    private generateFlatEntriesRecursively(state: State, entry: DirectoryMarkdownScannerEntry, currentEntryName: string) {
         if (false === this.config.flatten) {
             return;
         }
@@ -193,12 +193,12 @@ export class IndexContentGenerator {
      * This method constructs the full path to a sub-entry by combining
      * the current path with the sub-entry name, handling trailing slashes.
      *
-     * @param {IndexStructurePreProcessorEntry} subEntry - The sub-entry to append
+     * @param {DirectoryMarkdownScannerEntry} subEntry - The sub-entry to append
      * @param {string} pathToEntryName - Current path to append to
      * @returns {string} Updated path with sub-entry name
      * </method>
      */
-    private appendEntryName(state: State, subEntry: IndexStructurePreProcessorEntry, pathToEntryName: string) {
+    private appendEntryName(state: State, subEntry: DirectoryMarkdownScannerEntry, pathToEntryName: string) {
         pathToEntryName = pathToEntryName;
 
         if(pathToEntryName.endsWith("/")) {
@@ -217,10 +217,10 @@ export class IndexContentGenerator {
      * the entry is a file or directory.
      *
      * @param {State} state - Current generation state
-     * @param {IndexStructurePreProcessorEntry} entry - Entry to count
+     * @param {DirectoryMarkdownScannerEntry} entry - Entry to count
      * </method>
      */
-    private updateProcessedCount(state: State, entry: IndexStructurePreProcessorEntry) {
+    private updateProcessedCount(state: State, entry: DirectoryMarkdownScannerEntry) {
         if (entry.isDir) {
             state.dirsProcessed++;
         } else {
@@ -236,10 +236,10 @@ export class IndexContentGenerator {
      * the first file and a files heading is configured.
      *
      * @param {State} state - Current generation state
-     * @param {IndexStructurePreProcessorEntry} entry - Current entry being processed
+     * @param {DirectoryMarkdownScannerEntry} entry - Current entry being processed
      * </method>
      */
-    private createFileHeading(state: State, entry: IndexStructurePreProcessorEntry) {
+    private createFileHeading(state: State, entry: DirectoryMarkdownScannerEntry) {
         if (entry.isDir) {
             return;
         }
@@ -257,10 +257,10 @@ export class IndexContentGenerator {
      * the first directory and a directory heading is configured.
      *
      * @param {State} state - Current generation state
-     * @param {IndexStructurePreProcessorEntry} entry - Current entry being processed
+     * @param {DirectoryMarkdownScannerEntry} entry - Current entry being processed
      * </method>
      */
-    private createDirectoryHeading(state: State, entry: IndexStructurePreProcessorEntry) {
+    private createDirectoryHeading(state: State, entry: DirectoryMarkdownScannerEntry) {
         if (false === entry.isDir) {
             return;
         }
@@ -279,10 +279,10 @@ export class IndexContentGenerator {
      * optional excerpt and indentation.
      *
      * @param {State} state - Current generation state
-     * @param {IndexStructurePreProcessorEntry} entry - Entry to create line for
+     * @param {DirectoryMarkdownScannerEntry} entry - Entry to create line for
      * </method>
      */
-    private createLine(state: State, entry: IndexStructurePreProcessorEntry) {
+    private createLine(state: State, entry: DirectoryMarkdownScannerEntry) {
         if (this.config.lineCallback) {
             state.content += this.config.lineCallback(entry.entryName, state.lineNumber, state.excerpt);
         } else {
@@ -308,12 +308,12 @@ export class IndexContentGenerator {
      * appending "/index.md" to the directory path when recursive mode is enabled.
      * It ensures the path ends with a slash before adding the index filename.
      *
-     * @param {IndexStructurePreProcessorEntry} entry - Entry to build path for
+     * @param {DirectoryMarkdownScannerEntry} entry - Entry to build path for
      * @param {State} state - Current generation state
      * @returns {string} Complete path to the entry
      * </method>
      */
-    private buildDirectoryPath(entry: IndexStructurePreProcessorEntry, state: State): string {
+    private buildDirectoryPath(entry: DirectoryMarkdownScannerEntry, state: State): string {
         let pathToEntryName = entry.pathToEntryName ?? entry.entryName;
 
         // If the entry is a directory and either recursive or isRootConfig is true, then we need to add the index.md to the path
@@ -353,13 +353,13 @@ export class IndexContentGenerator {
      * the excerpt using the configured extractor.
      *
      * @param {State} state - Current generation state
-     * @param {IndexStructurePreProcessorEntry} entry - Entry to create excerpt for
+     * @param {DirectoryMarkdownScannerEntry} entry - Entry to create excerpt for
      * @returns {string | undefined} Generated excerpt or undefined
      * </method>
      */
     private createExcerpt(
         state: State,
-        entry: IndexStructurePreProcessorEntry,
+        entry: DirectoryMarkdownScannerEntry,
     ) {
         state.excerpt = undefined;
 

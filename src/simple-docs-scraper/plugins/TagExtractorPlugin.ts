@@ -17,7 +17,7 @@ export type TagExtractorPluginConfig = BaseExtractorConfig & {
  * Extracts content from HTML/XML-like tags in source files.
  *
  * This extractor plugin searches for content between opening and closing tags,
- * such as `<docs>content</docs>` or `<example>code</example>`. It supports
+ * such as `<documentation>content</documentation>` or `<example>code</example>`. It supports
  * extracting attributes from the opening tag and can handle multiple tag
  * instances in a single file.
  *
@@ -28,8 +28,8 @@ export type TagExtractorPluginConfig = BaseExtractorConfig & {
  *   searchAndReplace: ''
  * });
  *
- * // Will extract content from: <docs>This is documentation</docs>
- * const result = await extractor.extractFromString('<docs>This is documentation</docs>');
+ * // Will extract content from: <documentation>This is documentation</documentation>
+ * const result = await extractor.extractFromString('<documentation>This is documentation</documentation>');
  * ```
  *
  * @param {TagExtractorPluginConfig} config - The configuration object containing the tag name and options

@@ -1,4 +1,4 @@
-import { IndexStructurePreProcessor } from "@/simple-docs-scraper/processors/IndexStructurePreProcessor.js";
+import { DirectoryMarkdownScanner } from "@/simple-docs-scraper/processors/DirectoryMarkdownScanner.js";
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 
@@ -12,7 +12,7 @@ describe("Index Structure Pre Processor", () => {
 
   describe("process", () => {
     test("should get directory entries", async () => {
-      const indexStructurePreProcessor = new IndexStructurePreProcessor();
+      const indexStructurePreProcessor = new DirectoryMarkdownScanner();
       const entries = await indexStructurePreProcessor.getDirectoryEntries(
         path.join(process.cwd(), "src/tests/files"),
       );
@@ -29,7 +29,7 @@ describe("Index Structure Pre Processor", () => {
     });
 
     test("should append index.md if found and set the markdown link", async () => {
-      const indexStructurePreProcessor = new IndexStructurePreProcessor({
+      const indexStructurePreProcessor = new DirectoryMarkdownScanner({
         markdownLink: true,
       });
 

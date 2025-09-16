@@ -2,7 +2,7 @@ import { createIndenterPrefix } from "@/simple-docs-scraper/utils/listIndenterPr
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import path from "path";
-import { IndexStructurePreProcessor } from "../simple-docs-scraper/processors/IndexStructurePreProcessor.js";
+import { DirectoryMarkdownScanner } from "../simple-docs-scraper/processors/DirectoryMarkdownScanner.js";
 import { MarkdownIndexProcessor } from "../simple-docs-scraper/processors/MarkdownIndexProcessor.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";
@@ -10,7 +10,7 @@ import { getOutputPath } from "./helpers/getOutputPath.js";
 describe("Example Test Suite", () => {
   const docsPath = getOutputPath("docs");
   let indexProcessor: MarkdownIndexProcessor;
-  let indexStructurePreProcessor: IndexStructurePreProcessor;
+  let indexStructurePreProcessor: DirectoryMarkdownScanner;
 
   beforeEach(() => {
     deleteOutputFiles();
@@ -36,7 +36,7 @@ describe("Example Test Suite", () => {
     );
 
     indexProcessor = new MarkdownIndexProcessor();
-    indexStructurePreProcessor = new IndexStructurePreProcessor();
+    indexStructurePreProcessor = new DirectoryMarkdownScanner();
   });
 
   // afterEach(() => {
@@ -144,7 +144,7 @@ describe("Example Test Suite", () => {
     });
 
     test("should create plain text entries when markdownLink is disabled", async () => {
-      indexStructurePreProcessor = new IndexStructurePreProcessor({
+      indexStructurePreProcessor = new DirectoryMarkdownScanner({
         markdownLink: false,
       });
       const results = await indexStructurePreProcessor.process(docsPath);
@@ -165,7 +165,7 @@ describe("Example Test Suite", () => {
     });
 
     test("should create markdown links for files and folders", async () => {
-      indexStructurePreProcessor = new IndexStructurePreProcessor({
+      indexStructurePreProcessor = new DirectoryMarkdownScanner({
         markdownLink: true,
       });
       const results = await indexStructurePreProcessor.process(docsPath);
@@ -187,7 +187,7 @@ describe("Example Test Suite", () => {
 
     test("should format markdown links with sub folders with an index.md", async () => {
       const subFolder2Path = getOutputPath("docs/sub-folder");
-      indexStructurePreProcessor = new IndexStructurePreProcessor({
+      indexStructurePreProcessor = new DirectoryMarkdownScanner({
         markdownLink: true,
       });
       const results = await indexStructurePreProcessor.process(subFolder2Path);
@@ -210,7 +210,7 @@ describe("Example Test Suite", () => {
     });
 
     test("should be able to read all md files and directories", async () => {
-      const indexDirectoryProcessor = new IndexStructurePreProcessor();
+      const indexDirectoryProcessor = new DirectoryMarkdownScanner();
       const entries = await indexDirectoryProcessor.getDirectoryEntries(
         getOutputPath("docs"),
       );

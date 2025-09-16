@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { DEFAULTS } from "../consts/defaults.js";
 import { ExtractedContent } from "../plugins/DocumentContentExtractor.js";
-import { IndexStructurePreProcessorEntry } from "../processors/IndexStructurePreProcessor.js";
+import { DirectoryMarkdownScannerEntry } from "../processors/DirectoryMarkdownScanner.js";
 import {
   ExcerptExtractor,
   ExcerptExtractorConfig,
@@ -91,7 +91,7 @@ export class IndexFileGenerator {
    * @param processedArray - Array of processed directory entries to include in the index
    * </method>
    */
-  async saveIndexFile(processedArray: IndexStructurePreProcessorEntry[]) {
+  async saveIndexFile(processedArray: DirectoryMarkdownScannerEntry[]) {
     // Check if the out directory exists
     if (!fs.existsSync(this.config.outDir)) {
       fs.mkdirSync(this.config.outDir, { recursive: true });
@@ -193,13 +193,13 @@ export class IndexFileGenerator {
    * It reads the file and extracts the excerpt using the configured extractor.
    *
    * @param {string | undefined} excerpt - Current excerpt value
-   * @param {IndexStructurePreProcessorEntry} current - Entry to create excerpt for
+   * @param {DirectoryMarkdownScannerEntry} current - Entry to create excerpt for
    * @returns {string | undefined} Generated excerpt or undefined
    * </method>
    */
   private createExcerpt(
     excerpt: string | undefined,
-    current: IndexStructurePreProcessorEntry,
+    current: DirectoryMarkdownScannerEntry,
   ) {
     excerpt = undefined;
     if (false === current.isDir) {
