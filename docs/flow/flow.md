@@ -2,6 +2,8 @@
 
 This document provides a comprehensive overview of how the Simple Docs Extractor application works, designed for new developers who want to understand or contribute to the codebase.
 
+[flow-diagram.svg](./flow-diagram.svg)
+
 ## Overview
 
 Simple Docs Extractor is a documentation generation tool that extracts documentation from source code files and generates organized markdown documentation with index files. The application follows a modular architecture with clear separation of concerns.
@@ -66,7 +68,7 @@ For each discovered file, the application processes it through several stages:
 #### 3.1 Pre-Processing (`CodeFileProcessor.preProcess()`)
 
 ```typescript
-const processedResult = await fileProcessor.preProcess(file, target);
+const processedResult = await codeFileProcessor.preProcess(file, target);
 ```
 
 **Steps:**
@@ -154,7 +156,7 @@ await new MarkdownIndexProcessor({
 ```
 
 **Process:**
-1. **Directory Scanning** - `IndexStructurePreProcessor` scans directories for markdown files
+1. **Directory Scanning** - `DirectoryMarkdownScanner` scans directories for markdown files
 2. **Content Generation** - `IndexFileGenerator` creates index content with file listings
 3. **Template Application** - Applies index templates with search/replace patterns
 4. **Recursive Processing** - Handles subdirectories if configured

@@ -134,7 +134,7 @@
 
  @param preProcessedFiles - Array to collect processed file results
 
- @param fileProcessor - The file processor instance to use
+ @param codeFileProcessor - The file processor instance to use
 
  
 
@@ -164,7 +164,7 @@
 
  Creates the root index file.
 
- 
+
 
  @param target - The target configuration
 
@@ -218,7 +218,7 @@
 
 
 
-Last updated: 2025-09-14T20:37:20.246Z
+Last updated: 2025-09-16T20:29:20.036Z
 
 
 

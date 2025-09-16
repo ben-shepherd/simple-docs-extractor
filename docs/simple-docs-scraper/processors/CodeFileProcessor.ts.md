@@ -93,13 +93,13 @@
 
  Builds the output directory path by preserving the source file's directory structure.
 
- 
+
 
  Takes a source file path and maps it to the corresponding output directory,
 
  maintaining the relative folder structure from the target's working directory.
 
- 
+
 
  @param file - The source file path
 
@@ -137,7 +137,7 @@
 
  Gets the documentation template config for the target
 
- 
+
 
  @param target - The target configuration
 
@@ -151,7 +151,7 @@
 
 
 
-Last updated: 2025-09-14T20:37:20.246Z
+Last updated: 2025-09-15T18:57:12.063Z
 
 
 

@@ -46,17 +46,21 @@
 
  
 
+ @param baseDir - The directory path to process
+
+ 
+
 
 
 ---
 
 
 
-### **handleDirectoryRecusrively**
+### **handleSingleDirectory**
 
- Recursively processes a directory and all its subdirectories to create index files.
+ Handles a single directory and creates an index file for it.
 
-
+ 
 
  @param directory - The directory path to process
 
@@ -68,7 +72,39 @@
 
 
 
-Last updated: 2025-09-14T20:37:20.246Z
+### **getProcessedEntries**
+
+ Gets the processed entries for a directory.
+
+ 
+
+ @param directory - The directory path to process
+
+ 
+
+
+
+---
+
+
+
+### **recursivelyAddSubEntries**
+
+ Recursively adds sub-entries to a directory.
+
+ 
+
+ @param entries - The entries to add sub-entries to
+
+ 
+
+
+
+---
+
+
+
+Last updated: 2025-09-16T20:33:10.744Z
 
 
 

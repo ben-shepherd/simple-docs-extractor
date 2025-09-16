@@ -6,7 +6,7 @@
 
  A flexible extractor plugin that uses a custom callback function to extract content from strings.
 
- 
+
 
  This extractor allows you to define custom extraction logic by providing a callback function
 
@@ -14,7 +14,7 @@
 
  synchronous or asynchronous and can return a single string, an array of strings, or undefined.
 
- 
+
 
  Example usage:
 
@@ -26,10 +26,10 @@
      return matches ? matches.join('\n') : undefined;
    }
  });
- 
+
  const result = await extractor.extractFromString("some text with pattern matches");
  ```
- 
+
 
  @param {CallbackExtractorConfig} config - The configuration object containing the callback function
 
@@ -49,7 +49,7 @@
 
  Updates the configuration for this extractor.
 
- 
+
 
  @param {CallbackExtractorConfig} config - The new configuration object
 
@@ -67,7 +67,7 @@
 
  Retrieves the current configuration of this extractor.
 
- 
+
 
  @returns {CallbackExtractorConfig} The current configuration object
 
@@ -83,7 +83,7 @@
 
  Extracts content from the provided string using the configured callback function.
 
- 
+
 
  The method calls the configured callback function with the input string and processes
 
@@ -91,7 +91,7 @@
 
  a single string, it's wrapped in an array. If it returns an array, it's used as-is.
 
- 
+
 
  @param {string} str - The input string to extract content from
 
@@ -105,7 +105,7 @@
 
 
 
-Last updated: 2025-09-14T20:37:20.245Z
+Last updated: 2025-09-15T18:57:12.061Z
 
 
 

@@ -7,9 +7,7 @@ This is the index file for the generated documentation. Below you will find the 
 
 ## Files
 
-- [CodeFileProcessor.ts.md](CodeFileProcessor.ts.md)
-- [DirectoryMarkdownScanner.ts.md](DirectoryMarkdownScanner.ts.md)
-- [MarkdownIndexProcessor.ts.md](MarkdownIndexProcessor.ts.md)
+- [defaults.ts.md](defaults.ts.md)
 
 
 

@@ -6,7 +6,7 @@
 
  A main builder class for configuring the SimpleDocExtractor service.
 
- 
+
 
  This class provides a fluent interface for building complete documentation
 
@@ -14,7 +14,7 @@
 
  and formatters, and can build both configuration objects and service instances.
 
- 
+
 
  @param {string} [_baseDir=process.cwd()] - Base directory for the extraction process
 
@@ -40,7 +40,7 @@
 
  Adds a target configuration using a callback function.
 
- 
+
 
  @param {TargetCallback} callback - The callback function to configure the target
 
@@ -58,7 +58,7 @@
 
  Configures the global index template using a callback function.
 
- 
+
 
  @param {TemplateCallback} callback - The callback function to configure the template
 
@@ -76,7 +76,7 @@
 
  Configures the global root index template using a callback function.
 
- 
+
 
  @param {TemplateCallback} callback - The callback function to configure the template
 
@@ -94,7 +94,7 @@
 
  Configures the global documentation template using a callback function.
 
- 
+
 
  @param {TemplateCallback} callback - The callback function to configure the template
 
@@ -112,7 +112,7 @@
 
  Adds one or more formatters to the configuration.
 
- 
+
 
  @param {TFormatter | TFormatter[]} formatters - The formatter(s) to add
 
@@ -130,7 +130,7 @@
 
  Adds the recommended formatters to the configuration.
 
- 
+
 
  @returns {Builder} This builder instance for method chaining
 
@@ -146,7 +146,7 @@
 
  Builds and returns the complete configuration object.
 
- 
+
 
  @returns {SimpleDocExtractorConfig} The complete configuration object
 
@@ -162,7 +162,7 @@
 
  Builds and returns a configured SimpleDocExtractor service instance.
 
- 
+
 
  @returns {SimpleDocExtractor} The configured service instance
 
@@ -174,7 +174,7 @@
 
 
 
-Last updated: 2025-09-14T20:37:20.245Z
+Last updated: 2025-09-15T18:57:12.056Z
 
 
 
