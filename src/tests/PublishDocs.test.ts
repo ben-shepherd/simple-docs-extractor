@@ -219,9 +219,7 @@ describe("Publish Docs", () => {
             `${indenter(2)}- [TargetBuilder.ts.md](simple-docs-scraper/builder/TargetBuilder.ts.md)\n` +
             `${indenter(2)}- [TemplateBuilder.ts.md](simple-docs-scraper/builder/TemplateBuilder.ts.md)\n` +
             `${indenter(1)}- [config/](simple-docs-scraper/config/index.md)\n` +
-              `${indenter(2)}- [ConfigHelper.ts.md](simple-docs-scraper/config/ConfigHelper.ts.md)\n` +
-            `${indenter(1)}- [files/](simple-docs-scraper/files/index.md)\n` +
-              `${indenter(2)}- [FileScanner.ts.md](simple-docs-scraper/files/FileScanner.ts.md)\n`
+              `${indenter(2)}- [ConfigHelper.ts.md](simple-docs-scraper/config/ConfigHelper.ts.md)\n`
           );
     });
     

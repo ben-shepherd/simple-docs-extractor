@@ -10,7 +10,6 @@ export type MarkdownIndexProcessorConfig = Omit<
   "outDir"
 >
 
-
 /**
  * <docs>
  * Processes directories recursively to generate index files for documentation.
@@ -35,95 +34,35 @@ export type MarkdownIndexProcessorConfig = Omit<
 export class MarkdownIndexProcessor {
   constructor(
     private config: MarkdownIndexProcessorConfig = DEFAULTS.MARKDOWN_INDEX_PROCESSOR,
-  ) { }
+  ) {
+    this.config = {
+      ...DEFAULTS.MARKDOWN_INDEX_PROCESSOR,
+      ...this.config,
+    };
+  }
 
   /**
    * <method name="handle">
    * Starts the index file generation process for the configured base directory.
+   * 
+   * @param baseDir - The directory path to process
    * </method>
    */
   async handle(baseDir: string) {
-    if (this.config.flatten) {
-      await this.handleFlatten(baseDir);
-    } else if (this.config.recursive) {
-      await this.handleDirectoryRecusrively(baseDir);
-    }
-    else {
-      await this.handleDirectoryRecusrively(baseDir);
-    }
-  }
-
-  async handleFlatten(directory: string) {
-    // Process files and folders
-    let processedEntries = await new IndexStructurePreProcessor({
-      markdownLink: this.config?.markdownLinks,
-    }).process(directory);
-
-    // If no md files are found, return
-    if (processedEntries.length === 0) {
-      return;
-    }
-
-    const recursivelyAddSubEntries = async (entries: IndexStructurePreProcessorEntry[]) => {
-      for (const i in entries) {
-        const entry = entries[i]
-        
-        entries[i].entries = await new IndexStructurePreProcessor({
-          markdownLink: this.config?.markdownLinks,
-        }).process(entry.src);
-
-        if(false === entry.isDir) {
-          continue;
-        }
-        
-
-        entries[i].entries = await recursivelyAddSubEntries(entries[i].entries);
-      }
-
-      return entries
-    }
-
-    processedEntries = await recursivelyAddSubEntries(processedEntries);
-
-    // Save the index.md file
-    await new IndexFileGenerator({
-      ...(this.config ?? {}),
-      outDir: directory,
-      flatten: true,
-    }).saveIndexFile(processedEntries);
-  }
-
-  async handleSingleDirectory(directory: string) {
-
-    // Process files and folders
-    const processedEntries = await new IndexStructurePreProcessor({
-      markdownLink: this.config?.markdownLinks,
-    }).process(directory);
-
-    // If no md files are found, return
-    if (processedEntries.length === 0) {
-      return;
-    }
-
-    // Save the index.md file
-    await new IndexFileGenerator({
-      ...(this.config ?? {}),
-      outDir: directory,
-    }).saveIndexFile(processedEntries);
+    await this.handleSingleDirectory(baseDir);
   }
 
   /**
-   * <method name="handleDirectoryRecusrively">
-   * Recursively processes a directory and all its subdirectories to create index files.
-   *
+   * <method name="handleSingleDirectory">
+   * Handles a single directory and creates an index file for it.
+   * 
    * @param directory - The directory path to process
    * </method>
    */
-  async handleDirectoryRecusrively(directory: string) {
+  async handleSingleDirectory(directory: string) {
+
     // Process files and folders
-    let processedEntries = await new IndexStructurePreProcessor({
-      markdownLink: this.config?.markdownLinks,
-    }).process(directory);
+    let processedEntries = await this.getProcessedEntries(directory);
 
     // If no md files are found, return
     if (processedEntries.length === 0) {
@@ -134,13 +73,11 @@ export class MarkdownIndexProcessor {
       // Handle directories recursively
       const directoryEntries = processedEntries.filter((entry) => entry.isDir);
       for (const dirEntry of directoryEntries) {
-        await this.handleDirectoryRecusrively(dirEntry.src);
+        await this.handleSingleDirectory(dirEntry.src);
       }
 
       // Re-process entries
-      processedEntries = await new IndexStructurePreProcessor({
-        markdownLink: this.config?.markdownLinks,
-      }).process(directory);
+      processedEntries = await this.getProcessedEntries(directory);
     }
 
     // Save the index.md file
@@ -149,4 +86,50 @@ export class MarkdownIndexProcessor {
       outDir: directory,
     }).saveIndexFile(processedEntries);
   }
+
+  /**
+   * <method name="getProcessedEntries">
+   * Gets the processed entries for a directory.
+   * 
+   * @param directory - The directory path to process
+   * </method>
+   */
+  private async getProcessedEntries(directory: string): Promise<IndexStructurePreProcessorEntry[]> {
+    // Process files and folders
+    let processedEntries = await new IndexStructurePreProcessor({
+      markdownLink: this.config?.markdownLinks,
+    }).process(directory);
+
+
+    if(this.config.flatten) {
+      processedEntries = await this.recursivelyAddSubEntries(processedEntries);
+    }
+    
+    return processedEntries;
+  }
+
+  /**
+   * <method name="recursivelyAddSubEntries">
+   * Recursively adds sub-entries to a directory.
+   * 
+   * @param entries - The entries to add sub-entries to
+   * </method>
+   */
+  private async recursivelyAddSubEntries(entries: IndexStructurePreProcessorEntry[]): Promise<IndexStructurePreProcessorEntry[]> {
+    for (const i in entries) {
+      const entry = entries[i];
+
+      entries[i].entries = await new IndexStructurePreProcessor({
+        markdownLink: this.config?.markdownLinks,
+      }).process(entry.src);
+
+      if (false === entry.isDir) {
+        continue;
+      }
+
+      entries[i].entries = await this.recursivelyAddSubEntries(entries[i].entries);
+    }
+
+    return entries;
+  };
 }
