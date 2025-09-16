@@ -113,7 +113,7 @@ export class IndexContentGenerator {
             return;
         }
 
-        if (this.config.filesHeading && state.filesProcessed === 0 && state.filesTotalCount > 0) {
+        if (state.config.filesHeading && state.filesProcessed === 0 && state.filesTotalCount > 0) {
             state.content += this.config.filesHeading + "\n";
         }
     }
@@ -123,7 +123,7 @@ export class IndexContentGenerator {
             return;
         }
 
-        if (this.config.directoryHeading && state.dirsProcessed === 0 && state.dirsTotalCount > 0) {
+        if (state.config.directoryHeading && state.dirsProcessed === 0 && state.dirsTotalCount > 0) {
             state.content += this.config.directoryHeading + "\n";
         }
     }
