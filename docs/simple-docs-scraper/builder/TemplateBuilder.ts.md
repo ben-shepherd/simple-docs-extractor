@@ -6,7 +6,7 @@
 
  A builder class for configuring template settings for documentation generation.
 
- 
+
 
  This class provides a fluent interface for configuring templates used in the
 
@@ -14,7 +14,7 @@
 
  template types with various customization options.
 
- 
+
 
  @param {string} _type - The type of template ('index' or 'documentation')
 
@@ -48,7 +48,7 @@
 
  Sets the template file path to use for this template.
 
- 
+
 
  @param {string} file - The path to the template file
 
@@ -66,7 +66,7 @@
 
  Enables markdown links in the generated documentation.
 
- 
+
 
  @returns {TemplateBuilder} This builder instance for method chaining
 
@@ -82,7 +82,7 @@
 
  Sets the heading text for the files section in the template.
 
- 
+
 
  @param {string} filesHeading - The heading text for files section
 
@@ -100,7 +100,7 @@
 
  Sets the heading text for the directories section in the template.
 
- 
+
 
  @param {string} directoryHeading - The heading text for directories section
 
@@ -118,7 +118,7 @@
 
  Sets the excerpt extraction configuration for this template.
 
- 
+
 
  @param {ExcerptExtractorConfig} excerpt - The excerpt extraction configuration
 
@@ -136,7 +136,7 @@
 
  Sets the callback function for processing individual lines in the template.
 
- 
+
 
  @param {LineCallback} lineCallback - The callback function for line processing
 
@@ -154,7 +154,7 @@
 
  Sets the callback function for processing file names in the template.
 
- 
+
 
  @param {FileNameCallback} fileNameCallback - The callback function for file name processing
 
@@ -172,9 +172,27 @@
 
  Sets the plugins to use for this template.
 
- 
+
 
  @param {ExtractorPlugin[]} plugins - The plugins to use
+
+ @returns {TemplateBuilder} This builder instance for method chaining
+
+ 
+
+
+
+---
+
+
+
+### **flatten**
+
+ Sets whether to flatten the template.
+
+
+
+ @param {boolean} flatten - Whether to flatten the template
 
  @returns {TemplateBuilder} This builder instance for method chaining
 
@@ -190,7 +208,7 @@
 
  Builds and returns the template configuration object.
 
- 
+
 
  @returns {Templates} The template configuration object
 
@@ -202,7 +220,7 @@
 
 
 
-Last updated: 2025-09-14T20:37:20.245Z
+Last updated: 2025-09-16T18:06:39.383Z
 
 
 

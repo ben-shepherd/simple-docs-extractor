@@ -25,11 +25,11 @@
    new TagExtractorPlugin({ tag: 'docs', searchAndReplace: '' }),
    new RegexExtractorPlugin({ pattern: /\/\*\*([\s\S]*?)\*\//g, searchAndReplace: '' })
  ];
- 
+
  const extractor = new DocumentContentExtractor(extractors);
  const result = await extractor.extractFromFile('example.js');
  ```
- 
+
 
  @param {DocumentContentExtractorConfig} config - Array of extractor plugins to use for extraction
 
@@ -49,13 +49,13 @@
 
  Extracts documentation from a file using the configured extractor plugins.
 
- 
+
 
  Reads the file content and delegates to extractFromString for processing.
 
  Throws an error if the file does not exist.
 
- 
+
 
  @param {string} file - The path to the file to extract documentation from
 
@@ -75,7 +75,7 @@
 
  Extracts documentation from a string using all configured extractor plugins.
 
- 
+
 
  Processes the input string through each configured extractor plugin sequentially
 
@@ -83,7 +83,7 @@
 
  types of content from the same input.
 
- 
+
 
  @param {string} contents - The content string to extract documentation from
 
@@ -101,13 +101,13 @@
 
  Handles the extraction process for a single extractor plugin.
 
- 
+
 
  Validates the plugin, executes the extraction, handles errors appropriately,
 
  and cleans the extracted content by trimming whitespace and empty lines.
 
- 
+
 
  @param {ExtractorPlugin} plugin - The extractor plugin to execute
 
@@ -131,7 +131,7 @@
 
  Cleans extracted content by trimming whitespace and removing excessive empty lines.
 
- 
+
 
  @param {ExtractedContent[]} result - Array of extracted content objects to clean
 
@@ -143,7 +143,7 @@
 
 
 
-Last updated: 2025-09-14T20:37:20.245Z
+Last updated: 2025-09-15T18:57:12.061Z
 
 
 

@@ -43,6 +43,9 @@ const builder = SimpleDocExtractor
                 searchAndReplace: "%content%",
             }),
         ])
+        target.indexTemplate((template) => {
+            template.flatten(true) // Enable flattening for this target
+        })
     })
     .addRecommendedFormatters()
     .buildConfig();
@@ -256,6 +259,13 @@ Sets a callback function to process file names.
 
 ```typescript
 template.fileNameCallback((fileName) => fileName.replace('.ts', ''))
+```
+
+#### `flatten(flatten: boolean)`
+Sets whether to flatten the template structure, showing all nested files in a single list.
+
+```typescript
+template.flatten(true) // Flattens nested directory structure
 ```
 
 ## Benefits of the Builder Pattern

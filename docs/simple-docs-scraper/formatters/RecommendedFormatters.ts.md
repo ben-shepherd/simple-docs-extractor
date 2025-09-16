@@ -26,7 +26,7 @@
 
  - AddDoubleLinesFormatter (Adds spacing between content lines)
 
- 
+
 
  @returns {TFormatter[]} The recommended formatters for the SimpleDocsExtractor.
 
@@ -38,7 +38,7 @@
 
 
 
-Last updated: 2025-09-14T20:37:20.245Z
+Last updated: 2025-09-15T18:57:12.059Z
 
 
 

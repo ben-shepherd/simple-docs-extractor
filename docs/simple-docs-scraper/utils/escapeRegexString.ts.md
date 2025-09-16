@@ -6,7 +6,7 @@
 
  Utility function for escaping special regex characters in strings.
 
- 
+
 
  This function escapes all special regular expression characters in a string
 
@@ -16,7 +16,7 @@
 
  configuration values.
 
- 
+
 
  @example
 
@@ -26,13 +26,13 @@
  const regex = new RegExp(escaped);
  // Now regex will match the literal string "file.name.js"
  ```
- 
+
 
  @param {string} string - The string to escape for regex use
 
  @returns {string} The escaped string safe for use in regex patterns
 
- 
+
 
  @see https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
 
@@ -56,7 +56,7 @@ Not available.
 
 
 
-Last updated: 2025-09-14T20:37:20.246Z
+Last updated: 2025-09-15T18:57:12.066Z
 
 
 

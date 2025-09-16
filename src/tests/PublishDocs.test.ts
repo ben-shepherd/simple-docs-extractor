@@ -1,3 +1,5 @@
+import { IndexContentGenerator, State } from "@/simple-docs-scraper/generators/IndexContenGenerator.js";
+import { IndexFileGeneratorConfig } from "@/simple-docs-scraper/generators/IndexFileGenerator.js";
 import {
   afterAll,
   beforeEach,
@@ -178,5 +180,48 @@ describe("Publish Docs", () => {
       expect(nonRootIndexFileContent).not.toContain("## Features");
       expect(nonRootIndexFileContent).toContain("Table of Contents");
     });
+  });
+
+  describe("publishDocs with flattened index", () => {
+    test("should flatten the index", async () => {
+      testConfig = {
+        ...testConfig,
+        targets: [
+          {
+            ...testConfig.targets[0],
+            templates: {
+              rootIndex: {
+                ...(testConfig.targets[0].templates?.rootIndex || {}),
+                flatten: true,
+                recursive: true,
+              }
+            }
+          }
+        ]
+      }
+
+      await publishDocs(testConfig);
+      
+      const rootIndexFileContent = fs.readFileSync(
+        getOutputPath("docs/index.md"),
+        "utf8",
+      );
+
+      const indenter = (level: number) => {
+        return new IndexContentGenerator({} as IndexFileGeneratorConfig).createIndenterPrefix({ indentLevel: level } as State);
+      }
+
+      expect(rootIndexFileContent).toContain(
+        `## Folders\n\n` +  
+        `${indenter(0)}- [simple-docs-scraper/](simple-docs-scraper/index.md)\n` +
+          `${indenter(1)}- [builder/](simple-docs-scraper/builder/index.md)\n` +
+            `${indenter(2)}- [Builder.ts.md](simple-docs-scraper/builder/Builder.ts.md)\n` +
+            `${indenter(2)}- [TargetBuilder.ts.md](simple-docs-scraper/builder/TargetBuilder.ts.md)\n` +
+            `${indenter(2)}- [TemplateBuilder.ts.md](simple-docs-scraper/builder/TemplateBuilder.ts.md)\n` +
+            `${indenter(1)}- [config/](simple-docs-scraper/config/index.md)\n` +
+              `${indenter(2)}- [ConfigHelper.ts.md](simple-docs-scraper/config/ConfigHelper.ts.md)\n`
+          );
+    });
+    
   });
 });

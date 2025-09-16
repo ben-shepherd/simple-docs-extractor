@@ -1,7 +1,8 @@
+import { listIndentPrefix } from "@/simple-docs-scraper/utils/listIndenterPrefix.js";
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import path from "path";
-import { IndexStructurePreProcessor } from "../simple-docs-scraper/processors/IndexStructurePreProcessor.js";
+import { DirectoryMarkdownScanner } from "../simple-docs-scraper/processors/DirectoryMarkdownScanner.js";
 import { MarkdownIndexProcessor } from "../simple-docs-scraper/processors/MarkdownIndexProcessor.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";
@@ -9,7 +10,7 @@ import { getOutputPath } from "./helpers/getOutputPath.js";
 describe("Example Test Suite", () => {
   const docsPath = getOutputPath("docs");
   let indexProcessor: MarkdownIndexProcessor;
-  let indexStructurePreProcessor: IndexStructurePreProcessor;
+  let indexStructurePreProcessor: DirectoryMarkdownScanner;
 
   beforeEach(() => {
     deleteOutputFiles();
@@ -35,7 +36,7 @@ describe("Example Test Suite", () => {
     );
 
     indexProcessor = new MarkdownIndexProcessor();
-    indexStructurePreProcessor = new IndexStructurePreProcessor();
+    indexStructurePreProcessor = new DirectoryMarkdownScanner();
   });
 
   // afterEach(() => {
@@ -143,7 +144,7 @@ describe("Example Test Suite", () => {
     });
 
     test("should create plain text entries when markdownLink is disabled", async () => {
-      indexStructurePreProcessor = new IndexStructurePreProcessor({
+      indexStructurePreProcessor = new DirectoryMarkdownScanner({
         markdownLink: false,
       });
       const results = await indexStructurePreProcessor.process(docsPath);
@@ -164,7 +165,7 @@ describe("Example Test Suite", () => {
     });
 
     test("should create markdown links for files and folders", async () => {
-      indexStructurePreProcessor = new IndexStructurePreProcessor({
+      indexStructurePreProcessor = new DirectoryMarkdownScanner({
         markdownLink: true,
       });
       const results = await indexStructurePreProcessor.process(docsPath);
@@ -186,7 +187,7 @@ describe("Example Test Suite", () => {
 
     test("should format markdown links with sub folders with an index.md", async () => {
       const subFolder2Path = getOutputPath("docs/sub-folder");
-      indexStructurePreProcessor = new IndexStructurePreProcessor({
+      indexStructurePreProcessor = new DirectoryMarkdownScanner({
         markdownLink: true,
       });
       const results = await indexStructurePreProcessor.process(subFolder2Path);
@@ -209,7 +210,7 @@ describe("Example Test Suite", () => {
     });
 
     test("should be able to read all md files and directories", async () => {
-      const indexDirectoryProcessor = new IndexStructurePreProcessor();
+      const indexDirectoryProcessor = new DirectoryMarkdownScanner();
       const entries = await indexDirectoryProcessor.getDirectoryEntries(
         getOutputPath("docs"),
       );
@@ -368,6 +369,12 @@ describe("Example Test Suite", () => {
       fs.mkdirSync(getOutputPath("docs-sorting/c"));
       fs.mkdirSync(getOutputPath("docs-sorting/d"));
 
+      indexProcessor = new MarkdownIndexProcessor({
+        filesHeading: undefined,
+        directoryHeading: undefined,
+        recursive: true,
+        markdownLinks: false,
+      });
       await indexProcessor.handle(getOutputPath("docs-sorting"));
 
       const indexFileContent = fs.readFileSync(
@@ -384,6 +391,7 @@ describe("Example Test Suite", () => {
       indexProcessor = new MarkdownIndexProcessor({
         filesHeading: "## Files",
         recursive: true,
+        markdownLinks: false,
       });
 
       fs.mkdirSync(getOutputPath("docs-heading"), { recursive: true });
@@ -404,6 +412,7 @@ describe("Example Test Suite", () => {
       indexProcessor = new MarkdownIndexProcessor({
         directoryHeading: "## Folders",
         recursive: true,
+        markdownLinks: false,
       });
 
       fs.mkdirSync(getOutputPath("docs-heading/a"), { recursive: true });
@@ -424,6 +433,7 @@ describe("Example Test Suite", () => {
         directoryHeading: "## Folders",
         filesHeading: "## Files",
         recursive: true,
+        markdownLinks: false,
       });
 
       fs.mkdirSync(getOutputPath("docs-heading/a"), { recursive: true });
@@ -465,6 +475,7 @@ This additional text helps simulate a more realistic documentation scenario.`;
           firstSentenceOnly: false,
         },
         recursive: true,
+        markdownLinks: false,
       });
       await indexProcessor.handle(getOutputPath("docs-excerpt"));
 
@@ -487,6 +498,131 @@ This additional text helps simulate a more realistic documentation scenario.`;
       await indexProcessor.handle(getOutputPath("docs-no-md"));
 
       expect(fs.existsSync(getOutputPath("docs-no-md/index.md"))).toBe(false);
+    });
+  });
+
+  describe("flatten", () => {
+    test("should flatten the index.md file", async () => {
+
+      fs.mkdirSync(getOutputPath("docs-flatten/sub-folder/sub-folder2"), { recursive: true });
+      fs.writeFileSync(getOutputPath("docs-flatten/a.md"), "");
+      fs.writeFileSync(getOutputPath("docs-flatten/sub-folder/b.md"), "");
+      fs.writeFileSync(getOutputPath("docs-flatten/sub-folder/sub-folder2/c.md"), "");
+
+      indexProcessor = new MarkdownIndexProcessor({
+        flatten: true,
+        recursive: true,
+        markdownLinks: false,
+      });
+      await indexProcessor.handle(getOutputPath("docs-flatten"));
+
+      const indexFileContent = fs.readFileSync(
+        getOutputPath("docs-flatten/index.md"),
+        "utf8",
+      );
+
+      const indenter = (level: number) => {
+        return listIndentPrefix(level);
+      }
+
+      expect(indexFileContent).toBe(
+        `${indenter(0)}- a.md\n` +
+        `${indenter(0)}- sub-folder/\n` +
+          `${indenter(1)}- b.md\n` +
+          `${indenter(1)}- sub-folder2/\n` +
+            `${indenter(2)}- c.md\n`
+      );
+    });
+
+    test("should flatten the index.md file with markdown links", async () => {
+
+      fs.mkdirSync(getOutputPath("docs-flatten/sub-folder/sub-folder2"), { recursive: true });
+      fs.writeFileSync(getOutputPath("docs-flatten/a.md"), "");
+      fs.writeFileSync(getOutputPath("docs-flatten/sub-folder/b.md"), "");
+      fs.writeFileSync(getOutputPath("docs-flatten/sub-folder/sub-folder2/c.md"), "");
+
+      indexProcessor = new MarkdownIndexProcessor({
+        flatten: true,
+        recursive: true,
+        markdownLinks: true,
+      });
+      await indexProcessor.handle(getOutputPath("docs-flatten"));
+
+      const indexFileContent = fs.readFileSync(
+        getOutputPath("docs-flatten/index.md"),
+        "utf8",
+      );
+
+      const indenter = (level: number) => {
+        return listIndentPrefix(level);
+      }
+
+      expect(indexFileContent).toBe(
+        `${indenter(0)}- [a.md](a.md)\n` +
+        `${indenter(0)}- [sub-folder/](sub-folder/index.md)\n` +
+          `${indenter(1)}- [b.md](sub-folder/b.md)\n` +
+          `${indenter(1)}- [sub-folder2/](sub-folder/sub-folder2/index.md)\n` +
+            `${indenter(2)}- [c.md](sub-folder/sub-folder2/c.md)\n`
+      );
+    });
+  })
+
+  describe("recursion", () => {
+    test("should add the index.md to the path when isRootConfig is true, recursive is false and flatten is true", async () => {
+
+      fs.mkdirSync(getOutputPath("docs-recursion/sub-folder/sub-folder2"), { recursive: true });
+      fs.writeFileSync(getOutputPath("docs-recursion/a.md"), "");
+      fs.writeFileSync(getOutputPath("docs-recursion/sub-folder/b.md"), "");
+      fs.writeFileSync(getOutputPath("docs-recursion/sub-folder/sub-folder2/c.md"), "");
+
+      indexProcessor = new MarkdownIndexProcessor({
+        isRootConfig: true,
+        recursive: false,
+        flatten: true,
+        markdownLinks: true,
+      });
+      await indexProcessor.handle(getOutputPath("docs-recursion"));
+
+      const indexFileContent = fs.readFileSync(
+        getOutputPath("docs-recursion/index.md"),
+        "utf8",
+      );
+
+      const indenter = (level: number) => {
+        return listIndentPrefix(level);
+      }
+
+      expect(indexFileContent).toBe(
+        `${indenter(0)}- [a.md](a.md)\n` +
+        `${indenter(0)}- [sub-folder/](sub-folder/index.md)\n` +
+          `${indenter(1)}- [b.md](sub-folder/b.md)\n` +
+          `${indenter(1)}- [sub-folder2/](sub-folder/sub-folder2/index.md)\n` +
+            `${indenter(2)}- [c.md](sub-folder/sub-folder2/c.md)\n`
+      );
+
+    });
+
+    test("should not process nested index.md files when recursive is false", async () => {
+
+      fs.mkdirSync(getOutputPath("docs-recursion/sub-folder/sub-folder2"), { recursive: true });
+      fs.writeFileSync(getOutputPath("docs-recursion/a.md"), "");
+      fs.writeFileSync(getOutputPath("docs-recursion/sub-folder/b.md"), "");
+      fs.writeFileSync(getOutputPath("docs-recursion/sub-folder/sub-folder2/c.md"), "");
+
+      indexProcessor = new MarkdownIndexProcessor({
+        recursive: false,
+        flatten: true,
+        markdownLinks: true,
+      });
+      await indexProcessor.handle(getOutputPath("docs-recursion"));
+
+      const indexFileExists = fs.existsSync(getOutputPath("docs-recursion/index.md"));
+      const subFolderIndexFileExists = fs.existsSync(getOutputPath("docs-recursion/sub-folder/index.md"));
+      const subFolder2IndexFileExists = fs.existsSync(getOutputPath("docs-recursion/sub-folder/sub-folder2/index.md"));
+
+      expect(indexFileExists).toBe(true);
+      expect(subFolderIndexFileExists).toBe(false);
+      expect(subFolder2IndexFileExists).toBe(false);
     });
   });
 });

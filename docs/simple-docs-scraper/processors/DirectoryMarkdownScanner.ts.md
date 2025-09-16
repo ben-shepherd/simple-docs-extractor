@@ -1,4 +1,4 @@
-## IndexStructurePreProcessor.ts
+## DirectoryMarkdownScanner.ts
 
 
 
@@ -21,7 +21,7 @@
  @example
 
  ```typescript
- const processor = new IndexStructurePreProcessor({
+ const processor = new DirectoryMarkdownScanner({
    markdownLink: true
  });
 
@@ -146,7 +146,7 @@
 
 
 
-Last updated: 2025-09-14T20:37:20.246Z
+Last updated: 2025-09-16T20:33:34.196Z
 
 
 

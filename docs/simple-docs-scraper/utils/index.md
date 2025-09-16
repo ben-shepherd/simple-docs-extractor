@@ -7,7 +7,9 @@ This is the index file for the generated documentation. Below you will find the 
 
 ## Files
 
+- [createMarkdownLink.ts.md](createMarkdownLink.ts.md)
 - [escapeRegexString.ts.md](escapeRegexString.ts.md)
+- [listIndenterPrefix.ts.md](listIndenterPrefix.ts.md)
 
 
 

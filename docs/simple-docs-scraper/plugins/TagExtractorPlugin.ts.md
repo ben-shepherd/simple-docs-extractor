@@ -6,27 +6,34 @@
 
  Extracts content from HTML/XML-like tags in source files.
 
- 
+
 
  This extractor plugin searches for content between opening and closing tags,
 
- such as `<docs>content
+ such as `<documentation>content</documentation>` or `<example>code</example>`. It supports
+
+ extracting attributes from the opening tag and can handle multiple tag
+
+ instances in a single file.
 
 
 
----
+ Example usage:
+
+ ```typescript
+ const extractor = new TagExtractorPlugin({
+   tag: 'docs',
+   searchAndReplace: ''
+ });
+
+ // Will extract content from: <documentation>This is documentation</documentation>
+ const result = await extractor.extractFromString('<documentation>This is documentation</documentation>');
+ ```
 
 
+ @param {TagExtractorPluginConfig} config - The configuration object containing the tag name and options
 
-This is documentation
-
-
-
----
-
-
-
-This is documentation
+ 
 
 
 
@@ -42,7 +49,7 @@ This is documentation
 
  Updates the configuration for this extractor.
 
- 
+
 
  @param {TagExtractorPluginConfig} config - The new configuration object
 
@@ -60,7 +67,7 @@ This is documentation
 
  Retrieves the current configuration of this extractor.
 
- 
+
 
  @returns {TagExtractorPluginConfig} The current configuration object
 
@@ -76,7 +83,7 @@ This is documentation
 
  Extracts content from HTML/XML-like tags in the provided string.
 
- 
+
 
  Searches for all instances of the configured tag and extracts the content
 
@@ -84,13 +91,13 @@ This is documentation
 
  the opening tag. Returns an error if no matching tags are found.
 
- 
+
 
  @param {string} str - The content string to extract from
 
  @returns {Promise<ExtractedContent[] | ErrorResult>} Array of extracted content objects or error result
 
- 
+
 
  For regex101 example:
 
@@ -108,7 +115,7 @@ This is documentation
 
  Composes a regular expression pattern for matching the configured tag.
 
- 
+
 
  @param {string} rawTag - The cleaned tag name
 
@@ -126,7 +133,7 @@ This is documentation
 
  Extracts attributes from the opening tag string.
 
- 
+
 
  @param {string} startTag - The opening tag string to extract attributes from
 
@@ -144,7 +151,7 @@ This is documentation
 
  Returns the pattern for the start tag.
 
- 
+
 
  @param {string} rawTag - The raw tag name
 
@@ -162,7 +169,7 @@ This is documentation
 
  Returns the pattern for the attributes.
 
- 
+
 
  @returns {string} The pattern for the attributes
 
@@ -178,7 +185,7 @@ This is documentation
 
  Returns the pattern for the inside tag.
 
- 
+
 
  @returns {string} The pattern for the inside tag
 
@@ -194,7 +201,7 @@ This is documentation
 
  Returns the pattern for the end tag.
 
- 
+
 
  @param {string} rawTag - The raw tag name
 
@@ -212,7 +219,7 @@ This is documentation
 
  Cleans the tag name by removing non-word characters.
 
- 
+
 
  @param {string} startTag - The original tag name
 
@@ -228,7 +235,7 @@ This is documentation
 
 
 
-Last updated: 2025-09-14T20:37:20.246Z
+Last updated: 2025-09-16T20:27:00.055Z
 
 
 

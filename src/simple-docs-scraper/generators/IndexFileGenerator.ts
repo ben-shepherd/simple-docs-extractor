@@ -1,9 +1,9 @@
 import fs from "fs";
 import path from "path";
+import { DEFAULTS } from "../consts/defaults.js";
 import { ExtractedContent } from "../plugins/DocumentContentExtractor.js";
-import { IndexStructurePreProcessorEntry } from "../processors/IndexStructurePreProcessor.js";
+import { DirectoryMarkdownScannerEntry } from "../processors/DirectoryMarkdownScanner.js";
 import {
-  DEFAULT_CONFIG as DEFAULT_EXCERPT_CONFIG,
   ExcerptExtractor,
   ExcerptExtractorConfig,
 } from "../transformers/ExcerptExtractor.js";
@@ -14,11 +14,12 @@ import {
   TemplatePathConfig,
 } from "../types/config.t.js";
 import { ExtractorPlugin } from "../types/extractor.t.js";
+import { IndexContentGenerator } from "./IndexContenGenerator.js";
 
 export type IndexFileGeneratorConfig = TemplatePathConfig & {
   outDir: string;
-  searchAndReplace?: string;
   baseDir?: string;
+  searchAndReplace?: string;
   markdownLinks?: boolean;
   filesHeading?: string;
   directoryHeading?: string;
@@ -26,6 +27,9 @@ export type IndexFileGeneratorConfig = TemplatePathConfig & {
   lineCallback?: LineCallback;
   fileNameCallback?: FileNameCallback;
   plugins?: ExtractorPlugin[];
+  flatten?: boolean;
+  recursive?: boolean;
+  isRootConfig?: boolean;
 };
 
 /**
@@ -43,7 +47,7 @@ export type IndexFileGeneratorConfig = TemplatePathConfig & {
  *   outDir: './docs',
  *   template: './templates/index.md',
  *   searchAndReplace: '{{CONTENT}}',
- *   excerpt: true,
+ *   excerpt: { enabled: true },
  *   excerptLength: 100
  * });
  *
@@ -53,7 +57,27 @@ export type IndexFileGeneratorConfig = TemplatePathConfig & {
  * </docs>
  */
 export class IndexFileGenerator {
-  constructor(private config: IndexFileGeneratorConfig) {}
+  private indexContentGenerator: IndexContentGenerator;
+
+  /**
+   * <method name="constructor">
+   * Creates a new IndexFileGenerator instance.
+   *
+   * This constructor initializes the generator with the provided configuration,
+   * merging it with default values and creating an IndexContentGenerator instance.
+   *
+   * @param {IndexFileGeneratorConfig} config - Configuration for file generation
+   * </method>
+   */
+  constructor(private config: IndexFileGeneratorConfig) {
+    this.config = {
+      ...DEFAULTS.INDEX_FILE_GENERATOR,
+      ...this.config,
+    };
+    this.indexContentGenerator = new IndexContentGenerator({
+      ...this.config,
+    });
+  }
 
   /**
    * <method name="saveIndexFile">
@@ -66,78 +90,29 @@ export class IndexFileGenerator {
    * @param processedArray - Array of processed directory entries to include in the index
    * </method>
    */
-  async saveIndexFile(processedArray: IndexStructurePreProcessorEntry[]) {
+  async saveIndexFile(processedArray: DirectoryMarkdownScannerEntry[]) {
     // Check if the out directory exists
     if (!fs.existsSync(this.config.outDir)) {
       fs.mkdirSync(this.config.outDir, { recursive: true });
     }
-
+    
+    // Generate the content
+    const content = this.indexContentGenerator.generate(processedArray);
+    
+    // Store the template content
     let templateContent = this.getTemplateContent();
-    let content = "";
-    let excerpt: string | undefined = undefined;
-    let lineNumber = 1;
-    const outFilePath = path.join(this.config.outDir, "index.md");
-
-    const filesTotalCount = processedArray.filter(
-      (proc) => proc.isDir === false,
-    ).length;
-    let filesProcessed = 0;
-    const dirsTotalCount = processedArray.filter(
-      (proc) => proc.isDir === true,
-    ).length;
-    let dirsProcessed = 0;
-
-    for (const current of processedArray) {
-      const { entryName, markdownLink } = current;
-
-      // If we're a file, genereate an excerpt
-      excerpt = this.createExcerpt(excerpt, current);
-
-      // We should only consider creating a file heading once we have reached the files
-      if (false === current.isDir) {
-        content = this.createFileHeading(
-          filesProcessed,
-          filesTotalCount,
-          content,
-        );
-      }
-
-      // We should only consider creating a directory heading once all files have been rendered
-      if (filesProcessed === filesTotalCount) {
-        content = this.createDirectoryHeading(
-          dirsProcessed,
-          dirsTotalCount,
-          content,
-        );
-      }
-
-      if (this.config.lineCallback) {
-        content += this.config.lineCallback(entryName, lineNumber, excerpt);
-      } else {
-        let line = `- ${markdownLink ?? entryName}`;
-        if (excerpt) {
-          line += ` - ${excerpt}`;
-        }
-        content += `${line}\n`;
-      }
-
-      lineNumber++;
-
-      if (false === current.isDir) {
-        filesProcessed++;
-      } else {
-        dirsProcessed++;
-      }
-    }
-
+    
     // Replace the search and replace with the content
     templateContent = templateContent.replace(
       this.getSearchAndReplace(),
       content,
     );
-
+    
     // Apply plugins to the template content
     templateContent = await this.applyPlugins(templateContent);
+    
+    // Get the output file path
+    const outFilePath = path.join(this.config.outDir, "index.md");
 
     // Write the file
     fs.writeFileSync(outFilePath, templateContent);
@@ -165,18 +140,17 @@ export class IndexFileGenerator {
     return templateContent;
   }
 
-  private createExcerpt(
-    excerpt: string | undefined,
-    current: IndexStructurePreProcessorEntry,
-  ) {
-    excerpt = undefined;
-    if (false === current.isDir) {
-      const fileContents = fs.readFileSync(current.src, "utf8");
-      excerpt = this.generateExcerpt(fileContents);
-    }
-    return excerpt;
-  }
-
+  /**
+   * <method name="generateExcerpt">
+   * Generates an excerpt from file content.
+   *
+   * This method uses the configured excerpt extractor to generate a summary
+   * from the provided content string.
+   *
+   * @param {string} content - File content to extract excerpt from
+   * @returns {string | undefined} Generated excerpt or undefined if not configured
+   * </method>
+   */
   protected generateExcerpt(content: string) {
     if (!this.config.excerpt) {
       return undefined;
@@ -184,34 +158,21 @@ export class IndexFileGenerator {
 
     return ExcerptExtractor.determineExcerpt(
       content,
-      this.config?.excerpt ?? DEFAULT_EXCERPT_CONFIG,
+      this.config?.excerpt ?? DEFAULTS.EXCERPT_EXTRACTOR,
     );
   }
 
-  protected createFileHeading(
-    processedFiles: number,
-    totalCount: number,
-    content: string = "",
-  ) {
-    if (this.config.filesHeading && processedFiles === 0 && totalCount > 0) {
-      content += this.config.filesHeading + "\n";
-    }
-
-    return content;
-  }
-
-  protected createDirectoryHeading(
-    processedDirs: number,
-    totalCount: number,
-    content: string = "",
-  ) {
-    if (this.config.directoryHeading && processedDirs === 0 && totalCount > 0) {
-      content += this.config.directoryHeading + "\n";
-    }
-
-    return content;
-  }
-
+  /**
+   * <method name="getTemplateContent">
+   * Retrieves the template content from the configured template file.
+   *
+   * This method reads the template file content if a template path is configured,
+   * otherwise returns the search and replace pattern as fallback content.
+   *
+   * @returns {string} Template content or search pattern
+   * @throws {Error} When template file is not found
+   * </method>
+   */
   private getTemplateContent(): string {
     if (!this.config.templatePath) {
       return this.getSearchAndReplace();
@@ -226,9 +187,14 @@ export class IndexFileGenerator {
   }
 
   /**
+   * <method name="getSearchAndReplace">
    * Gets the search and replace pattern for template injection.
    *
-   * @returns The search and replace pattern, defaults to '%content%' if not configured
+   * This method returns the configured search and replace pattern or defaults
+   * to '%content%' if not specified in the configuration.
+   *
+   * @returns {string} The search and replace pattern
+   * </method>
    */
   private getSearchAndReplace() {
     if (!this.config.searchAndReplace) {

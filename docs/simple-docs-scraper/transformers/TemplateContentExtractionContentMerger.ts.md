@@ -6,7 +6,7 @@
 
  Merges extracted content into template content with attribute formatting and content separation.
 
- 
+
 
  This class handles the complex process of merging multiple extracted content pieces
 
@@ -16,7 +16,7 @@
 
  between multiple content blocks.
 
- 
+
 
  @example
 
@@ -24,16 +24,16 @@
  const merger = new TemplateContentExtractionContentMerger({ target });
  const templateContent = "# Content\n{{content}}";
  const extractedContentArray = [
-   { 
-     content: "This is the content", 
-     searchAndReplace: "{{content}}", 
-     attributes: { name: "John" } 
+   {
+     content: "This is the content",
+     searchAndReplace: "{{content}}",
+     attributes: { name: "John" }
    }
  ];
  const result = merger.handle(templateContent, extractedContentArray);
  // Result: "# Content\n### *name*: John\n\nThis is the content"
  ```
- 
+
 
  @param {TemplateContentExtractionContentMergerConfig} config - Configuration containing the target for attribute format lookup
 
@@ -53,7 +53,7 @@
 
  Merges extracted content into template content by replacing placeholders.
 
- 
+
 
  Groups extracted content by search and replace patterns, then processes each
 
@@ -61,7 +61,7 @@
 
  content including attributes and dividers.
 
- 
+
 
  @param {string} templateContent - The template string containing placeholders
 
@@ -169,7 +169,7 @@
 
 
 
-Last updated: 2025-09-14T20:37:20.246Z
+Last updated: 2025-09-15T18:57:12.064Z
 
 
 

@@ -6,7 +6,7 @@
 
  A builder class for configuring target settings for documentation extraction.
 
- 
+
 
  This class provides a fluent interface for configuring targets that define
 
@@ -14,7 +14,7 @@
 
  templates and plugins for the extraction process.
 
- 
+
 
  @param {string | string[]} _patterns - Glob patterns for file matching
 
@@ -48,7 +48,7 @@
 
  Sets the glob patterns for file matching.
 
- 
+
 
  @param {string | string[]} patterns - The glob patterns to match files
 
@@ -66,7 +66,7 @@
 
  Sets the current working directory for file operations.
 
- 
+
 
  @param {string} cwd - The current working directory path
 
@@ -84,7 +84,7 @@
 
  Sets the patterns to ignore during file matching.
 
- 
+
 
  @param {string | string[]} ignore - The patterns to ignore
 
@@ -102,7 +102,7 @@
 
  Sets the output directory for generated documentation.
 
- 
+
 
  @param {string} outDir - The output directory path
 
@@ -120,7 +120,7 @@
 
  Sets additional options for glob pattern matching.
 
- 
+
 
  @param {GlobOptions} globOptions - The glob options to use
 
@@ -138,7 +138,7 @@
 
  Enables creation of index files for the target.
 
- 
+
 
  @returns {TargetBuilder} This builder instance for method chaining
 
@@ -154,7 +154,7 @@
 
  Configures the index template using a callback function.
 
- 
+
 
  @param {TemplateCallback} callback - The callback function to configure the template
 
@@ -172,7 +172,7 @@
 
  Sets a documentation template file path.
 
- 
+
 
  @param {string} templatePath - The path to the documentation template file
 
@@ -190,7 +190,7 @@
 
  Sets a root index template file path.
 
- 
+
 
  @param {string} templatePath - The path to the root index template file
 
@@ -208,7 +208,7 @@
 
  Configures the documentation template using a callback function.
 
- 
+
 
  @param {TemplateCallback} callback - The callback function to configure the template
 
@@ -226,7 +226,7 @@
 
  Sets the plugins to use during extraction.
 
- 
+
 
  @param {ExtractorPlugin[] | ExtractorPlugin} plugins - The plugin(s) to use
 
@@ -244,7 +244,7 @@
 
  Builds and returns the target configuration object.
 
- 
+
 
  @returns {Target} The target configuration object
 
@@ -256,7 +256,7 @@
 
 
 
-Last updated: 2025-09-14T20:37:20.245Z
+Last updated: 2025-09-15T18:57:12.057Z
 
 
 

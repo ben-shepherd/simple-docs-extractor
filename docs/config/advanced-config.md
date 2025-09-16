@@ -87,6 +87,8 @@ type IndexGeneratorConfig = {
   excerpt?: ExcerptExtractorConfig;
   lineCallback?: (fileNameEntry: string, lineNumber: number, excerpt?: string) => string;
   fileNameCallback?: (filePath: string) => string;
+  flatten?: boolean;
+  recursive?: boolean;
 };
 ```
 
@@ -102,6 +104,15 @@ type IndexGeneratorConfig = {
 - **`excerpt`** (ExcerptExtractorConfig): Configuration for generating file excerpts
 - **`lineCallback`** (function): Custom function to format each line in the index
 - **`fileNameCallback`** (function): Custom function to format file names
+- **`flatten`** (boolean): Whether to flatten nested directory structures into a single list (default: `false`)
+- **`recursive`** (boolean): Whether to process subdirectories recursively (default: `true`)
+
+### Flatten Feature
+
+The `flatten` option controls how nested directory structures are displayed in index files:
+
+- **`flatten: true` (default)**: Lists all files and folders from the current directory and all nested subdirectories together in the same `index.md`, showing the entire structure as a single, flattened list (with indentation to indicate depth).
+- **`flatten: false`** : Only lists the files and folders directly present in each directory's own `index.md`, maintaining a separate index file for every directory level.
 
 ## Documentation Generator Configuration
 
@@ -245,6 +256,8 @@ export const DEFAULT_CONFIG: SimpleDocExtractorConfig = {
       markdownLink: true,
       filesHeading: "\n## Files\n",
       directoryHeading: "\n## Folders\n",
+      flatten: false, // Set to true to flatten nested directory structure
+      recursive: true,
       excerpt: {
         length: 75,
         addEllipsis: false,

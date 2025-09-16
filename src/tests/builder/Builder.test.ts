@@ -26,9 +26,11 @@ describe("Builder", () => {
             addEllipsis: false,
             firstSentenceOnly: true,
           });
+          template.flatten(false);
         })
         .documentationTemplate((template) => {
           template.useFile("src/templates/documentation.template.md");
+
         })
         .target((target) => {
           target.cwd("src");
@@ -82,6 +84,7 @@ describe("Builder", () => {
       expect(config.templates?.index?.excerpt?.length).toBe(120);
       expect(config.templates?.index?.excerpt?.addEllipsis).toBe(false);
       expect(config.templates?.index?.excerpt?.firstSentenceOnly).toBe(true);
+      expect(config.templates?.index?.flatten).toBe(false);
 
       expect(config.templates?.documentation).toBeDefined();
       expect(config.templates?.documentation?.templatePath).toBe(
@@ -97,6 +100,7 @@ describe("Builder", () => {
           target.indexTemplate((template) => {
             template.useFile("src/templates/index.template.md");
             template.useMarkdownLinks();
+            template.flatten(true);
           });
           target.useDocumentationTemplate(
             "src/templates/documentation.template.md",
@@ -123,7 +127,8 @@ describe("Builder", () => {
         "src/templates/index.template.md",
       );
       expect(config.targets[0].templates?.index?.markdownLinks).toBe(true);
-
+      expect(config.targets[0].templates?.index?.flatten).toBe(true);
+      
       expect(config.targets[0].templates?.documentation).toBeDefined();
       expect(config.targets[0].templates?.documentation?.templatePath).toBe(
         "src/templates/documentation.template.md",

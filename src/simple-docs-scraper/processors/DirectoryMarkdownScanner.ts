@@ -1,16 +1,20 @@
 import fs from "fs";
 import path from "path";
+import { DEFAULTS } from "../consts/defaults.js";
+import { createMarkdownLink } from "../utils/createMarkdownLink.js";
 
-type IndexStructurePreProcessorConfig = {
+type DirectoryMarkdownScannerConfig = {
   markdownLink?: boolean;
 };
 
-export type IndexStructurePreProcessorEntry = {
+export type DirectoryMarkdownScannerEntry = {
   src: string;
   entryName: string;
+  pathToEntryName?: string;
   isDir: boolean;
   basename: string;
   markdownLink: string;
+  entries?: DirectoryMarkdownScannerEntry[];
 };
 
 /**
@@ -24,7 +28,7 @@ export type IndexStructurePreProcessorEntry = {
  *
  * @example
  * ```typescript
- * const processor = new IndexStructurePreProcessor({
+ * const processor = new DirectoryMarkdownScanner({
  *   markdownLink: true
  * });
  *
@@ -33,8 +37,8 @@ export type IndexStructurePreProcessorEntry = {
  * ```
  * </docs>
  */
-export class IndexStructurePreProcessor {
-  constructor(private config: IndexStructurePreProcessorConfig = {}) {}
+export class DirectoryMarkdownScanner {
+  constructor(private config: DirectoryMarkdownScannerConfig = {}) {}
 
   /**
    * <method name="getDirectoryEntries">
@@ -50,6 +54,9 @@ export class IndexStructurePreProcessor {
    */
   async getDirectoryEntries(baseDir: string): Promise<string[]> {
     if (!fs.existsSync(baseDir)) {
+      return [];
+    }
+    if(fs.statSync(baseDir).isFile()) {
       return [];
     }
 
@@ -85,17 +92,17 @@ export class IndexStructurePreProcessor {
    * @returns Promise resolving to array of processed entries ready for index generation
    * </method>
    */
-  async process(baseDir: string): Promise<IndexStructurePreProcessorEntry[]> {
+  async process(baseDir: string): Promise<DirectoryMarkdownScannerEntry[]> {
     const srcArray = await this.getDirectoryEntries(baseDir);
 
-    let results: IndexStructurePreProcessorEntry[] = [];
+    let results: DirectoryMarkdownScannerEntry[] = [];
 
     for (const src of srcArray) {
       // const parentDirectory = path.dirname(entry);
       const excerpt = undefined;
       const basename = path.basename(src);
 
-      const result: Partial<IndexStructurePreProcessorEntry> = {
+      const result: Partial<DirectoryMarkdownScannerEntry> = {
         src: src,
         isDir: false,
         basename,
@@ -121,7 +128,7 @@ export class IndexStructurePreProcessor {
         );
       }
 
-      results.push(result as IndexStructurePreProcessorEntry);
+      results.push(result as DirectoryMarkdownScannerEntry);
     }
 
     // Sort results so files appear first
@@ -130,9 +137,19 @@ export class IndexStructurePreProcessor {
     return results;
   }
 
+  /**
+   * <method name="sortWithFilesAppearingFirst">
+   * Sorts the processed entries so files appear first.
+   *
+   * This method sorts the processed entries so files appear first.
+   *
+   * @param processedEntries - The processed entries to sort
+   * @returns The sorted processed entries
+   * </method>
+   */
   sortWithFilesAppearingFirst(
-    processedEntries: IndexStructurePreProcessorEntry[],
-  ): IndexStructurePreProcessorEntry[] {
+    processedEntries: DirectoryMarkdownScannerEntry[],
+  ): DirectoryMarkdownScannerEntry[] {
     return processedEntries.sort((a, b) => {
       const aint = a.isDir === false ? 0 : 1;
       const bint = b.isDir === false ? 0 : 1;
@@ -152,7 +169,7 @@ export class IndexStructurePreProcessor {
    * </method>
    */
   appendIndexMdIfFound(
-    result: Partial<IndexStructurePreProcessorEntry>,
+    result: Partial<DirectoryMarkdownScannerEntry>,
     excerpt?: string,
   ): void {
     const directoryContainsIndex = fs.existsSync(
@@ -178,6 +195,15 @@ export class IndexStructurePreProcessor {
     );
   }
 
+  /**
+   * <method name="getDirEntryName">
+   * Gets the entry name for a directory.
+   * - Adds a trailing slash to the base name
+   *
+   * @param baseName - The base name of the directory
+   * @returns The entry name for the directory
+   * </method>
+   */
   protected getDirEntryName(baseName: string) {
     if (!baseName.endsWith("/")) {
       baseName += "/";
@@ -185,6 +211,15 @@ export class IndexStructurePreProcessor {
     return baseName;
   }
 
+  /**
+   * <method name="getFileEntryName">
+   * Gets the entry name for a file.
+   * - Adds a .md extension to the base name
+   *
+   * @param baseName - The base name of the file
+   * @returns The entry name for the file
+   * </method>
+   */
   protected getFileEntryName(baseName: string) {
     if (!baseName.endsWith(".md")) {
       baseName += ".md";
@@ -193,43 +228,14 @@ export class IndexStructurePreProcessor {
   }
 
   /**
-   * <method name="markdownLink">
-   * Generates a markdown link or plain text based on configuration.
+   * <method name="formatEntry">
+   * Formats the entry path.
+   * - Removes the parent directory
    *
-   * This method creates either a markdown link or plain text based on the
-   * markdownLink configuration. It handles optional excerpts and formats
-   * the output accordingly.
-   *
-   * @param display - The text to display
-   * @param link - The link target
-   * @param excerpt - Optional excerpt to include
-   * @returns Formatted markdown link or plain text
+   * @param entry - The entry path to format
+   * @returns The formatted entry path
    * </method>
    */
-  protected markdownLink(display: string, link: string, excerpt?: string) {
-    let result = "";
-
-    if (!this.config.markdownLink) {
-      result = `${display}`;
-
-      if (excerpt) {
-        result += ` - ${excerpt}`;
-      }
-
-      return result;
-    }
-
-    result = `[${display}]`;
-
-    if (excerpt) {
-      result += `(${link} - ${excerpt})`;
-    } else {
-      result += `(${link})`;
-    }
-
-    return result;
-  }
-
   formatEntry(entry: string) {
     const parentDirectory = path.dirname(entry);
 
@@ -250,5 +256,23 @@ export class IndexStructurePreProcessor {
     }
 
     return formattedFilePath;
+  }
+
+  /**
+   * <method name="markdownLink">
+   * Generates a markdown link or plain text based on configuration.
+   *
+   * This method creates either a markdown link or plain text based on the
+   * markdownLink configuration. It handles optional excerpts and formats
+   * the output accordingly.
+   *
+   * @param display - The text to display
+   * @param link - The link target
+   * @param excerpt - Optional excerpt to include
+   * @returns Formatted markdown link or plain text
+   * </method>
+   */
+  markdownLink(display: string, link: string, excerpt?: string) {
+    return createMarkdownLink(this.config.markdownLink ?? DEFAULTS.INDEX_FILE_GENERATOR.markdownLinks as boolean, display, link, excerpt);
   }
 }

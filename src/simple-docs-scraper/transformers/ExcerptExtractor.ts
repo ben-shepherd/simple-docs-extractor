@@ -1,14 +1,10 @@
+import { DEFAULTS } from "../consts/defaults.js";
+
 export type ExcerptExtractorConfig = {
   firstSentenceOnly?: boolean;
   addEllipsis?: boolean;
   length?: number;
 };
-
-export const DEFAULT_CONFIG: ExcerptExtractorConfig = {
-  firstSentenceOnly: true,
-  addEllipsis: true,
-  length: 75,
-} as const;
 
 /**
  * <docs>
@@ -46,7 +42,7 @@ export const DEFAULT_CONFIG: ExcerptExtractorConfig = {
 export class ExcerptExtractor {
   static determineExcerpt(
     content: string,
-    config: ExcerptExtractorConfig = DEFAULT_CONFIG,
+    config: ExcerptExtractorConfig = DEFAULTS.EXCERPT_EXTRACTOR,
   ): string | undefined {
     // Remove headings
     content = ExcerptExtractor.removeHeadings(content);
@@ -141,7 +137,7 @@ export class ExcerptExtractor {
     }
 
     const sentences = this.splitIntoSentences(excerpt);
-    return sentences[0];
+    return sentences?.[0] ?? "";
   }
 
   static removeSingleLetterAtEndOfSentence(excerpt: string) {

@@ -34,6 +34,7 @@ const config: SimpleDocExtractorConfig = {
       },
       outDir: path.join(process.cwd(), "docs"),
       createIndexFile: true,
+      flatten: false, // Set to true to flatten nested directory structure
       extraction: [
         new TagExtractorPlugin({
           tag: "docs",
@@ -63,6 +64,7 @@ Each target specifies:
 - **`outDir`**: Where to save generated documentation
 - **`createIndexFile`**: Whether to create an index.md file
 - **`extraction`**: How to extract documentation from source files
+- **`flatten`**: Whether to flatten the index structure (shows all nested files in a single list)
 
 ### Extractor Plugins
 
@@ -92,6 +94,30 @@ Formatters clean up the extracted content. Common ones include:
 ### Alternative, you can use the recommended formatters which include the above formatters.
 
 Use the `RecommendedFormatters` class to get the recommended formatters.
+
+### Flatten Feature
+
+The `flatten` option controls how nested directory structures are displayed in index files:
+
+- **`flatten: false`** (default): Creates separate index files for each directory level
+- **`flatten: true`**: Shows all files and directories in a single flattened list with proper indentation
+
+**Example with flatten enabled:**
+```typescript
+{
+  outDir: path.join(process.cwd(), "docs"),
+  createIndexFile: true,
+  flatten: true, // Flattens the directory structure
+  extraction: [
+    new TagExtractorPlugin({
+      tag: "docs",
+      searchAndReplace: "%content%",
+    }),
+  ],
+}
+```
+
+This will create a single index file showing all nested files with proper indentation levels.
 
 ## Usage
 
