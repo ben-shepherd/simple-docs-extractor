@@ -27,6 +27,7 @@ export const DEFAULT_CONFIG = SimpleDocExtractor.create(process.cwd())
       path.join(process.cwd(), "src/templates/index.template.md"),
     );
     template.useMarkdownLinks();
+    template.flatten(true);
   })
   .documentationTemplate((template) => {
     template.useFile(
@@ -65,6 +66,7 @@ export const DEFAULT_CONFIG = SimpleDocExtractor.create(process.cwd())
           searchAndReplace: "%readme%",
         }),
       );
+      template.flatten(true);
     });
   })
   .addRecommendedFormatters() // Add the recommended formatters to the configuration
