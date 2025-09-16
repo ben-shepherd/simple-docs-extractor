@@ -42,10 +42,10 @@ This is the index file for the generated documentation. Below you will find the 
   - [LocalesService.ts.md](services/LocalesService.ts.md)
   - [SimpleDocExtractor.ts.md](services/SimpleDocExtractor.ts.md)
 - [utils/](utils/index.md)
-  - [createMarkdownLink.ts.md](utils/createMarkdownLink.ts.md)
-  - [escapeRegexString.ts.md](utils/escapeRegexString.ts.md)
   - [ExcerptExtractor.ts.md](utils/ExcerptExtractor.ts.md)
   - [ExtensionReplacer.ts.md](utils/ExtensionReplacer.ts.md)
+  - [createMarkdownLink.ts.md](utils/createMarkdownLink.ts.md)
+  - [escapeRegexString.ts.md](utils/escapeRegexString.ts.md)
   - [listIndenterPrefix.ts.md](utils/listIndenterPrefix.ts.md)
 
 
