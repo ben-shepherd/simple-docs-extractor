@@ -1,5 +1,5 @@
-import { TargetBuilder } from "@/simple-docs-scraper/features/builder/TargetBuilder.js";
-import { TemplateBuilder } from "@/simple-docs-scraper/features/builder/TemplateBuilder.js";
+import { TargetBuilder } from "@/simple-docs-scraper/builder/TargetBuilder.js";
+import { TemplateBuilder } from "@/simple-docs-scraper/builder/TemplateBuilder.js";
 import { RecommendedFormatters } from "@/simple-docs-scraper/formatters/RecommendedFormatters.js";
 import { SimpleDocExtractor, Target } from "@/simple-docs-scraper/services/SimpleDocExtractor.js";
 import { SimpleDocExtractorConfig, Templates } from "@/simple-docs-scraper/types/config.t.js";

@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
-import { ExtensionReplacer } from "../transformers/ExtensionReplacer.js";
 import { TemplatePathConfig } from "../types/config.t.js";
+import { ExtensionReplacer } from "../utils/ExtensionReplacer.js";
 
 export type DocFileGeneratorConfig = TemplatePathConfig & {
   outDir: string;

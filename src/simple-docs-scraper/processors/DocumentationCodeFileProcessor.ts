@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { ContentInjection } from "../content/ContentInjection.js";
 import { DocFileGenerator } from "../generators/DocFileGenerator.js";
 import {
   DocumentContentExtractor,
@@ -7,7 +8,6 @@ import {
 } from "../plugins/DocumentContentExtractor.js";
 import { Locales, LocalesService } from "../services/LocalesService.js";
 import { Target } from "../services/SimpleDocExtractor.js";
-import { ContentInjection } from "../transformers/ContentInjection.js";
 import {
   DocumentationTemplateConfig,
   SimpleDocExtractorConfig,
@@ -59,7 +59,7 @@ export type ProcessResult = ProcessResultSuccess | ProcessResultError;
  * ```
  * </docs>
  */
-export class CodeFileProcessor {
+export class DocumentationCodeFileProcessor {
   constructor(private config: SimpleDocExtractorConfig) {}
 
   /**

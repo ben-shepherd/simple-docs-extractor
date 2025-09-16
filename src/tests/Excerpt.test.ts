@@ -1,5 +1,5 @@
 import { describe, expect, test } from "@jest/globals";
-import { ExcerptExtractor } from "../simple-docs-scraper/transformers/ExcerptExtractor.js";
+import { ExcerptExtractor } from "../simple-docs-scraper/utils/ExcerptExtractor.js";
 
 describe("excerpts", () => {
   const text = `## Heading 1

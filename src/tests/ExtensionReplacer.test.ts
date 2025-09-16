@@ -1,5 +1,5 @@
 import { describe, expect, test } from "@jest/globals";
-import { ExtensionReplacer } from "../simple-docs-scraper/transformers/ExtensionReplacer.js";
+import { ExtensionReplacer } from "../simple-docs-scraper/utils/ExtensionReplacer.js";
 
 describe("Extension Replacer", () => {
   describe("replace", () => {

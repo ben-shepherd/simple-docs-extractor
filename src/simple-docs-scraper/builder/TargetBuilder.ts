@@ -1,5 +1,5 @@
-import { TemplateCallback } from "@/simple-docs-scraper/features/builder/Builder.js";
-import { TemplateBuilder } from "@/simple-docs-scraper/features/builder/TemplateBuilder.js";
+import { TemplateCallback } from "@/simple-docs-scraper/builder/Builder.js";
+import { TemplateBuilder } from "@/simple-docs-scraper/builder/TemplateBuilder.js";
 import { Target } from "@/simple-docs-scraper/services/SimpleDocExtractor.js";
 import { Templates } from "@/simple-docs-scraper/types/config.t.js";
 import { ExtractorPlugin } from "@/simple-docs-scraper/types/extractor.t.js";

@@ -2,8 +2,8 @@ import { listIndentPrefix } from "@/simple-docs-scraper/utils/listIndenterPrefix
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import path from "path";
-import { DirectoryMarkdownScanner } from "../simple-docs-scraper/processors/DirectoryMarkdownScanner.js";
 import { MarkdownIndexProcessor } from "../simple-docs-scraper/processors/MarkdownIndexProcessor.js";
+import { DirectoryMarkdownScanner } from "../simple-docs-scraper/scanning/DirectoryMarkdownScanner.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";
 

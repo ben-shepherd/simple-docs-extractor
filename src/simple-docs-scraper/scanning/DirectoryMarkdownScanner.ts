@@ -1,7 +1,7 @@
+import { DEFAULTS } from "@/simple-docs-scraper/consts/defaults.js";
+import { createMarkdownLink } from "@/simple-docs-scraper/utils/createMarkdownLink.js";
 import fs from "fs";
 import path from "path";
-import { DEFAULTS } from "../consts/defaults.js";
-import { createMarkdownLink } from "../utils/createMarkdownLink.js";
 
 type DirectoryMarkdownScannerConfig = {
   markdownLink?: boolean;

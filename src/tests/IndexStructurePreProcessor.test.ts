@@ -1,4 +1,4 @@
-import { DirectoryMarkdownScanner } from "@/simple-docs-scraper/processors/DirectoryMarkdownScanner.js";
+import { DirectoryMarkdownScanner } from "@/simple-docs-scraper/scanning/DirectoryMarkdownScanner.js";
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 
