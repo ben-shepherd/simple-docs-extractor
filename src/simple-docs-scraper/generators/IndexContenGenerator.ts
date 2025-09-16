@@ -91,6 +91,10 @@ export class IndexContentGenerator {
             let subState = this.getDefaultState(entry.entries, overwriteConfig, overwriteState);
 
             for (const subEntry of entry.entries) {
+                // Add the parent entry name to the sub entry name
+                subEntry.entryName = this.appendEntryNameToSubEntry(subEntry, entry);
+
+                // Handle the sub entries recursively
                 subState = this.handleEntry(subState, subEntry);
                 this.handleFlattenedEntries(subState, subEntry);
             }
@@ -99,6 +103,15 @@ export class IndexContentGenerator {
         }
     }
 
+
+    private appendEntryNameToSubEntry(subEntry: IndexStructurePreProcessorEntry, entry: IndexStructurePreProcessorEntry) {
+        let entryName = entry.entryName;
+        if(entryName.endsWith("/")) {
+            entryName = entryName.slice(0, -1);
+        }
+        entryName = entryName + "/" + subEntry.entryName;
+        return entryName;
+    }
 
     private updateProcessedCount(state: State, entry: IndexStructurePreProcessorEntry) {
         if (entry.isDir) {
