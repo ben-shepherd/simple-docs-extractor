@@ -1,10 +1,6 @@
-import { ExcerptExtractorConfig } from "../transformers/ExcerptExtractor.js";
-import {
-  FileNameCallback,
-  LineCallback,
-  Templates,
-} from "../types/config.t.js";
-import { ExtractorPlugin } from "../types/extractor.t.js";
+import { FileNameCallback, LineCallback, Templates } from "@/simple-docs-scraper/types/config.t.js";
+import { ExtractorPlugin } from "@/simple-docs-scraper/types/extractor.t.js";
+import { ExcerptExtractorConfig } from "@/simple-docs-scraper/utils/ExcerptExtractor.js";
 
 /**
  * <docs>

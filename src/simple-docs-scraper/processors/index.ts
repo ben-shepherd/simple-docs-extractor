@@ -1,4 +1,2 @@
-export * from "./CodeFileProcessor.js";
-export * from "./DirectoryMarkdownScanner.js";
-export * from "./MarkdownIndexProcessor.js";
-
+export * from "./DocumentationCodeFileProcessor.js"
+export * from "./MarkdownIndexProcessor.js"

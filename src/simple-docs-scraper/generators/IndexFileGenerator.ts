@@ -1,19 +1,13 @@
 import fs from "fs";
 import path from "path";
-import { DEFAULTS } from "../consts/defaults.js";
-import { ExtractedContent } from "../plugins/DocumentContentExtractor.js";
-import { DirectoryMarkdownScannerEntry } from "../processors/DirectoryMarkdownScanner.js";
-import {
-  ExcerptExtractor,
-  ExcerptExtractorConfig,
-} from "../transformers/ExcerptExtractor.js";
-import TemplateContentExtractionContentMerger from "../transformers/TemplateContentExtractionContentMerger.js";
-import {
-  FileNameCallback,
-  LineCallback,
-  TemplatePathConfig,
-} from "../types/config.t.js";
-import { ExtractorPlugin } from "../types/extractor.t.js";
+
+import { DEFAULTS } from "@/simple-docs-scraper/consts/defaults.js";
+import TemplateContentExtractionContentMerger from "@/simple-docs-scraper/content/TemplateContentExtractionContentMerger.js";
+import { ExtractedContent } from "@/simple-docs-scraper/plugins/DocumentContentExtractor.js";
+import { DirectoryMarkdownScannerEntry } from "@/simple-docs-scraper/scanning/DirectoryMarkdownScanner.js";
+import { FileNameCallback, LineCallback, TemplatePathConfig } from "@/simple-docs-scraper/types/config.t.js";
+import { ExtractorPlugin } from "@/simple-docs-scraper/types/extractor.t.js";
+import { ExcerptExtractor, ExcerptExtractorConfig } from "@/simple-docs-scraper/utils/ExcerptExtractor.js";
 import { IndexContentGenerator } from "./IndexContenGenerator.js";
 
 export type IndexFileGeneratorConfig = TemplatePathConfig & {

@@ -1,9 +1,10 @@
+import { DEFAULTS } from "@/simple-docs-scraper/consts/defaults.js";
+import { DirectoryMarkdownScannerEntry } from "@/simple-docs-scraper/scanning/DirectoryMarkdownScanner.js";
+import { ExcerptExtractor } from "@/simple-docs-scraper/utils/ExcerptExtractor.js";
+import { createMarkdownLink } from "@/simple-docs-scraper/utils/createMarkdownLink.js";
+import { listIndentPrefix } from "@/simple-docs-scraper/utils/listIndenterPrefix.js";
 import fs from "fs";
-import { DEFAULTS } from "../consts/defaults.js";
-import { ExcerptExtractor, IndexFileGeneratorConfig } from "../index.js";
-import { DirectoryMarkdownScannerEntry } from "../processors/DirectoryMarkdownScanner.js";
-import { createMarkdownLink } from "../utils/createMarkdownLink.js";
-import { listIndentPrefix } from "../utils/listIndenterPrefix.js";
+import { IndexFileGeneratorConfig } from "./IndexFileGenerator.js";
     
 export type State = {
     config: IndexFileGeneratorConfig,

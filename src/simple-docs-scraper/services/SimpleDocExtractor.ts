@@ -1,13 +1,13 @@
+import { Builder } from "@/simple-docs-scraper/builder/Builder.js";
 import fs from "fs";
 import { GlobOptions } from "glob";
-import { Builder } from "../builder/Builder.js";
-import { FileScanner } from "../files/FileScanner.js";
 import {
-  CodeFileProcessor,
+  DocumentationCodeFileProcessor,
   ProcessResult,
   ProcessResultError,
-} from "../processors/CodeFileProcessor.js";
+} from "../processors/DocumentationCodeFileProcessor.js";
 import { MarkdownIndexProcessor } from "../processors/MarkdownIndexProcessor.js";
+import { FileScanner } from "../scanning/FileScanner.js";
 import { SimpleDocExtractorConfig, Templates } from "../types/config.t.js";
 import { ExtractorPlugin } from "../types/extractor.t.js";
 
@@ -133,7 +133,7 @@ export class SimpleDocExtractor {
    * </method>
    */
   async handleTarget(target: Target, targetIndex: number) {
-    const codeFileProcessor = new CodeFileProcessor(this.config);
+    const codeFileProcessor = new DocumentationCodeFileProcessor(this.config);
 
     this.logs.push(`targets[${targetIndex}]: Starting target`);
 
@@ -181,7 +181,7 @@ export class SimpleDocExtractor {
     target: Target,
     targetIndex: number,
     preProcessedFiles: ProcessResult[],
-    codeFileProcessor: CodeFileProcessor,
+    codeFileProcessor: DocumentationCodeFileProcessor,
   ) {
     const processedResult = await codeFileProcessor.preProcess(file, target);
     this.total++;

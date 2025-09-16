@@ -1,10 +1,10 @@
+import { TemplateCallback } from "@/simple-docs-scraper/builder/Builder.js";
+import { TemplateBuilder } from "@/simple-docs-scraper/builder/TemplateBuilder.js";
+import { Target } from "@/simple-docs-scraper/services/SimpleDocExtractor.js";
+import { Templates } from "@/simple-docs-scraper/types/config.t.js";
+import { ExtractorPlugin } from "@/simple-docs-scraper/types/extractor.t.js";
 import { GlobOptions } from "glob";
 import path from "path";
-import { Target } from "../services/SimpleDocExtractor.js";
-import { Templates } from "../types/config.t.js";
-import { ExtractorPlugin } from "../types/extractor.t.js";
-import { TemplateCallback } from "./Builder.js";
-import { TemplateBuilder } from "./TemplateBuilder.js";
 
 /**
  * <docs>

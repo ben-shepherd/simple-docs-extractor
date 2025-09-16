@@ -1,6 +1,6 @@
-import { IndexFileGeneratorConfig } from "../generators/IndexFileGenerator.js";
-import { MarkdownIndexProcessorConfig } from "../processors/MarkdownIndexProcessor.js";
-import { ExcerptExtractorConfig } from "../transformers/ExcerptExtractor.js";
+import { IndexFileGeneratorConfig } from "@/simple-docs-scraper/generators/IndexFileGenerator.js";
+import { MarkdownIndexProcessorConfig } from "@/simple-docs-scraper/processors/MarkdownIndexProcessor.js";
+import { ExcerptExtractorConfig } from "@/simple-docs-scraper/utils/ExcerptExtractor.js";
 
 type Defaults = {
     INDEX_FILE_GENERATOR: Partial<IndexFileGeneratorConfig>;

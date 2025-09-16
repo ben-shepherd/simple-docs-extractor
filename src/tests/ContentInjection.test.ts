@@ -9,7 +9,7 @@ import {
   test,
 } from "@jest/globals";
 import fs from "fs";
-import { ContentInjection } from "../simple-docs-scraper/transformers/ContentInjection.js";
+import { ContentInjection } from "../simple-docs-scraper/content/ContentInjection.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";
 

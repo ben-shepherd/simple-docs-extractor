@@ -1,9 +1,9 @@
-import { RecommendedFormatters } from "../formatters/RecommendedFormatters.js";
-import { SimpleDocExtractor, Target } from "../services/SimpleDocExtractor.js";
-import { SimpleDocExtractorConfig, Templates } from "../types/config.t.js";
-import { TFormatter } from "../types/formatter.t.js";
-import { TargetBuilder } from "./TargetBuilder.js";
-import { TemplateBuilder } from "./TemplateBuilder.js";
+import { TargetBuilder } from "@/simple-docs-scraper/builder/TargetBuilder.js";
+import { TemplateBuilder } from "@/simple-docs-scraper/builder/TemplateBuilder.js";
+import { RecommendedFormatters } from "@/simple-docs-scraper/formatters/RecommendedFormatters.js";
+import { SimpleDocExtractor, Target } from "@/simple-docs-scraper/services/SimpleDocExtractor.js";
+import { SimpleDocExtractorConfig, Templates } from "@/simple-docs-scraper/types/config.t.js";
+import { TFormatter } from "@/simple-docs-scraper/types/formatter.t.js";
 
 export type TemplateCallback = (builder: TemplateBuilder) => void;
 

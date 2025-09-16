@@ -1,9 +1,6 @@
-import { DEFAULTS } from "../consts/defaults.js";
-import {
-  IndexFileGenerator,
-  IndexFileGeneratorConfig,
-} from "../generators/IndexFileGenerator.js";
-import { DirectoryMarkdownScanner, DirectoryMarkdownScannerEntry } from "./DirectoryMarkdownScanner.js";
+import { DEFAULTS } from "@/simple-docs-scraper/consts/defaults.js";
+import { IndexFileGenerator, IndexFileGeneratorConfig } from "@/simple-docs-scraper/generators/IndexFileGenerator.js";
+import { DirectoryMarkdownScanner, DirectoryMarkdownScannerEntry } from "@/simple-docs-scraper/scanning/DirectoryMarkdownScanner.js";
 
 export type MarkdownIndexProcessorConfig = Omit<
   IndexFileGeneratorConfig,
