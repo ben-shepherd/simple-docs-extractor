@@ -35,6 +35,7 @@ export class TemplateBuilder {
     private _lineCallback?: LineCallback,
     private _fileNameCallback?: FileNameCallback,
     private _plugins: ExtractorPlugin[] = [],
+    private _flatten: boolean = false,
   ) {}
 
   /**
@@ -141,6 +142,19 @@ export class TemplateBuilder {
   }
 
   /**
+   * <method name="flatten">
+   * Sets whether to flatten the template.
+   *
+   * @param {boolean} flatten - Whether to flatten the template
+   * @returns {TemplateBuilder} This builder instance for method chaining
+   * </method>
+   */
+  flatten(flatten: boolean) {
+    this._flatten = flatten;
+    return this;
+  }
+
+  /**
    * <method name="build">
    * Builds and returns the template configuration object.
    *
@@ -158,6 +172,7 @@ export class TemplateBuilder {
         lineCallback: this._lineCallback,
         fileNameCallback: this._fileNameCallback,
         plugins: this._plugins,
+        flatten: this._flatten,
       },
     };
   }
