@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="1600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .title { font-family: Arial, sans-serif; font-size: 24px; font-weight: bold; fill: #2c3e50; }
+      .subtitle { font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; fill: #34495e; }
+      .phase-title { font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; fill: #2980b9; }
+      .box-text { font-family: Arial, sans-serif; font-size: 12px; fill: #2c3e50; }
+      .small-text { font-family: Arial, sans-serif; font-size: 10px; fill: #7f8c8d; }
+      .arrow { stroke: #3498db; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .phase-box { fill: #ecf0f1; stroke: #bdc3c7; stroke-width: 2; }
+      .component-box { fill: #ffffff; stroke: #3498db; stroke-width: 1; }
+      .plugin-box { fill: #e8f5e8; stroke: #27ae60; stroke-width: 1; }
+      .data-box { fill: #fff3cd; stroke: #f39c12; stroke-width: 1; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3498db" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="600" y="30" text-anchor="middle" class="title">Simple Docs Extractor - Application Flow</text>
+
+  <!-- Phase 1: Configuration -->
+  <rect x="50" y="60" width="1100" height="120" class="phase-box" rx="10"/>
+  <text x="600" y="85" text-anchor="middle" class="phase-title">1. CONFIGURATION PHASE</text>
+  
+  <!-- Builder Components -->
+  <rect x="100" y="100" width="150" height="60" class="component-box" rx="5"/>
+  <text x="175" y="120" text-anchor="middle" class="box-text">Builder</text>
+  <text x="175" y="135" text-anchor="middle" class="small-text">• baseDir</text>
+  <text x="175" y="150" text-anchor="middle" class="small-text">• targets[]</text>
+
+  <rect x="300" y="100" width="150" height="60" class="component-box" rx="5"/>
+  <text x="375" y="120" text-anchor="middle" class="box-text">TargetBuilder</text>
+  <text x="375" y="135" text-anchor="middle" class="small-text">• patterns</text>
+  <text x="375" y="150" text-anchor="middle" class="small-text">• cwd, outDir</text>
+
+  <rect x="500" y="100" width="150" height="60" class="component-box" rx="5"/>
+  <text x="575" y="120" text-anchor="middle" class="box-text">TemplateBuilder</text>
+  <text x="575" y="135" text-anchor="middle" class="small-text">• templatePath</text>
+  <text x="575" y="150" text-anchor="middle" class="small-text">• markdownLinks</text>
+
+  <rect x="700" y="100" width="150" height="60" class="component-box" rx="5"/>
+  <text x="775" y="120" text-anchor="middle" class="box-text">Formatters</text>
+  <text x="775" y="135" text-anchor="middle" class="small-text">• RemoveAsterisks</text>
+  <text x="775" y="150" text-anchor="middle" class="small-text">• AddDoubleLines</text>
+
+  <!-- Arrows between configuration components -->
+  <line x1="250" y1="130" x2="300" y2="130" class="arrow"/>
+  <line x1="450" y1="130" x2="500" y2="130" class="arrow"/>
+  <line x1="650" y1="130" x2="700" y2="130" class="arrow"/>
+
+  <!-- Phase 2: File Discovery -->
+  <rect x="50" y="200" width="1100" height="100" class="phase-box" rx="10"/>
+  <text x="600" y="225" text-anchor="middle" class="phase-title">2. FILE DISCOVERY PHASE</text>
+  
+  <rect x="400" y="240" width="200" height="50" class="component-box" rx="5"/>
+  <text x="500" y="260" text-anchor="middle" class="box-text">FileScanner</text>
+  <text x="500" y="275" text-anchor="middle" class="small-text">• glob patterns • cwd • extensions</text>
+
+  <text x="500" y="300" text-anchor="middle" class="small-text">↓ Array of file paths</text>
+
+  <!-- Arrow from config to file discovery -->
+  <line x1="600" y1="180" x2="600" y2="200" class="arrow"/>
+
+  <!-- Phase 3: File Processing -->
+  <rect x="50" y="320" width="1100" height="200" class="phase-box" rx="10"/>
+  <text x="600" y="345" text-anchor="middle" class="phase-title">3. FILE PROCESSING PHASE (For each file)</text>
+  
+  <!-- Processing components -->
+  <rect x="100" y="360" width="180" height="80" class="component-box" rx="5"/>
+  <text x="190" y="380" text-anchor="middle" class="box-text">DocumentContentExtractor</text>
+  <text x="190" y="395" text-anchor="middle" class="small-text">• TagExtractor</text>
+  <text x="190" y="410" text-anchor="middle" class="small-text">• RegexExtractor</text>
+  <text x="190" y="425" text-anchor="middle" class="small-text">• CallbackExtractor</text>
+
+  <rect x="320" y="360" width="180" height="80" class="component-box" rx="5"/>
+  <text x="410" y="380" text-anchor="middle" class="box-text">ContentInjection</text>
+  <text x="410" y="395" text-anchor="middle" class="small-text">• template</text>
+  <text x="410" y="410" text-anchor="middle" class="small-text">• merge content</text>
+  <text x="410" y="425" text-anchor="middle" class="small-text">• default text</text>
+
+  <rect x="540" y="360" width="180" height="80" class="component-box" rx="5"/>
+  <text x="630" y="380" text-anchor="middle" class="box-text">Formatters</text>
+  <text x="630" y="395" text-anchor="middle" class="small-text">• RemoveAsterisks</text>
+  <text x="630" y="410" text-anchor="middle" class="small-text">• AddDoubleLines</text>
+  <text x="630" y="425" text-anchor="middle" class="small-text">• Custom</text>
+
+  <rect x="760" y="360" width="180" height="80" class="component-box" rx="5"/>
+  <text x="850" y="380" text-anchor="middle" class="box-text">Output Generation</text>
+  <text x="850" y="395" text-anchor="middle" class="small-text">• Create dirs</text>
+  <text x="850" y="410" text-anchor="middle" class="small-text">• Convert ext</text>
+  <text x="850" y="425" text-anchor="middle" class="small-text">• Write content</text>
+
+  <!-- Arrows between processing components -->
+  <line x1="280" y1="400" x2="320" y2="400" class="arrow"/>
+  <line x1="500" y1="400" x2="540" y2="400" class="arrow"/>
+  <line x1="720" y1="400" x2="760" y2="400" class="arrow"/>
+
+  <!-- Arrow from file discovery to processing -->
+  <line x1="600" y1="300" x2="600" y2="320" class="arrow"/>
+
+  <!-- Phase 4: File Generation -->
+  <rect x="50" y="540" width="1100" height="100" class="phase-box" rx="10"/>
+  <text x="600" y="565" text-anchor="middle" class="phase-title">4. FILE GENERATION PHASE</text>
+  
+  <rect x="400" y="580" width="200" height="50" class="component-box" rx="5"/>
+  <text x="500" y="600" text-anchor="middle" class="box-text">DocFileGenerator</text>
+  <text x="500" y="615" text-anchor="middle" class="small-text">saveToMarkdownFile()</text>
+
+  <text x="500" y="640" text-anchor="middle" class="small-text">↓ Generated .md files</text>
+
+  <!-- Arrow from processing to generation -->
+  <line x1="600" y1="520" x2="600" y2="540" class="arrow"/>
+
+  <!-- Phase 5: Index Generation -->
+  <rect x="50" y="660" width="1100" height="150" class="phase-box" rx="10"/>
+  <text x="600" y="685" text-anchor="middle" class="phase-title">5. INDEX GENERATION PHASE</text>
+  
+  <rect x="200" y="700" width="180" height="80" class="component-box" rx="5"/>
+  <text x="290" y="720" text-anchor="middle" class="box-text">IndexStructurePreProcessor</text>
+  <text x="290" y="735" text-anchor="middle" class="small-text">• scan dirs</text>
+  <text x="290" y="750" text-anchor="middle" class="small-text">• find .md files</text>
+  <text x="290" y="765" text-anchor="middle" class="small-text">• process entries</text>
+
+  <rect x="420" y="700" width="180" height="80" class="component-box" rx="5"/>
+  <text x="510" y="720" text-anchor="middle" class="box-text">IndexFileGenerator</text>
+  <text x="510" y="735" text-anchor="middle" class="small-text">• create content</text>
+  <text x="510" y="750" text-anchor="middle" class="small-text">• apply template</text>
+  <text x="510" y="765" text-anchor="middle" class="small-text">• save index.md</text>
+
+  <rect x="640" y="700" width="180" height="80" class="component-box" rx="5"/>
+  <text x="730" y="720" text-anchor="middle" class="box-text">Index Files</text>
+  <text x="730" y="735" text-anchor="middle" class="small-text">• index.md</text>
+  <text x="730" y="750" text-anchor="middle" class="small-text">• root-index.md</text>
+  <text x="730" y="765" text-anchor="middle" class="small-text">• recursive</text>
+
+  <!-- Arrows between index components -->
+  <line x1="380" y1="740" x2="420" y2="740" class="arrow"/>
+  <line x1="600" y1="740" x2="640" y2="740" class="arrow"/>
+
+  <!-- Arrow from generation to index -->
+  <line x1="600" y1="640" x2="600" y2="660" class="arrow"/>
+
+  <!-- Plugin System Section -->
+  <rect x="50" y="830" width="1100" height="300" class="phase-box" rx="10"/>
+  <text x="600" y="855" text-anchor="middle" class="phase-title">PLUGIN SYSTEM</text>
+  
+  <!-- Plugin Types -->
+  <rect x="100" y="870" width="150" height="80" class="plugin-box" rx="5"/>
+  <text x="175" y="890" text-anchor="middle" class="box-text">TagExtractor</text>
+  <text x="175" y="905" text-anchor="middle" class="small-text">&lt;docs&gt;content&lt;/docs&gt;</text>
+  <text x="175" y="920" text-anchor="middle" class="small-text">HTML/XML tags</text>
+  <text x="175" y="935" text-anchor="middle" class="small-text">attributes support</text>
+
+  <rect x="280" y="870" width="150" height="80" class="plugin-box" rx="5"/>
+  <text x="355" y="890" text-anchor="middle" class="box-text">RegexExtractor</text>
+  <text x="355" y="905" text-anchor="middle" class="small-text">/pattern/g</text>
+  <text x="355" y="920" text-anchor="middle" class="small-text">Custom patterns</text>
+  <text x="355" y="935" text-anchor="middle" class="small-text">Capture groups</text>
+
+  <rect x="460" y="870" width="150" height="80" class="plugin-box" rx="5"/>
+  <text x="535" y="890" text-anchor="middle" class="box-text">CallbackExtractor</text>
+  <text x="535" y="905" text-anchor="middle" class="small-text">custom function</text>
+  <text x="535" y="920" text-anchor="middle" class="small-text">Flexible logic</text>
+  <text x="535" y="935" text-anchor="middle" class="small-text">User-defined</text>
+
+  <rect x="640" y="870" width="150" height="80" class="plugin-box" rx="5"/>
+  <text x="715" y="890" text-anchor="middle" class="box-text">CopyContents</text>
+  <text x="715" y="905" text-anchor="middle" class="small-text">Full file copy</text>
+  <text x="715" y="920" text-anchor="middle" class="small-text">No extraction</text>
+  <text x="715" y="935" text-anchor="middle" class="small-text">Raw content</text>
+
+  <!-- DocumentContentExtractor -->
+  <rect x="400" y="970" width="200" height="80" class="component-box" rx="5"/>
+  <text x="500" y="990" text-anchor="middle" class="box-text">DocumentContentExtractor</text>
+  <text x="500" y="1005" text-anchor="middle" class="small-text">• Process each plugin</text>
+  <text x="500" y="1020" text-anchor="middle" class="small-text">• Combine results</text>
+  <text x="500" y="1035" text-anchor="middle" class="small-text">• Handle errors</text>
+
+  <!-- ExtractedContent -->
+  <rect x="400" y="1070" width="200" height="50" class="data-box" rx="5"/>
+  <text x="500" y="1090" text-anchor="middle" class="box-text">ExtractedContent[]</text>
+  <text x="500" y="1105" text-anchor="middle" class="small-text">content, attributes, searchAndReplace</text>
+
+  <!-- Arrows in plugin system -->
+  <line x1="175" y1="950" x2="500" y2="970" class="arrow"/>
+  <line x1="355" y1="950" x2="500" y2="970" class="arrow"/>
+  <line x1="535" y1="950" x2="500" y2="970" class="arrow"/>
+  <line x1="715" y1="950" x2="500" y2="970" class="arrow"/>
+  <line x1="500" y1="1050" x2="500" y2="1070" class="arrow"/>
+
+  <!-- Data Flow Section -->
+  <rect x="50" y="1150" width="1100" height="200" class="phase-box" rx="10"/>
+  <text x="600" y="1175" text-anchor="middle" class="phase-title">DATA FLOW</text>
+  
+  <!-- Data flow steps -->
+  <rect x="100" y="1190" width="120" height="60" class="data-box" rx="5"/>
+  <text x="160" y="1210" text-anchor="middle" class="box-text">Source File</text>
+  <text x="160" y="1225" text-anchor="middle" class="small-text">example.ts</text>
+  <text x="160" y="1240" text-anchor="middle" class="small-text">&lt;docs&gt;content&lt;/docs&gt;</text>
+
+  <rect x="260" y="1190" width="120" height="60" class="data-box" rx="5"/>
+  <text x="320" y="1210" text-anchor="middle" class="box-text">Plugin</text>
+  <text x="320" y="1225" text-anchor="middle" class="small-text">Extraction</text>
+  <text x="320" y="1240" text-anchor="middle" class="small-text">ExtractedContent</text>
+
+  <rect x="420" y="1190" width="120" height="60" class="data-box" rx="5"/>
+  <text x="480" y="1210" text-anchor="middle" class="box-text">Content</text>
+  <text x="480" y="1225" text-anchor="middle" class="small-text">Injection</text>
+  <text x="480" y="1240" text-anchor="middle" class="small-text">Template + Content</text>
+
+  <rect x="580" y="1190" width="120" height="60" class="data-box" rx="5"/>
+  <text x="640" y="1210" text-anchor="middle" class="box-text">Formatting</text>
+  <text x="640" y="1225" text-anchor="middle" class="small-text">Clean Content</text>
+  <text x="640" y="1240" text-anchor="middle" class="small-text">Formatted Text</text>
+
+  <rect x="740" y="1190" width="120" height="60" class="data-box" rx="5"/>
+  <text x="800" y="1210" text-anchor="middle" class="box-text">Output File</text>
+  <text x="800" y="1225" text-anchor="middle" class="small-text">example.ts.md</text>
+  <text x="800" y="1240" text-anchor="middle" class="small-text">Final Documentation</text>
+
+  <!-- Arrows in data flow -->
+  <line x1="220" y1="1220" x2="260" y2="1220" class="arrow"/>
+  <line x1="380" y1="1220" x2="420" y2="1220" class="arrow"/>
+  <line x1="540" y1="1220" x2="580" y2="1220" class="arrow"/>
+  <line x1="700" y1="1220" x2="740" y2="1220" class="arrow"/>
+
+  <!-- Example content -->
+  <rect x="100" y="1270" width="760" height="60" class="data-box" rx="5"/>
+  <text x="530" y="1290" text-anchor="middle" class="box-text">Example: &lt;docs&gt;This is documentation&lt;/docs&gt; → # Example → This is documentation</text>
+  <text x="530" y="1305" text-anchor="middle" class="small-text">Source code with tags → Extracted content → Template injection → Formatted markdown</text>
+  <text x="530" y="1320" text-anchor="middle" class="small-text">Final output: example.ts.md with clean, formatted documentation</text>
+
+  <!-- Error Handling Section -->
+  <rect x="50" y="1370" width="1100" height="120" class="phase-box" rx="10"/>
+  <text x="600" y="1395" text-anchor="middle" class="phase-title">ERROR HANDLING</text>
+  
+  <rect x="200" y="1410" width="200" height="60" class="component-box" rx="5"/>
+  <text x="300" y="1430" text-anchor="middle" class="box-text">File Processing</text>
+  <text x="300" y="1445" text-anchor="middle" class="small-text">• File exists? → Process</text>
+  <text x="300" y="1460" text-anchor="middle" class="small-text">• No content? → Log Error</text>
+
+  <rect x="450" y="1410" width="200" height="60" class="component-box" rx="5"/>
+  <text x="550" y="1430" text-anchor="middle" class="box-text">Plugin Execution</text>
+  <text x="550" y="1445" text-anchor="middle" class="small-text">• Valid plugin? → Execute</text>
+  <text x="550" y="1460" text-anchor="middle" class="small-text">• Error? → Log/Skip</text>
+
+  <rect x="700" y="1410" width="200" height="60" class="component-box" rx="5"/>
+  <text x="800" y="1430" text-anchor="middle" class="box-text">Graceful Continuation</text>
+  <text x="800" y="1445" text-anchor="middle" class="small-text">• Track missing docs</text>
+  <text x="800" y="1460" text-anchor="middle" class="small-text">• Continue processing</text>
+
+  <!-- Arrows in error handling -->
+  <line x1="400" y1="1440" x2="450" y2="1440" class="arrow"/>
+  <line x1="650" y1="1440" x2="700" y2="1440" class="arrow"/>
+
+  <!-- Footer -->
+  <text x="600" y="1550" text-anchor="middle" class="small-text">Simple Docs Extractor - Comprehensive Application Flow Diagram</text>
+  <text x="600" y="1570" text-anchor="middle" class="small-text">Shows the complete flow from configuration to final documentation generation</text>
+</svg>
