@@ -1,5 +1,6 @@
 import fs from "fs";
-import { DEFAULT_EXCERPT_CONFIG, ExcerptExtractor, IndexFileGeneratorConfig } from "../index.js";
+import { DEFAULTS } from "../consts/defaults.js";
+import { ExcerptExtractor, IndexFileGeneratorConfig } from "../index.js";
 import { IndexStructurePreProcessorEntry } from "../processors/IndexStructurePreProcessor.js";
 import { createMarkdownLink } from "../utils/createMarkdownLink.js";
 import { createIndenterPrefix } from "../utils/listIndenterPrefix.js";
@@ -372,7 +373,7 @@ export class IndexContentGenerator {
 
             return ExcerptExtractor.determineExcerpt(
                 fileContents,
-                this.config?.excerpt ?? DEFAULT_EXCERPT_CONFIG,
+                this.config?.excerpt ?? DEFAULTS.EXCERPT_EXTRACTOR,
             );
         }
         return state.excerpt;

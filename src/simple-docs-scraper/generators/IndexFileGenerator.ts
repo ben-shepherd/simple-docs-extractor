@@ -4,7 +4,6 @@ import { DEFAULTS } from "../consts/defaults.js";
 import { ExtractedContent } from "../plugins/DocumentContentExtractor.js";
 import { IndexStructurePreProcessorEntry } from "../processors/IndexStructurePreProcessor.js";
 import {
-  DEFAULT_EXCERPT_CONFIG,
   ExcerptExtractor,
   ExcerptExtractorConfig,
 } from "../transformers/ExcerptExtractor.js";
@@ -31,10 +30,6 @@ export type IndexFileGeneratorConfig = TemplatePathConfig & {
   flatten?: boolean;
   recursive?: boolean;
   isRootConfig?: boolean;
-};
-
-const INDEX_FILE_GENERATOR_DEFAULTS: Partial<IndexFileGeneratorConfig> = {
-  ...DEFAULTS.INDEX_FILE_GENERATOR,
 };
 
 /**
@@ -76,7 +71,7 @@ export class IndexFileGenerator {
    */
   constructor(private config: IndexFileGeneratorConfig) {
     this.config = {
-      ...INDEX_FILE_GENERATOR_DEFAULTS,
+      ...DEFAULTS.INDEX_FILE_GENERATOR,
       ...this.config,
     };
     this.indexContentGenerator = new IndexContentGenerator({
@@ -232,7 +227,7 @@ export class IndexFileGenerator {
 
     return ExcerptExtractor.determineExcerpt(
       content,
-      this.config?.excerpt ?? DEFAULT_EXCERPT_CONFIG,
+      this.config?.excerpt ?? DEFAULTS.EXCERPT_EXTRACTOR,
     );
   }
 

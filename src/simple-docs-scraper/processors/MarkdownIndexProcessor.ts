@@ -1,3 +1,4 @@
+import { DEFAULTS } from "../consts/defaults.js";
 import {
   IndexFileGenerator,
   IndexFileGeneratorConfig,
@@ -7,13 +8,8 @@ import { IndexStructurePreProcessor, IndexStructurePreProcessorEntry } from "./I
 export type MarkdownIndexProcessorConfig = Omit<
   IndexFileGeneratorConfig,
   "outDir"
-> & {
-  recursive: boolean;
-};
+>
 
-export const MARKDOWN_INDEX_PROCESSOR_DEFAULTS: MarkdownIndexProcessorConfig = {
-  recursive: true,
-};
 
 /**
  * <docs>
@@ -38,7 +34,7 @@ export const MARKDOWN_INDEX_PROCESSOR_DEFAULTS: MarkdownIndexProcessorConfig = {
  */
 export class MarkdownIndexProcessor {
   constructor(
-    private config: MarkdownIndexProcessorConfig = MARKDOWN_INDEX_PROCESSOR_DEFAULTS,
+    private config: MarkdownIndexProcessorConfig = DEFAULTS.MARKDOWN_INDEX_PROCESSOR,
   ) { }
 
   /**
