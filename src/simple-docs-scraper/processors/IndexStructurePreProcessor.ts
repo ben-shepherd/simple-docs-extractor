@@ -8,6 +8,7 @@ type IndexStructurePreProcessorConfig = {
 export type IndexStructurePreProcessorEntry = {
   src: string;
   entryName: string;
+  pathToEntryName?: string;
   isDir: boolean;
   basename: string;
   markdownLink: string;
@@ -209,6 +210,7 @@ export class IndexStructurePreProcessor {
    * @param excerpt - Optional excerpt to include
    * @returns Formatted markdown link or plain text
    * </method>
+   * @deprecated Use createMarkdownLink instead
    */
   protected markdownLink(display: string, link: string, excerpt?: string) {
     let result = "";

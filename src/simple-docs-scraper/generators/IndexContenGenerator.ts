@@ -2,6 +2,7 @@ import fs from "fs";
 import { DEFAULT_EXCERPT_CONFIG, ExcerptExtractor, ExcerptExtractorConfig } from "../index.js";
 import { IndexStructurePreProcessorEntry } from "../processors/IndexStructurePreProcessor.js";
 import { FileNameCallback, LineCallback } from "../types/index.js";
+import { createMarkdownLink } from "../utils/createMarkdownLink.js";
 
 export type IndexContentGeneratorConfig = {
     lineCallback: LineCallback | undefined,
@@ -9,6 +10,7 @@ export type IndexContentGeneratorConfig = {
     directoryHeading: string | undefined,
     filesHeading: string | undefined,
     flatten: boolean,
+    markdownLink: boolean,
     excerpt?: ExcerptExtractorConfig,
 }
 
@@ -59,7 +61,7 @@ export class IndexContentGenerator {
 
         for (const entry of processedArray) {
             state = this.handleEntry(state, entry);
-            this.handleFlattenedEntries(state, entry);
+            this.handleFlattenedEntries(state, entry, entry.entryName);
         }
 
         return state.content;
@@ -74,7 +76,7 @@ export class IndexContentGenerator {
         return state;
     }
 
-    private handleFlattenedEntries(state: State, entry: IndexStructurePreProcessorEntry) {
+    private handleFlattenedEntries(state: State, entry: IndexStructurePreProcessorEntry, pathToEntryName: string) {
         if (false === this.config.flatten) {
             return;
         }
@@ -92,11 +94,11 @@ export class IndexContentGenerator {
 
             for (const subEntry of entry.entries) {
                 // Add the parent entry name to the sub entry name
-                subEntry.entryName = this.appendEntryNameToSubEntry(subEntry, entry);
+                subEntry.pathToEntryName = this.buildPathToEntryName(subEntry, pathToEntryName);
 
                 // Handle the sub entries recursively
                 subState = this.handleEntry(subState, subEntry);
-                this.handleFlattenedEntries(subState, subEntry);
+                this.handleFlattenedEntries(subState, subEntry, subEntry.pathToEntryName);
             }
 
             state.content += subState.content;
@@ -104,13 +106,14 @@ export class IndexContentGenerator {
     }
 
 
-    private appendEntryNameToSubEntry(subEntry: IndexStructurePreProcessorEntry, entry: IndexStructurePreProcessorEntry) {
-        let entryName = entry.entryName;
-        if(entryName.endsWith("/")) {
-            entryName = entryName.slice(0, -1);
+    private buildPathToEntryName(subEntry: IndexStructurePreProcessorEntry, pathToEntryName: string) {
+        pathToEntryName = pathToEntryName;
+
+        if(pathToEntryName.endsWith("/")) {
+            pathToEntryName = pathToEntryName.slice(0, -1);
         }
-        entryName = entryName + "/" + subEntry.entryName;
-        return entryName;
+        pathToEntryName = pathToEntryName + "/" + subEntry.entryName;
+        return pathToEntryName;
     }
 
     private updateProcessedCount(state: State, entry: IndexStructurePreProcessorEntry) {
@@ -146,8 +149,9 @@ export class IndexContentGenerator {
             state.content += this.config.lineCallback(entry.entryName, state.lineNumber, state.excerpt);
         } else {
             const indentPrefix = this.createIndenterPrefix(state);
-
-            let line = `${indentPrefix}- ${entry.markdownLink ?? entry.entryName}`;
+            const markdownLink = createMarkdownLink(this.config.markdownLink, entry.entryName, entry.pathToEntryName ?? entry.entryName, state.excerpt);
+            
+            let line = `${indentPrefix}- ${markdownLink}`;
             if (state.excerpt) {
                 line += ` - ${state.excerpt}`;
             }

@@ -83,6 +83,7 @@ export class IndexFileGenerator {
       filesHeading: this.config.filesHeading,
       excerpt: this.config.excerpt,
       flatten: this.config.flatten ?? false,
+      markdownLink: this.config.markdownLinks ?? false,
     });
 
   }

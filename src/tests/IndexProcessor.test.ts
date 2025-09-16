@@ -507,6 +507,7 @@ This additional text helps simulate a more realistic documentation scenario.`;
       indexProcessor = new MarkdownIndexProcessor({
         flatten: true,
         recursive: true,
+        markdownLinks: false,
       });
       await indexProcessor.handle(getOutputPath("docs-flatten"));
 
@@ -525,6 +526,38 @@ This additional text helps simulate a more realistic documentation scenario.`;
           `${indenter(1)}- b.md\n` +
           `${indenter(1)}- sub-folder2/\n` +
             `${indenter(2)}- c.md\n`
+      );
+    });
+
+    test("should flatten the index.md file with markdown links", async () => {
+
+      fs.mkdirSync(getOutputPath("docs-flatten/sub-folder/sub-folder2"), { recursive: true });
+      fs.writeFileSync(getOutputPath("docs-flatten/a.md"), "");
+      fs.writeFileSync(getOutputPath("docs-flatten/sub-folder/b.md"), "");
+      fs.writeFileSync(getOutputPath("docs-flatten/sub-folder/sub-folder2/c.md"), "");
+
+      indexProcessor = new MarkdownIndexProcessor({
+        flatten: true,
+        recursive: true,
+        markdownLinks: true,
+      });
+      await indexProcessor.handle(getOutputPath("docs-flatten"));
+
+      const indexFileContent = fs.readFileSync(
+        getOutputPath("docs-flatten/index.md"),
+        "utf8",
+      );
+
+      const indenter = (level: number) => {
+        return new IndexContentGenerator({} as IndexContentGeneratorConfig).createIndenterPrefix({ indentLevel: level } as State);
+      }
+
+      expect(indexFileContent).toBe(
+        `${indenter(0)}- [a.md](a.md)\n` +
+        `${indenter(0)}- [sub-folder/](sub-folder/)\n` +
+          `${indenter(1)}- [b.md](sub-folder/b.md)\n` +
+          `${indenter(1)}- [sub-folder2/](sub-folder/sub-folder2/)\n` +
+            `${indenter(2)}- [c.md](sub-folder/sub-folder2/c.md)\n`
       );
     });
   })

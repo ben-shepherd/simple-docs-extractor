@@ -1,3 +1,4 @@
+import { IndexContentGenerator, IndexContentGeneratorConfig, State } from "@/simple-docs-scraper/generators/IndexContenGenerator.js";
 import {
   afterAll,
   beforeEach,
@@ -13,7 +14,6 @@ import { DEFAULT_CONFIG, publishDocs } from "../scripts/publish-docs.js";
 import { SimpleDocExtractorConfig } from "../simple-docs-scraper/types/config.t.js";
 import { deleteOutputFiles } from "./helpers/deleteOutputFiles.js";
 import { getOutputPath } from "./helpers/getOutputPath.js";
-import { IndexContentGenerator, IndexContentGeneratorConfig, State } from "@/simple-docs-scraper/generators/IndexContenGenerator.js";
 
 describe("Publish Docs", () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -209,16 +209,15 @@ describe("Publish Docs", () => {
       }
 
       expect(rootIndexFileContent).toContain(
-        `## Folders\n` +  
-        `\n` +
-        `${indenter(0)}- [simple-docs-scraper/](simple-docs-scraper/index.md)\n` +
-          `${indenter(1)}- [builder/](simple-docs-scraper/builder/index.md)\n` +
+        `## Folders\n\n` +  
+        `${indenter(0)}- [simple-docs-scraper/](simple-docs-scraper/)\n` +
+          `${indenter(1)}- [builder/](simple-docs-scraper/builder/)\n` +
             `${indenter(2)}- [Builder.ts.md](simple-docs-scraper/builder/Builder.ts.md)\n` +
             `${indenter(2)}- [TargetBuilder.ts.md](simple-docs-scraper/builder/TargetBuilder.ts.md)\n` +
             `${indenter(2)}- [TemplateBuilder.ts.md](simple-docs-scraper/builder/TemplateBuilder.ts.md)\n` +
-            `${indenter(1)}- [config/](simple-docs-scraper/config/index.md)\n` +
+            `${indenter(1)}- [config/](simple-docs-scraper/config/)\n` +
               `${indenter(2)}- [ConfigHelper.ts.md](simple-docs-scraper/config/ConfigHelper.ts.md)\n` +
-            `${indenter(1)}- [files/](simple-docs-scraper/files/index.md)\n` +
+            `${indenter(1)}- [files/](simple-docs-scraper/files/)\n` +
               `${indenter(2)}- [FileScanner.ts.md](simple-docs-scraper/files/FileScanner.ts.md)\n`
           );
     });
