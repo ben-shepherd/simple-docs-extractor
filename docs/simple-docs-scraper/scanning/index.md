@@ -7,7 +7,7 @@ This is the index file for the generated documentation. Below you will find the 
 
 ## Files
 
-- [DocumentContentExtractor.ts.md](DocumentContentExtractor.ts.md)
+- [DirectoryMarkdownScanner.ts.md](DirectoryMarkdownScanner.ts.md)
 - [FileScanner.ts.md](FileScanner.ts.md)
 
 

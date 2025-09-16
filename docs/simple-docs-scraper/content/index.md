@@ -8,8 +8,6 @@ This is the index file for the generated documentation. Below you will find the 
 ## Files
 
 - [ContentInjection.ts.md](ContentInjection.ts.md)
-- [ExcerptExtractor.ts.md](ExcerptExtractor.ts.md)
-- [ExtensionReplacer.ts.md](ExtensionReplacer.ts.md)
 - [TemplateContentExtractionContentMerger.ts.md](TemplateContentExtractionContentMerger.ts.md)
 
 
