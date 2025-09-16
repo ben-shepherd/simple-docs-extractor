@@ -47,7 +47,7 @@ export type IndexFileGeneratorConfig = TemplatePathConfig & {
  *   outDir: './docs',
  *   template: './templates/index.md',
  *   searchAndReplace: '{{CONTENT}}',
- *   excerpt: true,
+ *   excerpt: { enabled: true },
  *   excerptLength: 100
  * });
  *
@@ -77,7 +77,6 @@ export class IndexFileGenerator {
     this.indexContentGenerator = new IndexContentGenerator({
       ...this.config,
     });
-
   }
 
   /**
@@ -96,68 +95,24 @@ export class IndexFileGenerator {
     if (!fs.existsSync(this.config.outDir)) {
       fs.mkdirSync(this.config.outDir, { recursive: true });
     }
-
-    // Get the output file path
-    const outFilePath = path.join(this.config.outDir, "index.md");
-
+    
     // Generate the content
     const content = this.indexContentGenerator.generate(processedArray);
-
-    // for (const current of processedArray) {
-    //   const { entryName, markdownLink } = current;
-
-    //   // If we're a file, genereate an excerpt
-    //   excerpt = this.createExcerpt(excerpt, current);
-
-    //   // We should only consider creating a file heading once we have reached the files
-    //   if (false === current.isDir) {
-    //     content = this.createFileHeading(
-    //       filesProcessed,
-    //       filesTotalCount,
-    //       content,
-    //     );
-    //   }
-
-    //   // We should only consider creating a directory heading once all files have been rendered
-    //   if (filesProcessed === filesTotalCount) {
-    //     content = this.createDirectoryHeading(
-    //       dirsProcessed,
-    //       dirsTotalCount,
-    //       content,
-    //     );
-    //   }
-
-    //   if (this.config.lineCallback) {
-    //     content += this.config.lineCallback(entryName, lineNumber, excerpt);
-    //   } else {
-    //     let line = `- ${markdownLink ?? entryName}`;
-    //     if (excerpt) {
-    //       line += ` - ${excerpt}`;
-    //     }
-    //     content += `${line}\n`;
-    //   }
-
-    //   lineNumber++;
-
-    //   if (false === current.isDir) {
-    //     filesProcessed++;
-    //   } else {
-    //     dirsProcessed++;
-    //   }
-    // }
-
     
     // Store the template content
     let templateContent = this.getTemplateContent();
-
+    
     // Replace the search and replace with the content
     templateContent = templateContent.replace(
       this.getSearchAndReplace(),
       content,
     );
-
+    
     // Apply plugins to the template content
     templateContent = await this.applyPlugins(templateContent);
+    
+    // Get the output file path
+    const outFilePath = path.join(this.config.outDir, "index.md");
 
     // Write the file
     fs.writeFileSync(outFilePath, templateContent);
@@ -186,30 +141,6 @@ export class IndexFileGenerator {
   }
 
   /**
-   * <method name="createExcerpt">
-   * Creates an excerpt for a file entry.
-   *
-   * This method generates an excerpt from file content if the entry is a file.
-   * It reads the file and extracts the excerpt using the configured extractor.
-   *
-   * @param {string | undefined} excerpt - Current excerpt value
-   * @param {DirectoryMarkdownScannerEntry} current - Entry to create excerpt for
-   * @returns {string | undefined} Generated excerpt or undefined
-   * </method>
-   */
-  private createExcerpt(
-    excerpt: string | undefined,
-    current: DirectoryMarkdownScannerEntry,
-  ) {
-    excerpt = undefined;
-    if (false === current.isDir) {
-      const fileContents = fs.readFileSync(current.src, "utf8");
-      excerpt = this.generateExcerpt(fileContents);
-    }
-    return excerpt;
-  }
-
-  /**
    * <method name="generateExcerpt">
    * Generates an excerpt from file content.
    *
@@ -229,56 +160,6 @@ export class IndexFileGenerator {
       content,
       this.config?.excerpt ?? DEFAULTS.EXCERPT_EXTRACTOR,
     );
-  }
-
-  /**
-   * <method name="createFileHeading">
-   * Creates a heading for the files section.
-   *
-   * This method adds a files heading to the content when processing the first file
-   * and a files heading is configured.
-   *
-   * @param {number} processedFiles - Number of files already processed
-   * @param {number} totalCount - Total number of files to process
-   * @param {string} [content=""] - Current content string to append to
-   * @returns {string} Updated content with heading if applicable
-   * </method>
-   */
-  protected createFileHeading(
-    processedFiles: number,
-    totalCount: number,
-    content: string = "",
-  ) {
-    if (this.config.filesHeading && processedFiles === 0 && totalCount > 0) {
-      content += this.config.filesHeading + "\n";
-    }
-
-    return content;
-  }
-
-  /**
-   * <method name="createDirectoryHeading">
-   * Creates a heading for the directories section.
-   *
-   * This method adds a directory heading to the content when processing the first
-   * directory and a directory heading is configured.
-   *
-   * @param {number} processedDirs - Number of directories already processed
-   * @param {number} totalCount - Total number of directories to process
-   * @param {string} [content=""] - Current content string to append to
-   * @returns {string} Updated content with heading if applicable
-   * </method>
-   */
-  protected createDirectoryHeading(
-    processedDirs: number,
-    totalCount: number,
-    content: string = "",
-  ) {
-    if (this.config.directoryHeading && processedDirs === 0 && totalCount > 0) {
-      content += this.config.directoryHeading + "\n";
-    }
-
-    return content;
   }
 
   /**

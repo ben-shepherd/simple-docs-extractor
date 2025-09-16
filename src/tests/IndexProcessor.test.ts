@@ -1,4 +1,4 @@
-import { createIndenterPrefix } from "@/simple-docs-scraper/utils/listIndenterPrefix.js";
+import { listIndentPrefix } from "@/simple-docs-scraper/utils/listIndenterPrefix.js";
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import path from "path";
@@ -522,7 +522,7 @@ This additional text helps simulate a more realistic documentation scenario.`;
       );
 
       const indenter = (level: number) => {
-        return createIndenterPrefix(level);
+        return listIndentPrefix(level);
       }
 
       expect(indexFileContent).toBe(
@@ -554,7 +554,7 @@ This additional text helps simulate a more realistic documentation scenario.`;
       );
 
       const indenter = (level: number) => {
-        return createIndenterPrefix(level);
+        return listIndentPrefix(level);
       }
 
       expect(indexFileContent).toBe(
@@ -589,7 +589,7 @@ This additional text helps simulate a more realistic documentation scenario.`;
       );
 
       const indenter = (level: number) => {
-        return createIndenterPrefix(level);
+        return listIndentPrefix(level);
       }
 
       expect(indexFileContent).toBe(

@@ -3,7 +3,7 @@ import { DEFAULTS } from "../consts/defaults.js";
 import { ExcerptExtractor, IndexFileGeneratorConfig } from "../index.js";
 import { DirectoryMarkdownScannerEntry } from "../processors/DirectoryMarkdownScanner.js";
 import { createMarkdownLink } from "../utils/createMarkdownLink.js";
-import { createIndenterPrefix } from "../utils/listIndenterPrefix.js";
+import { listIndentPrefix } from "../utils/listIndenterPrefix.js";
     
 export type State = {
     config: IndexFileGeneratorConfig,
@@ -159,6 +159,9 @@ export class IndexContentGenerator {
             return;
         }
 
+        // We will overwrite the config and state for the sub entries
+        // - Remove the filesHeading and directoryHeading
+        // - Increase the indent level
         const overwriteConfig: Partial<IndexFileGeneratorConfig> = {
             filesHeading: undefined,
             directoryHeading: undefined,
@@ -167,6 +170,7 @@ export class IndexContentGenerator {
             indentLevel: state.indentLevel + 1,
         };
 
+        // Generate the sub entries
         if (entry.entries) {
             let subState = this.getDefaultState(entry.entries, overwriteConfig, overwriteState);
 
@@ -341,7 +345,7 @@ export class IndexContentGenerator {
      * </method>
      */
     createIndenterPrefix(state: State) {
-        return createIndenterPrefix(state.indentLevel);
+        return listIndentPrefix(state.indentLevel);
     }
 
     /**

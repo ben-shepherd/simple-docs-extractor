@@ -9,8 +9,7 @@
  * @returns {string} The indentation prefix string
  * </docs>
  */
-
-export const createIndenterPrefix = (indentLevel: number) => {
+export const listIndentPrefix = (indentLevel: number) => {
     if (indentLevel === 0) {
         return "";
     }

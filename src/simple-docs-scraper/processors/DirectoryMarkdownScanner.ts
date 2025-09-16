@@ -1,5 +1,7 @@
 import fs from "fs";
 import path from "path";
+import { DEFAULTS } from "../consts/defaults.js";
+import { createMarkdownLink } from "../utils/createMarkdownLink.js";
 
 type DirectoryMarkdownScannerConfig = {
   markdownLink?: boolean;
@@ -135,6 +137,16 @@ export class DirectoryMarkdownScanner {
     return results;
   }
 
+  /**
+   * <method name="sortWithFilesAppearingFirst">
+   * Sorts the processed entries so files appear first.
+   *
+   * This method sorts the processed entries so files appear first.
+   *
+   * @param processedEntries - The processed entries to sort
+   * @returns The sorted processed entries
+   * </method>
+   */
   sortWithFilesAppearingFirst(
     processedEntries: DirectoryMarkdownScannerEntry[],
   ): DirectoryMarkdownScannerEntry[] {
@@ -183,6 +195,15 @@ export class DirectoryMarkdownScanner {
     );
   }
 
+  /**
+   * <method name="getDirEntryName">
+   * Gets the entry name for a directory.
+   * - Adds a trailing slash to the base name
+   *
+   * @param baseName - The base name of the directory
+   * @returns The entry name for the directory
+   * </method>
+   */
   protected getDirEntryName(baseName: string) {
     if (!baseName.endsWith("/")) {
       baseName += "/";
@@ -190,6 +211,15 @@ export class DirectoryMarkdownScanner {
     return baseName;
   }
 
+  /**
+   * <method name="getFileEntryName">
+   * Gets the entry name for a file.
+   * - Adds a .md extension to the base name
+   *
+   * @param baseName - The base name of the file
+   * @returns The entry name for the file
+   * </method>
+   */
   protected getFileEntryName(baseName: string) {
     if (!baseName.endsWith(".md")) {
       baseName += ".md";
@@ -198,44 +228,14 @@ export class DirectoryMarkdownScanner {
   }
 
   /**
-   * <method name="markdownLink">
-   * Generates a markdown link or plain text based on configuration.
+   * <method name="formatEntry">
+   * Formats the entry path.
+   * - Removes the parent directory
    *
-   * This method creates either a markdown link or plain text based on the
-   * markdownLink configuration. It handles optional excerpts and formats
-   * the output accordingly.
-   *
-   * @param display - The text to display
-   * @param link - The link target
-   * @param excerpt - Optional excerpt to include
-   * @returns Formatted markdown link or plain text
+   * @param entry - The entry path to format
+   * @returns The formatted entry path
    * </method>
-   * @deprecated Use createMarkdownLink instead
    */
-  protected markdownLink(display: string, link: string, excerpt?: string) {
-    let result = "";
-
-    if (!this.config.markdownLink) {
-      result = `${display}`;
-
-      if (excerpt) {
-        result += ` - ${excerpt}`;
-      }
-
-      return result;
-    }
-
-    result = `[${display}]`;
-
-    if (excerpt) {
-      result += `(${link} - ${excerpt})`;
-    } else {
-      result += `(${link})`;
-    }
-
-    return result;
-  }
-
   formatEntry(entry: string) {
     const parentDirectory = path.dirname(entry);
 
@@ -256,5 +256,23 @@ export class DirectoryMarkdownScanner {
     }
 
     return formattedFilePath;
+  }
+
+  /**
+   * <method name="markdownLink">
+   * Generates a markdown link or plain text based on configuration.
+   *
+   * This method creates either a markdown link or plain text based on the
+   * markdownLink configuration. It handles optional excerpts and formats
+   * the output accordingly.
+   *
+   * @param display - The text to display
+   * @param link - The link target
+   * @param excerpt - Optional excerpt to include
+   * @returns Formatted markdown link or plain text
+   * </method>
+   */
+  markdownLink(display: string, link: string, excerpt?: string) {
+    return createMarkdownLink(this.config.markdownLink ?? DEFAULTS.INDEX_FILE_GENERATOR.markdownLinks as boolean, display, link, excerpt);
   }
 }
