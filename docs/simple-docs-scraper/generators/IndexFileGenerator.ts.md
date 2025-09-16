@@ -25,7 +25,7 @@
    outDir: './docs',
    template: './templates/index.md',
    searchAndReplace: '{{CONTENT}}',
-   excerpt: true,
+   excerpt: { enabled: true },
    excerptLength: 100
  });
 
@@ -106,32 +106,6 @@
 
 
 
-### **createExcerpt**
-
- Creates an excerpt for a file entry.
-
-
-
- This method generates an excerpt from file content if the entry is a file.
-
- It reads the file and extracts the excerpt using the configured extractor.
-
-
-
- @param {string | undefined} excerpt - Current excerpt value
-
- @param {DirectoryMarkdownScannerEntry} current - Entry to create excerpt for
-
- @returns {string | undefined} Generated excerpt or undefined
-
- 
-
-
-
----
-
-
-
 ### **generateExcerpt**
 
  Generates an excerpt from file content.
@@ -147,62 +121,6 @@
  @param {string} content - File content to extract excerpt from
 
  @returns {string | undefined} Generated excerpt or undefined if not configured
-
- 
-
-
-
----
-
-
-
-### **createFileHeading**
-
- Creates a heading for the files section.
-
-
-
- This method adds a files heading to the content when processing the first file
-
- and a files heading is configured.
-
-
-
- @param {number} processedFiles - Number of files already processed
-
- @param {number} totalCount - Total number of files to process
-
- @param {string} [content=""] - Current content string to append to
-
- @returns {string} Updated content with heading if applicable
-
- 
-
-
-
----
-
-
-
-### **createDirectoryHeading**
-
- Creates a heading for the directories section.
-
-
-
- This method adds a directory heading to the content when processing the first
-
- directory and a directory heading is configured.
-
-
-
- @param {number} processedDirs - Number of directories already processed
-
- @param {number} totalCount - Total number of directories to process
-
- @param {string} [content=""] - Current content string to append to
-
- @returns {string} Updated content with heading if applicable
 
  
 
@@ -258,7 +176,7 @@
 
 
 
-Last updated: 2025-09-16T20:33:10.824Z
+Last updated: 2025-09-16T20:52:20.009Z
 
 
 

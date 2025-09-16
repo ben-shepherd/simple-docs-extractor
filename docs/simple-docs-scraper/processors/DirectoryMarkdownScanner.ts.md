@@ -92,6 +92,28 @@
 
 
 
+### **sortWithFilesAppearingFirst**
+
+ Sorts the processed entries so files appear first.
+
+
+
+ This method sorts the processed entries so files appear first.
+
+
+
+ @param processedEntries - The processed entries to sort
+
+ @returns The sorted processed entries
+
+ 
+
+
+
+---
+
+
+
 ### **appendIndexMdIfFound**
 
  Appends 'index.md' to the markdown link if the directory contains an index file.
@@ -107,6 +129,66 @@
  @param result - The partial entry result to update
 
  @param excerpt - Optional excerpt to include in the link
+
+ 
+
+
+
+---
+
+
+
+### **getDirEntryName**
+
+ Gets the entry name for a directory.
+
+ - Adds a trailing slash to the base name
+
+
+
+ @param baseName - The base name of the directory
+
+ @returns The entry name for the directory
+
+ 
+
+
+
+---
+
+
+
+### **getFileEntryName**
+
+ Gets the entry name for a file.
+
+ - Adds a .md extension to the base name
+
+
+
+ @param baseName - The base name of the file
+
+ @returns The entry name for the file
+
+ 
+
+
+
+---
+
+
+
+### **formatEntry**
+
+ Formats the entry path.
+
+ - Removes the parent directory
+
+
+
+ @param entry - The entry path to format
+
+ @returns The formatted entry path
 
  
 
@@ -146,7 +228,7 @@
 
 
 
-Last updated: 2025-09-16T20:33:34.196Z
+Last updated: 2025-09-16T20:52:20.010Z
 
 
 
