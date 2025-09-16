@@ -14,6 +14,29 @@ export const DEFAULT_EXCERPT_CONFIG: ExcerptExtractorConfig = {
     length: 75,
 } as const;
 
+/**
+ * <docs>
+ * Default configuration values for core components of the documentation generator.
+ *
+ * This module provides default settings for the index file generator,
+ * markdown index processor, and excerpt extractor. These defaults ensure
+ * consistent behavior across the documentation extraction and generation
+ * process, while allowing for customization as needed.
+ *
+ * @example
+ * import { DEFAULTS } from "./consts/defaults";
+ * const config = {
+ *   ...DEFAULTS.INDEX_FILE_GENERATOR,
+ *   filesHeading: "Files",
+ * };
+ *
+ * @typedef {Object} Defaults
+ * @property {Partial<IndexFileGeneratorConfig>} INDEX_FILE_GENERATOR - Default config for index file generation
+ * @property {Pick<Partial<MarkdownIndexProcessorConfig>, "recursive">} MARKDOWN_INDEX_PROCESSOR - Default config for markdown index processing
+ * @property {ExcerptExtractorConfig} EXCERPT_EXTRACTOR - Default config for excerpt extraction
+ * </docs>
+ */
+
 export const DEFAULTS: Defaults = {
     INDEX_FILE_GENERATOR: {
         flatten: false,
