@@ -1,6 +1,6 @@
 import fs from "fs";
 import { GlobOptions } from "glob";
-import { Builder } from "../builder/Builder.js";
+import { Builder } from "../features/builder/Builder.js";
 import { FileScanner } from "../files/FileScanner.js";
 import {
   CodeFileProcessor,
