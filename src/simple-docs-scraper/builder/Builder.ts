@@ -11,11 +11,20 @@ export type TargetCallback = (builder: TargetBuilder) => void;
 
 /**
  * <docs>
- * A main builder class for configuring the SimpleDocExtractor service.
+ * A simple example builder for configuring the SimpleDocExtractor service.
  *
- * This class provides a fluent interface for building complete documentation
- * extraction configurations. It allows configuration of targets, templates,
- * and formatters, and can build both configuration objects and service instances.
+ * Example:
+ * 
+ * ```typescript
+ * new Builder()
+ *   .target(target => {
+ *     target.patterns('**\/*.ts').cwd('./src').outDir('./docs');
+ *   })
+ *   .indexTemplate(template => {
+ *     template.setContent('Custom index template');
+ *   })
+ *   .buildConfig();
+ * ```
  *
  * @param {string} [_baseDir=process.cwd()] - Base directory for the extraction process
  * @param {Target[]} [_targets=[]] - Array of target configurations

@@ -23,12 +23,15 @@ export const DEFAULT_EXCERPT_CONFIG: ExcerptExtractorConfig = {
  * consistent behavior across the documentation extraction and generation
  * process, while allowing for customization as needed.
  *
- * @example
+ * Example:
+ * 
+ * ```typescript
  * import { DEFAULTS } from "./consts/defaults";
  * const config = {
  *   ...DEFAULTS.INDEX_FILE_GENERATOR,
  *   filesHeading: "Files",
  * };
+ * ```
  *
  * @typedef {Object} Defaults
  * @property {Partial<IndexFileGeneratorConfig>} INDEX_FILE_GENERATOR - Default config for index file generation

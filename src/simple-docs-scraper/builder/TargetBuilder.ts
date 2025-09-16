@@ -14,6 +14,17 @@ import path from "path";
  * which files to process, where to output documentation, and how to handle
  * templates and plugins for the extraction process.
  *
+ * Example:
+ * 
+ * ```typescript
+ * const target = new TargetBuilder()
+ *   .patterns('src/**\/*.ts')
+ *   .cwd('./src')
+ *   .outDir('./docs')
+ *   .createIndexFiles()
+ *   .useDocumentationTemplate('./templates/doc.md');
+ * ```
+ *
  * @param {string | string[]} _patterns - Glob patterns for file matching
  * @param {string} _cwd - Current working directory for file operations
  * @param {string | string[]} _ignore - Patterns to ignore during file matching

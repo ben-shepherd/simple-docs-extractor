@@ -9,6 +9,22 @@ import { ExcerptExtractorConfig } from "@/simple-docs-scraper/utils/ExcerptExtra
  * This class provides a fluent interface for configuring templates used in the
  * documentation extraction process. It supports both index and documentation
  * template types with various customization options.
+ * 
+ * Example:
+ * 
+ * ```typescript
+ * const template = new TemplateBuilder()
+ *   .useFile('./templates/index.template.md')
+ *   .useMarkdownLinks()
+ *   .filesHeading('\n## Files\n')
+ *   .directoryHeading('\n## Folders\n')
+ *   .excerpt({
+ *     length: 120,
+ *     addEllipsis: false,
+ *     firstSentenceOnly: true,
+ *   })
+ *   .build();
+ * ```
  *
  * @param {string} _type - The type of template ('index' or 'documentation')
  * @param {string} [_templatePath] - Optional path to a custom template file

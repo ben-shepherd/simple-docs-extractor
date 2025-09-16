@@ -2,8 +2,6 @@
 
 This document provides a comprehensive overview of how the Simple Docs Extractor application works, designed for new developers who want to understand or contribute to the codebase.
 
-[flow-diagram.svg](./flow-diagram.svg)
-
 ## Overview
 
 Simple Docs Extractor is a documentation generation tool that extracts documentation from source code files and generates organized markdown documentation with index files. The application follows a modular architecture with clear separation of concerns.

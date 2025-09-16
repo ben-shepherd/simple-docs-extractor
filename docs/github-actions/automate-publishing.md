@@ -56,8 +56,8 @@ permissions:
 ```yaml
 - uses: actions/checkout@v5
   with:
-    ref: ${{ github.head_ref }}
-    token: ${{ secrets.ADMIN_TOKEN }}
+    ref: $\{\{ github.head_ref \}\}
+    token: $\{\{ secrets.ADMIN_TOKEN \}\}
 ```
 
 ### 2. Generate Documentation
@@ -85,7 +85,7 @@ permissions:
     commit_author: "GitHub Actions <actions@github.com>"
     commit_user_name: "github-actions[bot]"
     commit_user_email: "actions@github.com"
-    token: ${{ secrets.ADMIN_TOKEN || secrets.GITHUB_TOKEN }}
+    token: $\{\{ secrets.ADMIN_TOKEN || secrets.GITHUB_TOKEN \}\}
 ```
 
 ## Push to Protected Branches
