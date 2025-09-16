@@ -18,18 +18,17 @@
 
 
 
- @example
+ Example:
 
+ 
+
+ ```typescript
  import { DEFAULTS } from "./consts/defaults";
-
  const config = {
-
    ...DEFAULTS.INDEX_FILE_GENERATOR,
-
    filesHeading: "Files",
-
  };
-
+ ```
 
 
  @typedef {Object} Defaults
@@ -60,7 +59,7 @@ Not available.
 
 
 
-Last updated: 2025-09-16T21:18:53.213Z
+Last updated: 2025-09-16T21:51:51.929Z
 
 
 

@@ -16,6 +16,20 @@
 
 
 
+ Example:
+
+ 
+
+ ```typescript
+ const target = new TargetBuilder()
+   .patterns('src/**\/*.ts')
+   .cwd('./src')
+   .outDir('./docs')
+   .createIndexFiles()
+   .useDocumentationTemplate('./templates/doc.md');
+ ```
+
+
  @param {string | string[]} _patterns - Glob patterns for file matching
 
  @param {string} _cwd - Current working directory for file operations
@@ -256,7 +270,7 @@
 
 
 
-Last updated: 2025-09-16T21:18:53.213Z
+Last updated: 2025-09-16T21:51:51.929Z
 
 
 

@@ -22,15 +22,15 @@
  const injection = new ContentInjection({
    template: './templates/doc.md',
    outDir: './docs',
-   injectInto: '{{CONTENT}}'
+   injectInto: '%CONTENT%'
  });
 
  // Inject into string
- const result = injection.injectIntoString('Hello {{CONTENT}}', 'World');
+ const result = injection.injectIntoString('Hello %CONTENT%', 'World');
  // Returns 'Hello World'
 
  // Inject into file
- injection.injectIntoFile('Documentation content: {{CONTENT}}', 'output.md');
+ injection.injectIntoFile('Documentation content: %CONTENT%', 'output.md');
  ```
  
 
@@ -120,7 +120,7 @@
 
 
 
-Last updated: 2025-09-16T21:18:53.214Z
+Last updated: 2025-09-16T21:51:51.929Z
 
 
 

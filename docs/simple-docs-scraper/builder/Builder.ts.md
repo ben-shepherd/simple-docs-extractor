@@ -4,16 +4,24 @@
 
 
 
- A main builder class for configuring the SimpleDocExtractor service.
+ A simple example builder for configuring the SimpleDocExtractor service.
 
 
 
- This class provides a fluent interface for building complete documentation
+ Example:
 
- extraction configurations. It allows configuration of targets, templates,
+ 
 
- and formatters, and can build both configuration objects and service instances.
-
+ ```typescript
+ new Builder()
+   .target(target => {
+     target.patterns('**\/*.ts').cwd('./src').outDir('./docs');
+   })
+   .indexTemplate(template => {
+     template.setContent('Custom index template');
+   })
+   .buildConfig();
+ ```
 
 
  @param {string} [_baseDir=process.cwd()] - Base directory for the extraction process
@@ -174,7 +182,7 @@
 
 
 
-Last updated: 2025-09-16T21:18:53.213Z
+Last updated: 2025-09-16T21:51:51.929Z
 
 
 
