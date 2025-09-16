@@ -1,4 +1,5 @@
-import { IndexContentGenerator, IndexContentGeneratorConfig, State } from "@/simple-docs-scraper/generators/IndexContenGenerator.js";
+import { IndexContentGenerator, State } from "@/simple-docs-scraper/generators/IndexContenGenerator.js";
+import { IndexFileGeneratorConfig } from "@/simple-docs-scraper/generators/IndexFileGenerator.js";
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import path from "path";
@@ -373,6 +374,7 @@ describe("Example Test Suite", () => {
         filesHeading: undefined,
         directoryHeading: undefined,
         recursive: true,
+        markdownLinks: false,
       });
       await indexProcessor.handle(getOutputPath("docs-sorting"));
 
@@ -390,6 +392,7 @@ describe("Example Test Suite", () => {
       indexProcessor = new MarkdownIndexProcessor({
         filesHeading: "## Files",
         recursive: true,
+        markdownLinks: false,
       });
 
       fs.mkdirSync(getOutputPath("docs-heading"), { recursive: true });
@@ -410,6 +413,7 @@ describe("Example Test Suite", () => {
       indexProcessor = new MarkdownIndexProcessor({
         directoryHeading: "## Folders",
         recursive: true,
+        markdownLinks: false,
       });
 
       fs.mkdirSync(getOutputPath("docs-heading/a"), { recursive: true });
@@ -430,6 +434,7 @@ describe("Example Test Suite", () => {
         directoryHeading: "## Folders",
         filesHeading: "## Files",
         recursive: true,
+        markdownLinks: false,
       });
 
       fs.mkdirSync(getOutputPath("docs-heading/a"), { recursive: true });
@@ -471,6 +476,7 @@ This additional text helps simulate a more realistic documentation scenario.`;
           firstSentenceOnly: false,
         },
         recursive: true,
+        markdownLinks: false,
       });
       await indexProcessor.handle(getOutputPath("docs-excerpt"));
 
@@ -517,7 +523,7 @@ This additional text helps simulate a more realistic documentation scenario.`;
       );
 
       const indenter = (level: number) => {
-        return new IndexContentGenerator({} as IndexContentGeneratorConfig).createIndenterPrefix({ indentLevel: level } as State);
+        return new IndexContentGenerator({} as IndexFileGeneratorConfig).createIndenterPrefix({ indentLevel: level } as State);
       }
 
       expect(indexFileContent).toBe(
@@ -549,14 +555,14 @@ This additional text helps simulate a more realistic documentation scenario.`;
       );
 
       const indenter = (level: number) => {
-        return new IndexContentGenerator({} as IndexContentGeneratorConfig).createIndenterPrefix({ indentLevel: level } as State);
+        return new IndexContentGenerator({} as IndexFileGeneratorConfig).createIndenterPrefix({ indentLevel: level } as State);
       }
 
       expect(indexFileContent).toBe(
         `${indenter(0)}- [a.md](a.md)\n` +
-        `${indenter(0)}- [sub-folder/](sub-folder/)\n` +
+        `${indenter(0)}- [sub-folder/](sub-folder/index.md)\n` +
           `${indenter(1)}- [b.md](sub-folder/b.md)\n` +
-          `${indenter(1)}- [sub-folder2/](sub-folder/sub-folder2/)\n` +
+          `${indenter(1)}- [sub-folder2/](sub-folder/sub-folder2/index.md)\n` +
             `${indenter(2)}- [c.md](sub-folder/sub-folder2/c.md)\n`
       );
     });

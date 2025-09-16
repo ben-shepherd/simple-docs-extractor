@@ -1,4 +1,5 @@
-import { IndexContentGenerator, IndexContentGeneratorConfig, State } from "@/simple-docs-scraper/generators/IndexContenGenerator.js";
+import { IndexContentGenerator, State } from "@/simple-docs-scraper/generators/IndexContenGenerator.js";
+import { IndexFileGeneratorConfig } from "@/simple-docs-scraper/generators/IndexFileGenerator.js";
 import {
   afterAll,
   beforeEach,
@@ -183,21 +184,23 @@ describe("Publish Docs", () => {
 
   describe("publishDocs with flattened index", () => {
     test("should flatten the index", async () => {
-      await publishDocs({
+      testConfig = {
         ...testConfig,
         targets: [
-          ...testConfig.targets,
           {
             ...testConfig.targets[0],
             templates: {
               rootIndex: {
                 ...(testConfig.targets[0].templates?.rootIndex || {}),
                 flatten: true,
+                recursive: true,
               }
             }
           }
         ]
-      });
+      }
+
+      await publishDocs(testConfig);
       
       const rootIndexFileContent = fs.readFileSync(
         getOutputPath("docs/index.md"),
@@ -205,19 +208,19 @@ describe("Publish Docs", () => {
       );
 
       const indenter = (level: number) => {
-        return new IndexContentGenerator({} as IndexContentGeneratorConfig).createIndenterPrefix({ indentLevel: level } as State);
+        return new IndexContentGenerator({} as IndexFileGeneratorConfig).createIndenterPrefix({ indentLevel: level } as State);
       }
 
       expect(rootIndexFileContent).toContain(
         `## Folders\n\n` +  
-        `${indenter(0)}- [simple-docs-scraper/](simple-docs-scraper/)\n` +
-          `${indenter(1)}- [builder/](simple-docs-scraper/builder/)\n` +
+        `${indenter(0)}- [simple-docs-scraper/](simple-docs-scraper/index.md)\n` +
+          `${indenter(1)}- [builder/](simple-docs-scraper/builder/index.md)\n` +
             `${indenter(2)}- [Builder.ts.md](simple-docs-scraper/builder/Builder.ts.md)\n` +
             `${indenter(2)}- [TargetBuilder.ts.md](simple-docs-scraper/builder/TargetBuilder.ts.md)\n` +
             `${indenter(2)}- [TemplateBuilder.ts.md](simple-docs-scraper/builder/TemplateBuilder.ts.md)\n` +
-            `${indenter(1)}- [config/](simple-docs-scraper/config/)\n` +
+            `${indenter(1)}- [config/](simple-docs-scraper/config/index.md)\n` +
               `${indenter(2)}- [ConfigHelper.ts.md](simple-docs-scraper/config/ConfigHelper.ts.md)\n` +
-            `${indenter(1)}- [files/](simple-docs-scraper/files/)\n` +
+            `${indenter(1)}- [files/](simple-docs-scraper/files/index.md)\n` +
               `${indenter(2)}- [FileScanner.ts.md](simple-docs-scraper/files/FileScanner.ts.md)\n`
           );
     });

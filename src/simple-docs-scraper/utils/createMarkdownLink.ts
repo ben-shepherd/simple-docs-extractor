@@ -1,4 +1,4 @@
-export const createMarkdownLink = (createAsLink: boolean, display: string, link: string, excerpt?: string) => {
+export const createMarkdownLink = (createAsLink: boolean, display: string, path: string, excerpt?: string) => {
     let result = "";
 
     if (false === createAsLink) {
@@ -14,9 +14,9 @@ export const createMarkdownLink = (createAsLink: boolean, display: string, link:
     result = `[${display}]`;
 
     if (excerpt) {
-      result += `(${link} - ${excerpt})`;
+      result += `(${path} - ${excerpt})`;
     } else {
-      result += `(${link})`;
+      result += `(${path})`;
     }
 
     return result;

@@ -248,6 +248,7 @@ export class SimpleDocExtractor {
     await new MarkdownIndexProcessor({
       ...templateConfig,
       recursive: false,
+      isRootConfig: true,
     }).handle(baseDir);
   }
 
